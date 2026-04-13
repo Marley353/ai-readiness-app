@@ -600,76 +600,385 @@ This assessment provides a point-in-time view of AI readiness and should be revi
 
 function exportPdf(assessment: Assessment) {
   const doc = new jsPDF({ unit: "mm", format: "a4" });
+  const W = 210;
+  const MARGIN = 16;
+  const CONTENT_W = W - MARGIN * 2;
   const overall = getWeightedOverallScore(assessment);
   const band = getBand(overall);
   const risk = getRiskScore(assessment);
   const impact = getBusinessImpact(assessment);
   const roi = getROIOpportunity(assessment);
   const sector = SECTORS.find((s) => s.value === assessment.sector);
-  
-  let y = 18;
-  doc.setFillColor(15, 23, 42);
-  doc.rect(0, 0, 210, 40, "F");
+  const topOpps = getTopOpportunities(assessment);
+  const topRisks = getTopRisks(assessment);
+  const pillarScores = PILLARS.map((p) => ({ title: p.title, score: getWeightedPillarScore(p, assessment.scores), rec: p.strategicRecommendations[assessment.sector], impact: p.businessImpact }));
+  const dateStr = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+
+  const addPageFooter = (pageNum: number) => {
+    doc.setFillColor(10, 22, 40);
+    doc.rect(0, 285, W, 12, "F");
+    doc.setTextColor(148, 163, 184);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7);
+    doc.text("AI Transformation Readiness Report — Confidential", MARGIN, 292);
+    doc.text(`Page ${pageNum}`, W - MARGIN, 292, { align: "right" });
+  };
+
+  const scoreColor = (s: number): [number, number, number] =>
+    s >= 70 ? [5, 150, 105] : s >= 50 ? [8, 145, 178] : s >= 30 ? [217, 119, 6] : [239, 68, 68];
+
+  // ─── PAGE 1: COVER ───────────────────────────────────────────────────────────
+  doc.setFillColor(10, 22, 40);
+  doc.rect(0, 0, W, 297, "F");
+
+  // Accent bar
+  doc.setFillColor(8, 145, 178);
+  doc.rect(0, 0, 6, 297, "F");
+
+  // Logo / brand strip
+  doc.setTextColor(8, 145, 178);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(8);
+  doc.text("AI READINESS ASSESSMENT PLATFORM", MARGIN + 6, 22);
+
+  // Main title
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(28);
+  doc.text("AI Transformation", MARGIN + 6, 80);
+  doc.text("Readiness Report", MARGIN + 6, 94);
+
+  // Divider
+  doc.setFillColor(8, 145, 178);
+  doc.rect(MARGIN + 6, 100, 80, 1.5, "F");
+
+  // Org name
+  doc.setFontSize(16);
+  doc.setTextColor(226, 232, 240);
+  doc.text(assessment.businessName || "Organisation Not Specified", MARGIN + 6, 114);
+
+  // Meta grid
+  const meta = [
+    ["Sector", sector?.label || "General"],
+    ["Assessor", assessment.assessor || "Not specified"],
+    ["Assessment", assessment.name],
+    ["Date", dateStr],
+  ];
+  let metaY = 134;
+  meta.forEach(([label, value]) => {
+    doc.setFontSize(8);
+    doc.setTextColor(100, 116, 139);
+    doc.setFont("helvetica", "bold");
+    doc.text(label.toUpperCase(), MARGIN + 6, metaY);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(203, 213, 225);
+    doc.text(value, MARGIN + 6, metaY + 5);
+    metaY += 14;
+  });
+
+  // Score circle (drawn as text block)
+  const [sr, sg, sb] = scoreColor(overall);
+  doc.setFillColor(255, 255, 255);
+  doc.setDrawColor(sr, sg, sb);
+  doc.setLineWidth(3);
+  doc.circle(W - 50, 120, 30, "D");
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(20);
-  doc.text("AI Transformation Readiness Report", 16, 18);
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(11);
-  doc.text(assessment.businessName || "Organisation not specified", 16, 26);
-  doc.setFontSize(9);
-  doc.text(`Sector: ${sector?.label || "General"} | Assessed by: ${assessment.assessor || "Not specified"}`, 16, 33);
-  
-  y = 52;
-  doc.setTextColor(15, 23, 42);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(14);
-  doc.text("Executive Summary", 16, y);
-  y += 8;
-  
-  doc.setFont("helvetica", "normal");
+  doc.setFontSize(24);
+  doc.text(`${overall}%`, W - 50, 117, { align: "center" });
+  doc.setFontSize(8);
+  doc.setTextColor(sr, sg, sb);
+  doc.text("READINESS", W - 50, 124, { align: "center" });
   doc.setFontSize(10);
-  doc.text(`Overall Readiness Score: ${overall}% (${band.label})`, 16, y);
-  y += 6;
-  doc.text(`Risk Level: ${risk.level.charAt(0).toUpperCase() + risk.level.slice(1)}`, 16, y);
-  y += 6;
-  doc.text(`Business Impact: ${impact.category}`, 16, y);
-  y += 6;
-  doc.text(`ROI Opportunity: ${roi.range} (${roi.confidence} confidence)`, 16, y);
-  y += 10;
-  
-  doc.setFont("helvetica", "bold");
-  doc.text("Pillar Scores (Weighted)", 16, y);
-  y += 6;
-  
-  PILLARS.forEach((pillar) => {
-    doc.setFont("helvetica", "normal");
-    doc.text(`${pillar.title}: ${getWeightedPillarScore(pillar, assessment.scores)}%`, 16, y);
-    y += 5;
-  });
-  
-  y += 6;
-  doc.setFont("helvetica", "bold");
-  doc.text("Strategic Recommendations", 16, y);
-  y += 6;
-  
-  PILLARS.filter((p) => getWeightedPillarScore(p, assessment.scores) < 50).forEach((pillar) => {
-    const rec = pillar.strategicRecommendations[assessment.sector];
-    const lines = doc.splitTextToSize(`${pillar.title}: ${rec}`, 175);
-    doc.setFont("helvetica", "normal");
-    doc.text(lines, 16, y);
-    y += lines.length * 4.5 + 3;
-  });
-  
-  if (assessment.notes.trim()) {
-    y += 4;
+  doc.setTextColor(203, 213, 225);
+  doc.text(band.label, W - 50, 132, { align: "center" });
+
+  // Bottom strip
+  doc.setFillColor(8, 145, 178, 0.15);
+  doc.setFillColor(15, 39, 68);
+  doc.rect(0, 265, W, 32, "F");
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7.5);
+  doc.setTextColor(100, 116, 139);
+  doc.text("This report is confidential and intended solely for the named organisation. Scores are based on responses provided during the assessment.", MARGIN + 6, 275, { maxWidth: CONTENT_W - 6 });
+
+  addPageFooter(1);
+
+  // ─── PAGE 2: EXECUTIVE SUMMARY ───────────────────────────────────────────────
+  doc.addPage();
+
+  const sectionHeader = (title: string, y: number): number => {
+    doc.setFillColor(10, 22, 40);
+    doc.rect(0, y - 6, W, 14, "F");
+    doc.setFillColor(8, 145, 178);
+    doc.rect(0, y - 6, 4, 14, "F");
+    doc.setTextColor(255, 255, 255);
     doc.setFont("helvetica", "bold");
-    doc.text("Additional Notes", 16, y);
-    y += 6;
+    doc.setFontSize(11);
+    doc.text(title, MARGIN, y + 3);
+    return y + 16;
+  };
+
+  let y = 18;
+  y = sectionHeader("EXECUTIVE SUMMARY", y);
+
+  // Score overview boxes (4-up)
+  const kpis = [
+    { label: "AI Readiness Score", value: `${overall}%`, sub: band.label, c: scoreColor(overall) },
+    { label: "Risk Level", value: risk.level.charAt(0).toUpperCase() + risk.level.slice(1), sub: `Score: ${risk.score}/100`, c: risk.level === "high" ? [239, 68, 68] as [number,number,number] : risk.level === "medium" ? [217, 119, 6] as [number,number,number] : [5, 150, 105] as [number,number,number] },
+    { label: "Business Impact", value: impact.category.split(" ")[0], sub: impact.category, c: [8, 145, 178] as [number,number,number] },
+    { label: "ROI Opportunity", value: roi.range.split("–")[0].trim(), sub: `${roi.confidence} confidence`, c: [13, 148, 136] as [number,number,number] },
+  ];
+  const boxW = (CONTENT_W - 9) / 4;
+  kpis.forEach((kpi, i) => {
+    const bx = MARGIN + i * (boxW + 3);
+    doc.setFillColor(248, 250, 252);
+    doc.setDrawColor(226, 232, 240);
+    doc.setLineWidth(0.3);
+    doc.roundedRect(bx, y, boxW, 22, 2, 2, "FD");
+    doc.setFillColor(...kpi.c);
+    doc.rect(bx, y, boxW, 1.5, "F");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14);
+    doc.setTextColor(...kpi.c);
+    doc.text(kpi.value, bx + boxW / 2, y + 11, { align: "center" });
     doc.setFont("helvetica", "normal");
-    doc.text(doc.splitTextToSize(assessment.notes, 175), 16, y);
+    doc.setFontSize(6.5);
+    doc.setTextColor(100, 116, 139);
+    doc.text(kpi.label, bx + boxW / 2, y + 6, { align: "center" });
+    doc.text(kpi.sub, bx + boxW / 2, y + 17, { align: "center" });
+  });
+  y += 28;
+
+  // Summary narrative
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9.5);
+  doc.setTextColor(30, 41, 59);
+  const narrative = doc.splitTextToSize(generateExecutiveSummary(assessment).slice(0, 700), CONTENT_W);
+  doc.text(narrative, MARGIN, y);
+  y += narrative.length * 4.5 + 6;
+
+  // ─── PILLAR SCORES ───────────────────────────────────────────────────────────
+  y = sectionHeader("PILLAR SCORES (WEIGHTED)", y);
+
+  pillarScores.forEach((pillar) => {
+    if (y > 255) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
+    const [pr, pg, pb] = scoreColor(pillar.score);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.setTextColor(15, 23, 42);
+    doc.text(pillar.title, MARGIN, y + 4);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(pr, pg, pb);
+    doc.text(`${pillar.score}%`, W - MARGIN, y + 4, { align: "right" });
+
+    // Bar track
+    const barX = MARGIN;
+    const barW = CONTENT_W - 14;
+    const barH = 4;
+    doc.setFillColor(226, 232, 240);
+    doc.roundedRect(barX, y + 6, barW, barH, 1, 1, "F");
+    doc.setFillColor(pr, pg, pb);
+    const filled = Math.max(2, (pillar.score / 100) * barW);
+    doc.roundedRect(barX, y + 6, filled, barH, 1, 1, "F");
+
+    // Impact line
+    doc.setTextColor(100, 116, 139);
+    doc.setFontSize(7);
+    doc.text(pillar.impact, MARGIN, y + 14);
+    y += 18;
+  });
+
+  addPageFooter(2);
+
+  // ─── PAGE 3: BUSINESS PROFILE + OPPORTUNITIES + RISKS ────────────────────────
+  doc.addPage();
+  y = 18;
+  y = sectionHeader("BUSINESS PROFILE", y);
+
+  const profile = [
+    ["Organisation", assessment.businessName || "Not specified"],
+    ["Sector", sector?.label || "General"],
+    ["Company Size", COMPANY_SIZES.find(s => s.value === assessment.companySize)?.label || "Not specified"],
+    ["Sites", assessment.numberOfSites || "Not specified"],
+    ["Annual Revenue", assessment.annualRevenue || "Not specified"],
+    ["Operational Complexity", COMPLEXITY_LEVELS.find(c => c.value === assessment.operationalComplexity)?.label || "Not specified"],
+  ];
+  const colW = (CONTENT_W - 4) / 2;
+  profile.forEach(([label, value], i) => {
+    const col = i % 2;
+    const row = Math.floor(i / 2);
+    const px = MARGIN + col * (colW + 4);
+    const py = y + row * 12;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7.5);
+    doc.setTextColor(100, 116, 139);
+    doc.text(label.toUpperCase(), px, py);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(15, 23, 42);
+    doc.text(value, px, py + 5);
+  });
+  y += Math.ceil(profile.length / 2) * 12 + 6;
+
+  if (assessment.notes.trim()) {
+    doc.setFillColor(248, 250, 252);
+    doc.setDrawColor(226, 232, 240);
+    doc.setLineWidth(0.3);
+    const noteLines = doc.splitTextToSize(assessment.notes, CONTENT_W - 8);
+    doc.roundedRect(MARGIN, y, CONTENT_W, noteLines.length * 4.5 + 10, 2, 2, "FD");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7.5);
+    doc.setTextColor(100, 116, 139);
+    doc.text("ASSESSOR NOTES", MARGIN + 4, y + 6);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8.5);
+    doc.setTextColor(30, 41, 59);
+    doc.text(noteLines, MARGIN + 4, y + 12);
+    y += noteLines.length * 4.5 + 16;
   }
-  
+
+  // Opportunities
+  y = sectionHeader("TOP AI OPPORTUNITIES", y);
+  topOpps.forEach((opp, i) => {
+    if (y > 255) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
+    doc.setFillColor(240, 253, 250);
+    doc.setDrawColor(153, 246, 228);
+    doc.setLineWidth(0.3);
+    const oppLines = doc.splitTextToSize(opp.description, CONTENT_W - 55);
+    doc.roundedRect(MARGIN, y, CONTENT_W, oppLines.length * 4.5 + 14, 2, 2, "FD");
+    doc.setFillColor(5, 150, 105);
+    doc.roundedRect(MARGIN, y, 4, oppLines.length * 4.5 + 14, 1, 1, "F");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8.5);
+    doc.setTextColor(6, 95, 70);
+    doc.text(`${i + 1}. ${opp.title}`, MARGIN + 8, y + 7);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(15, 79, 58);
+    doc.text(oppLines, MARGIN + 8, y + 13);
+    doc.setFillColor(209, 250, 229);
+    doc.roundedRect(W - MARGIN - 28, y + 4, 26, 8, 2, 2, "F");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7);
+    doc.setTextColor(6, 95, 70);
+    doc.text(opp.impact, W - MARGIN - 15, y + 9.5, { align: "center" });
+    y += oppLines.length * 4.5 + 18;
+  });
+
+  // Risks
+  y = sectionHeader("KEY RISKS IF NO ACTION TAKEN", y);
+  topRisks.forEach((r, i) => {
+    if (y > 255) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
+    const isHigh = r.severity === "High";
+    doc.setFillColor(isHigh ? 255 : 255, isHigh ? 241 : 251, isHigh ? 242 : 235);
+    doc.setDrawColor(isHigh ? 254 : 253, isHigh ? 205 : 211, isHigh ? 211 : 153);
+    doc.setLineWidth(0.3);
+    const rLines = doc.splitTextToSize(r.description, CONTENT_W - 55);
+    doc.roundedRect(MARGIN, y, CONTENT_W, rLines.length * 4.5 + 14, 2, 2, "FD");
+    doc.setFillColor(isHigh ? 239 : 217, isHigh ? 68 : 119, isHigh ? 68 : 6);
+    doc.roundedRect(MARGIN, y, 4, rLines.length * 4.5 + 14, 1, 1, "F");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8.5);
+    doc.setTextColor(isHigh ? 153 : 146, isHigh ? 27 : 64, isHigh ? 27 : 10);
+    doc.text(`${i + 1}. ${r.title}`, MARGIN + 8, y + 7);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.text(rLines, MARGIN + 8, y + 13);
+    doc.setFillColor(isHigh ? 254 : 254, isHigh ? 226 : 243, isHigh ? 226 : 199);
+    doc.roundedRect(W - MARGIN - 28, y + 4, 26, 8, 2, 2, "F");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7);
+    doc.text(r.severity, W - MARGIN - 15, y + 9.5, { align: "center" });
+    y += rLines.length * 4.5 + 18;
+  });
+
+  addPageFooter(3);
+
+  // ─── PAGE 4: STRATEGIC RECOMMENDATIONS ───────────────────────────────────────
+  doc.addPage();
+  y = 18;
+  y = sectionHeader("STRATEGIC RECOMMENDATIONS BY PILLAR", y);
+
+  const actionPillars = pillarScores.filter(p => p.score < 70);
+  actionPillars.forEach((pillar, idx) => {
+    if (y > 248) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
+    const [pr, pg, pb] = scoreColor(pillar.score);
+    doc.setFillColor(248, 250, 252);
+    doc.setDrawColor(226, 232, 240);
+    doc.setLineWidth(0.3);
+    const recLines = doc.splitTextToSize(pillar.rec, CONTENT_W - 14);
+    const boxH = recLines.length * 4.5 + 22;
+    doc.roundedRect(MARGIN, y, CONTENT_W, boxH, 2, 2, "FD");
+    doc.setFillColor(pr, pg, pb);
+    doc.rect(MARGIN, y, CONTENT_W, 1.5, "F");
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9.5);
+    doc.setTextColor(15, 23, 42);
+    doc.text(pillar.title, MARGIN + 5, y + 9);
+
+    doc.setFillColor(pr, pg, pb);
+    doc.roundedRect(W - MARGIN - 25, y + 3, 23, 8, 2, 2, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(8);
+    doc.text(`${pillar.score}%`, W - MARGIN - 13.5, y + 8.5, { align: "center" });
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8.5);
+    doc.setTextColor(51, 65, 85);
+    doc.text(recLines, MARGIN + 5, y + 16);
+
+    doc.setFont("helvetica", "italic");
+    doc.setFontSize(7.5);
+    doc.setTextColor(100, 116, 139);
+    doc.text(pillar.impact, MARGIN + 5, y + boxH - 5);
+    y += boxH + 5;
+  });
+
+  if (actionPillars.length === 0) {
+    doc.setFillColor(240, 253, 250);
+    doc.setDrawColor(153, 246, 228);
+    doc.roundedRect(MARGIN, y, CONTENT_W, 20, 2, 2, "FD");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.setTextColor(6, 95, 70);
+    doc.text("Strong performance across all dimensions — ready to scale AI adoption.", MARGIN + 5, y + 12);
+    y += 26;
+  }
+
+  // ROI Scenarios
+  y = sectionHeader("ROI SCENARIOS", y);
+  const roiScenarios = [
+    { label: "Conservative", value: roi.scenarios.low, desc: "Baseline efficiency gains with minimal change management", color: [100, 116, 139] as [number,number,number] },
+    { label: "Moderate", value: roi.scenarios.mid, desc: "Structured implementation with cross-functional adoption", color: [8, 145, 178] as [number,number,number] },
+    { label: "Optimistic", value: roi.scenarios.high, desc: "Full capability build with strategic AI-first transformation", color: [13, 148, 136] as [number,number,number] },
+  ];
+  const roiW = (CONTENT_W - 8) / 3;
+  roiScenarios.forEach((s, i) => {
+    const rx = MARGIN + i * (roiW + 4);
+    doc.setFillColor(248, 250, 252);
+    doc.setDrawColor(226, 232, 240);
+    doc.setLineWidth(0.3);
+    doc.roundedRect(rx, y, roiW, 30, 2, 2, "FD");
+    doc.setFillColor(...s.color);
+    doc.rect(rx, y, roiW, 2, "F");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7.5);
+    doc.setTextColor(...s.color);
+    doc.text(s.label.toUpperCase(), rx + roiW / 2, y + 8, { align: "center" });
+    doc.setFontSize(16);
+    doc.setTextColor(15, 23, 42);
+    doc.text(s.value, rx + roiW / 2, y + 18, { align: "center" });
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(6.5);
+    doc.setTextColor(100, 116, 139);
+    const descLines = doc.splitTextToSize(s.desc, roiW - 4);
+    doc.text(descLines, rx + roiW / 2, y + 24, { align: "center" });
+  });
+
+  addPageFooter(4);
+
   const safeName = `${assessment.businessName || "business"}-${assessment.name}`.replace(/[^a-z0-9]+/gi, "-");
   doc.save(`AI-Readiness-Report-${safeName}.pdf`);
 }
@@ -718,11 +1027,11 @@ function getWeightLabel(weight: number) {
 }
 
 const PILLAR_COLORS = [
-  { from: "#4f46e5", to: "#4338ca" },
-  { from: "#7c3aed", to: "#6d28d9" },
-  { from: "#0284c7", to: "#0369a1" },
-  { from: "#059669", to: "#047857" },
-  { from: "#d97706", to: "#b45309" },
+  { from: "#0891b2", to: "#0369a1" },  // sky
+  { from: "#3b82f6", to: "#1d4ed8" },  // blue
+  { from: "#0d9488", to: "#047857" },  // teal
+  { from: "#059669", to: "#047857" },  // emerald
+  { from: "#d97706", to: "#b45309" },  // amber
 ];
 
 function ScoreRing({ score, size = 140 }: { score: number; size?: number }) {
@@ -730,7 +1039,7 @@ function ScoreRing({ score, size = 140 }: { score: number; size?: number }) {
   const radius = (size - strokeWidth * 2) / 2;
   const circumference = 2 * Math.PI * radius;
   const filled = (score / 100) * circumference;
-  const color = score >= 70 ? "#10b981" : score >= 50 ? "#818cf8" : score >= 30 ? "#f59e0b" : "#ef4444";
+  const color = score >= 70 ? "#10b981" : score >= 50 ? "#38bdf8" : score >= 30 ? "#f59e0b" : "#ef4444";
   const cx = size / 2;
   const cy = size / 2;
   return (
@@ -852,12 +1161,12 @@ export default function AIReadinessScorecardApp() {
   return (
     <div className="min-h-screen bg-slate-100">
       {/* HERO HEADER */}
-      <div style={{ background: "linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)" }}>
+      <div style={{ background: "linear-gradient(135deg, #0a1628 0%, #0f2744 40%, #0c1e38 100%)" }}>
         <div className="mx-auto max-w-7xl px-4 pt-6 pb-0 md:px-8">
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div className="flex-1 min-w-0">
               <div className="mb-3 flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold tracking-wide text-indigo-300" style={{ background: "rgba(99,102,241,0.15)", border: "1px solid rgba(99,102,241,0.3)" }}>
+                <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold tracking-wide text-sky-300" style={{ background: "rgba(8,145,178,0.2)", border: "1px solid rgba(8,145,178,0.4)" }}>
                   <Sparkles className="h-3 w-3" /> AI READINESS ASSESSMENT
                 </span>
                 {sectorInfo && (
@@ -868,13 +1177,13 @@ export default function AIReadinessScorecardApp() {
               </div>
               <h1 className="text-2xl font-black tracking-tight text-white md:text-3xl leading-tight">
                 {active.businessName ? <>{active.businessName}<br /></> : null}
-                <span style={{ background: "linear-gradient(90deg, #818cf8, #c084fc)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                <span style={{ background: "linear-gradient(90deg, #38bdf8, #0d9488)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
                   AI Transformation Readiness
                 </span>
               </h1>
               <p className="mt-2 text-sm text-slate-400">Enterprise-grade · Weighted scoring · Sector-specific recommendations</p>
               <div className="mt-5 flex flex-wrap gap-2">
-                <button onClick={createNew} className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold text-white shadow-lg transition hover:opacity-90" style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)" }}>
+                <button onClick={createNew} className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold text-white shadow-lg transition hover:opacity-90" style={{ background: "linear-gradient(135deg, #0891b2, #0d9488)" }}>
                   <Plus className="h-4 w-4" /> New Assessment
                 </button>
                 <button onClick={() => exportPdf(active)} className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
@@ -909,8 +1218,8 @@ export default function AIReadinessScorecardApp() {
           <div className="mx-auto max-w-7xl px-4 py-4 md:px-8">
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
               {[
-                { label: "AI Maturity", value: `${overall}%`, sub: band.label, icon: <TrendingUp className="h-3.5 w-3.5" />, color: "#818cf8" },
-                { label: "Operational Impact", value: `${operationalImpact}%`, sub: "Process & tech", icon: <Activity className="h-3.5 w-3.5" />, color: "#c084fc" },
+                { label: "AI Maturity", value: `${overall}%`, sub: band.label, icon: <TrendingUp className="h-3.5 w-3.5" />, color: "#38bdf8" },
+                { label: "Operational Impact", value: `${operationalImpact}%`, sub: "Process & tech", icon: <Activity className="h-3.5 w-3.5" />, color: "#7dd3fc" },
                 { label: "Efficiency Opportunity", value: `${efficiencyOpportunity}%`, sub: "Improvement gap", icon: <Zap className="h-3.5 w-3.5" />, color: "#38bdf8" },
                 { label: "Risk Exposure", value: `${riskExposure}%`, sub: `${risk.level.charAt(0).toUpperCase() + risk.level.slice(1)} risk`, icon: <AlertTriangle className="h-3.5 w-3.5" />, color: riskExposure >= 60 ? "#f87171" : riskExposure >= 30 ? "#fbbf24" : "#34d399" },
               ].map((kpi) => (
@@ -944,15 +1253,15 @@ export default function AIReadinessScorecardApp() {
                   const itemSector = SECTORS.find((s) => s.value === item.sector);
                   const isActive = item.id === active.id;
                   return (
-                    <div key={item.id} className="rounded-xl p-3 transition cursor-pointer" style={{ border: isActive ? "1px solid #6366f1" : "1px solid #f1f5f9", background: isActive ? "#eef2ff" : "white" }}>
+                    <div key={item.id} className="rounded-xl p-3 transition cursor-pointer" style={{ border: isActive ? "1px solid #0891b2" : "1px solid #f1f5f9", background: isActive ? "#f0f9ff" : "white" }}>
                       <button className="w-full text-left" onClick={() => setActiveId(item.id)}>
                         <div className="flex items-start justify-between gap-2">
                           <div className="min-w-0">
-                            <p className="truncate text-sm font-bold" style={{ color: isActive ? "#3730a3" : "#0f172a" }}>{item.name}</p>
+                            <p className="truncate text-sm font-bold" style={{ color: isActive ? "#0c4a6e" : "#0f172a" }}>{item.name}</p>
                             <p className="truncate text-xs text-slate-400 mt-0.5">{item.businessName || "No organisation set"}</p>
-                            {itemSector && <span className="inline-block mt-1.5 text-xs px-2 py-0.5 rounded-full" style={{ background: isActive ? "#c7d2fe" : "#f1f5f9", color: isActive ? "#3730a3" : "#64748b" }}>{itemSector.label}</span>}
+                            {itemSector && <span className="inline-block mt-1.5 text-xs px-2 py-0.5 rounded-full" style={{ background: isActive ? "#bae6fd" : "#f1f5f9", color: isActive ? "#0c4a6e" : "#64748b" }}>{itemSector.label}</span>}
                           </div>
-                          <span className="text-xs font-black rounded-full px-2.5 py-1 flex-shrink-0" style={{ background: itemOverall >= 70 ? "#d1fae5" : itemOverall >= 50 ? "#e0e7ff" : itemOverall >= 30 ? "#fef3c7" : "#fee2e2", color: itemOverall >= 70 ? "#065f46" : itemOverall >= 50 ? "#3730a3" : itemOverall >= 30 ? "#92400e" : "#991b1b" }}>
+                          <span className="text-xs font-black rounded-full px-2.5 py-1 flex-shrink-0" style={{ background: itemOverall >= 70 ? "#d1fae5" : itemOverall >= 50 ? "#e0f2fe" : itemOverall >= 30 ? "#fef3c7" : "#fee2e2", color: itemOverall >= 70 ? "#065f46" : itemOverall >= 50 ? "#0c4a6e" : itemOverall >= 30 ? "#92400e" : "#991b1b" }}>
                             {itemOverall}%
                           </span>
                         </div>
@@ -991,7 +1300,7 @@ export default function AIReadinessScorecardApp() {
               <TabsContent value="assess" className="space-y-5">
                 {/* Assessment Details */}
                 <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
-                  <div className="px-6 py-4" style={{ background: "linear-gradient(135deg, #0f172a, #1e1b4b)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                  <div className="px-6 py-4" style={{ background: "linear-gradient(135deg, #0a1628, #1e293b)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
                     <h2 className="text-base font-bold text-white">Assessment Details</h2>
                     <p className="text-xs text-slate-400 mt-0.5">Set context before completing the pillar questions.</p>
                   </div>
@@ -1030,7 +1339,7 @@ export default function AIReadinessScorecardApp() {
 
                 {/* Business Profile */}
                 <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
-                  <div className="px-6 py-4" style={{ background: "linear-gradient(135deg, #1e1b4b, #2e1065)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                  <div className="px-6 py-4" style={{ background: "linear-gradient(135deg, #0a1628, #1e293b)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
                     <h2 className="text-base font-bold text-white">Business Profile</h2>
                     <p className="text-xs text-slate-400 mt-0.5">Organisation context that influences readiness interpretation.</p>
                   </div>
@@ -1165,7 +1474,7 @@ export default function AIReadinessScorecardApp() {
                           <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0", boxShadow: "0 10px 25px rgba(0,0,0,0.1)" }} />
                           <Bar dataKey="score" radius={[8, 8, 0, 0]}>
                             {pillarData.map((_, index) => (
-                              <Cell key={`cell-${index}`} fill={PILLAR_COLORS[index]?.from || "#6366f1"} />
+                              <Cell key={`cell-${index}`} fill={PILLAR_COLORS[index]?.from || "#0891b2"} />
                             ))}
                           </Bar>
                         </BarChart>
@@ -1184,7 +1493,7 @@ export default function AIReadinessScorecardApp() {
                           <PolarGrid stroke="#e2e8f0" />
                           <PolarAngleAxis dataKey="fullName" tick={{ fontSize: 11, fill: "#64748b" }} />
                           <PolarRadiusAxis domain={[0, 100]} tick={{ fontSize: 10, fill: "#94a3b8" }} />
-                          <Radar dataKey="score" fill="#6366f1" fillOpacity={0.2} stroke="#6366f1" strokeWidth={2.5} />
+                          <Radar dataKey="score" fill="#0891b2" fillOpacity={0.2} stroke="#0891b2" strokeWidth={2.5} />
                           <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0" }} />
                         </RadarChart>
                       </ResponsiveContainer>
@@ -1230,23 +1539,23 @@ export default function AIReadinessScorecardApp() {
 
                   <div className="rounded-2xl bg-white p-5 shadow-sm" style={{ border: "1px solid #e2e8f0" }}>
                     <div className="flex items-center gap-2 mb-3">
-                      <TrendingUp className="h-5 w-5 text-indigo-600" />
+                      <TrendingUp className="h-5 w-5 text-sky-600" />
                       <span className="font-black text-slate-800">ROI Opportunity</span>
                     </div>
-                    <p className="text-4xl font-black" style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{roi.range}</p>
+                    <p className="text-4xl font-black" style={{ background: "linear-gradient(135deg, #0891b2, #0d9488)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{roi.range}</p>
                     <p className="text-xs text-slate-400 mt-1 mb-4">Efficiency improvement potential</p>
                     <div className="grid grid-cols-3 gap-2 text-center">
                       <div className="rounded-xl p-2" style={{ background: "#f8fafc", border: "1px solid #e2e8f0" }}>
                         <p className="text-xs text-slate-400">Low</p>
                         <p className="text-sm font-black text-slate-700">{roi.scenarios.low}</p>
                       </div>
-                      <div className="rounded-xl p-2" style={{ background: "#eef2ff", border: "1px solid #c7d2fe" }}>
-                        <p className="text-xs text-indigo-400">Mid</p>
-                        <p className="text-sm font-black text-indigo-700">{roi.scenarios.mid}</p>
+                      <div className="rounded-xl p-2" style={{ background: "#e0f2fe", border: "1px solid #bae6fd" }}>
+                        <p className="text-xs text-sky-500">Mid</p>
+                        <p className="text-sm font-black text-sky-700">{roi.scenarios.mid}</p>
                       </div>
-                      <div className="rounded-xl p-2" style={{ background: "#f5f3ff", border: "1px solid #ddd6fe" }}>
-                        <p className="text-xs text-violet-400">High</p>
-                        <p className="text-sm font-black text-violet-700">{roi.scenarios.high}</p>
+                      <div className="rounded-xl p-2" style={{ background: "#f0fdfa", border: "1px solid #99f6e4" }}>
+                        <p className="text-xs text-teal-500">High</p>
+                        <p className="text-sm font-black text-teal-700">{roi.scenarios.high}</p>
                       </div>
                     </div>
                     <p className="mt-2 text-xs text-slate-400">{roi.confidence} confidence</p>
@@ -1305,10 +1614,10 @@ export default function AIReadinessScorecardApp() {
                       <p className="mt-2 text-3xl font-black">{band.label}</p>
                       <p className="mt-2 text-sm leading-relaxed">{band.advice}</p>
                     </div>
-                    <div className="rounded-2xl p-5" style={{ background: "#eef2ff", border: "1px solid #c7d2fe" }}>
-                      <p className="text-xs font-bold uppercase tracking-wider text-indigo-400">Strongest Pillar</p>
-                      <p className="mt-2 text-xl font-black text-indigo-900">{[...pillarData].sort((a, b) => b.score - a.score)[0].fullName}</p>
-                      <p className="mt-1 text-sm text-indigo-600 font-semibold">{[...pillarData].sort((a, b) => b.score - a.score)[0].score}%</p>
+                    <div className="rounded-2xl p-5" style={{ background: "#e0f2fe", border: "1px solid #bae6fd" }}>
+                      <p className="text-xs font-bold uppercase tracking-wider text-sky-500">Strongest Pillar</p>
+                      <p className="mt-2 text-xl font-black text-sky-900">{[...pillarData].sort((a, b) => b.score - a.score)[0].fullName}</p>
+                      <p className="mt-1 text-sm text-sky-600 font-semibold">{[...pillarData].sort((a, b) => b.score - a.score)[0].score}%</p>
                     </div>
                     <div className="rounded-2xl p-5" style={{ background: "#fffbeb", border: "1px solid #fde68a" }}>
                       <p className="text-xs font-bold uppercase tracking-wider text-amber-500">Priority Development</p>
@@ -1324,10 +1633,10 @@ export default function AIReadinessScorecardApp() {
                 <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
                   <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: "1px solid #f1f5f9" }}>
                     <div>
-                      <h3 className="font-black text-slate-900 flex items-center gap-2"><FileText className="h-4 w-4 text-indigo-600" /> Client Report Summary</h3>
+                      <h3 className="font-black text-slate-900 flex items-center gap-2"><FileText className="h-4 w-4 text-sky-600" /> Client Report Summary</h3>
                       <p className="text-xs text-slate-400 mt-0.5">Executive-level summary for stakeholder communication</p>
                     </div>
-                    <button onClick={() => navigator.clipboard.writeText(generateExecutiveSummary(active))} className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold transition" style={{ background: "#eef2ff", color: "#4338ca" }}>
+                    <button onClick={() => navigator.clipboard.writeText(generateExecutiveSummary(active))} className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold transition" style={{ background: "#e0f2fe", color: "#0369a1" }}>
                       <Copy className="h-3.5 w-3.5" /> Copy
                     </button>
                   </div>
@@ -1371,7 +1680,7 @@ export default function AIReadinessScorecardApp() {
                             <span className="font-black" style={{ color: PILLAR_COLORS[idx]?.from }}>{pillar.score}%</span>
                           </div>
                           <div className="h-2.5 rounded-full bg-slate-100 overflow-hidden">
-                            <div className="h-full rounded-full transition-all duration-700" style={{ width: `${pillar.score}%`, background: `linear-gradient(90deg, ${PILLAR_COLORS[idx]?.from || "#6366f1"}, ${PILLAR_COLORS[idx]?.to || "#4338ca"})` }} />
+                            <div className="h-full rounded-full transition-all duration-700" style={{ width: `${pillar.score}%`, background: `linear-gradient(90deg, ${PILLAR_COLORS[idx]?.from || "#0891b2"}, ${PILLAR_COLORS[idx]?.to || "#0369a1"})` }} />
                           </div>
                         </div>
                       ))}
@@ -1388,8 +1697,8 @@ export default function AIReadinessScorecardApp() {
               {/* ─── RECOMMENDATIONS TAB ─── */}
               <TabsContent value="recommendations" className="space-y-5">
                 <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
-                  <div className="px-6 py-4" style={{ background: "linear-gradient(135deg, #0f172a, #1e1b4b)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-                    <h2 className="font-black text-white flex items-center gap-2"><Sparkles className="h-4 w-4 text-indigo-300" /> Strategic Recommendations</h2>
+                  <div className="px-6 py-4" style={{ background: "linear-gradient(135deg, #0a1628, #1e293b)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                    <h2 className="font-black text-white flex items-center gap-2"><Sparkles className="h-4 w-4 text-sky-300" /> Strategic Recommendations</h2>
                     <p className="text-xs text-slate-400 mt-0.5">Sector-specific action items for {sectorInfo?.label} operations</p>
                   </div>
                   <div className="p-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -1501,19 +1810,19 @@ function CompareView({ assessments }: { assessments: Assessment[] }) {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl p-5" style={{ background: "#eef2ff", border: "2px solid #6366f1" }}>
-          <p className="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-1">Primary</p>
-          <h3 className="font-black text-indigo-900 text-lg">{left.name}</h3>
-          <p className="text-sm text-indigo-600">{left.businessName || "No organisation set"}{leftSector && ` · ${leftSector.label}`}</p>
-          <p className="text-4xl font-black text-indigo-700 mt-3">{getWeightedOverallScore(left)}%</p>
-          <p className="text-xs text-indigo-400 mt-1">Risk: <span className="font-bold capitalize">{getRiskScore(left).level}</span></p>
+        <div className="rounded-2xl p-5" style={{ background: "#e0f2fe", border: "2px solid #0891b2" }}>
+          <p className="text-xs font-bold text-sky-500 uppercase tracking-wider mb-1">Primary</p>
+          <h3 className="font-black text-sky-900 text-lg">{left.name}</h3>
+          <p className="text-sm text-sky-600">{left.businessName || "No organisation set"}{leftSector && ` · ${leftSector.label}`}</p>
+          <p className="text-4xl font-black text-sky-700 mt-3">{getWeightedOverallScore(left)}%</p>
+          <p className="text-xs text-sky-400 mt-1">Risk: <span className="font-bold capitalize">{getRiskScore(left).level}</span></p>
         </div>
-        <div className="rounded-2xl p-5" style={{ background: "#f5f3ff", border: "2px solid #7c3aed" }}>
-          <p className="text-xs font-bold text-violet-400 uppercase tracking-wider mb-1">Secondary</p>
-          <h3 className="font-black text-violet-900 text-lg">{right.name}</h3>
-          <p className="text-sm text-violet-600">{right.businessName || "No organisation set"}{rightSector && ` · ${rightSector.label}`}</p>
-          <p className="text-4xl font-black text-violet-700 mt-3">{getWeightedOverallScore(right)}%</p>
-          <p className="text-xs text-violet-400 mt-1">Risk: <span className="font-bold capitalize">{getRiskScore(right).level}</span></p>
+        <div className="rounded-2xl p-5" style={{ background: "#f0fdfa", border: "2px solid #0d9488" }}>
+          <p className="text-xs font-bold text-teal-500 uppercase tracking-wider mb-1">Secondary</p>
+          <h3 className="font-black text-teal-900 text-lg">{right.name}</h3>
+          <p className="text-sm text-teal-600">{right.businessName || "No organisation set"}{rightSector && ` · ${rightSector.label}`}</p>
+          <p className="text-4xl font-black text-teal-700 mt-3">{getWeightedOverallScore(right)}%</p>
+          <p className="text-xs text-teal-400 mt-1">Risk: <span className="font-bold capitalize">{getRiskScore(right).level}</span></p>
         </div>
       </div>
 
@@ -1528,8 +1837,8 @@ function CompareView({ assessments }: { assessments: Assessment[] }) {
               <XAxis dataKey="pillar" tick={{ fontSize: 11, fill: "#64748b" }} interval={0} angle={-18} textAnchor="end" height={80} />
               <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: "#64748b" }} />
               <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0", boxShadow: "0 10px 25px rgba(0,0,0,0.1)" }} />
-              <Bar dataKey="left" name="Primary" radius={[8, 8, 0, 0]} fill="#6366f1" />
-              <Bar dataKey="right" name="Secondary" radius={[8, 8, 0, 0]} fill="#7c3aed" />
+              <Bar dataKey="left" name="Primary" radius={[8, 8, 0, 0]} fill="#0891b2" />
+              <Bar dataKey="right" name="Secondary" radius={[8, 8, 0, 0]} fill="#0d9488" />
             </BarChart>
           </ResponsiveContainer>
         </div>
