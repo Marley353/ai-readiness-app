@@ -717,6 +717,37 @@ function getWeightLabel(weight: number) {
   return { label: "Standard", color: "bg-slate-100 text-slate-600" };
 }
 
+const PILLAR_COLORS = [
+  { from: "#4f46e5", to: "#4338ca" },
+  { from: "#7c3aed", to: "#6d28d9" },
+  { from: "#0284c7", to: "#0369a1" },
+  { from: "#059669", to: "#047857" },
+  { from: "#d97706", to: "#b45309" },
+];
+
+function ScoreRing({ score, size = 140 }: { score: number; size?: number }) {
+  const strokeWidth = 10;
+  const radius = (size - strokeWidth * 2) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const filled = (score / 100) * circumference;
+  const color = score >= 70 ? "#10b981" : score >= 50 ? "#818cf8" : score >= 30 ? "#f59e0b" : "#ef4444";
+  const cx = size / 2;
+  const cy = size / 2;
+  return (
+    <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ transform: "rotate(-90deg)" }}>
+        <circle cx={cx} cy={cy} r={radius} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth={strokeWidth} />
+        <circle cx={cx} cy={cy} r={radius} fill="none" stroke={color} strokeWidth={strokeWidth}
+          strokeDasharray={`${filled} ${circumference - filled}`} strokeLinecap="round" />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span className="text-3xl font-black text-white leading-none">{score}%</span>
+        <span className="text-xs text-slate-400 mt-1">Readiness</span>
+      </div>
+    </div>
+  );
+}
+
 export default function AIReadinessScorecardApp() {
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const [activeId, setActiveId] = useState<string>("");
@@ -819,616 +850,594 @@ export default function AIReadinessScorecardApp() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
-      <div className="mx-auto max-w-7xl p-4 md:p-8">
-        {/* Header */}
-        <div className="mb-6 flex flex-col gap-4 rounded-3xl border bg-white p-6 shadow-sm md:flex-row md:items-center md:justify-between">
-          <div>
-            <div className="mb-2 flex flex-wrap items-center gap-2">
-              <Badge variant="secondary">AI Readiness</Badge>
-              <Badge variant="outline">Enterprise Assessment</Badge>
-              {sectorInfo && <Badge className="bg-slate-900 text-white">{sectorInfo.label}</Badge>}
+    <div className="min-h-screen bg-slate-100">
+      {/* HERO HEADER */}
+      <div style={{ background: "linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)" }}>
+        <div className="mx-auto max-w-7xl px-4 pt-6 pb-0 md:px-8">
+          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div className="flex-1 min-w-0">
+              <div className="mb-3 flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold tracking-wide text-indigo-300" style={{ background: "rgba(99,102,241,0.15)", border: "1px solid rgba(99,102,241,0.3)" }}>
+                  <Sparkles className="h-3 w-3" /> AI READINESS ASSESSMENT
+                </span>
+                {sectorInfo && (
+                  <span className="rounded-full px-3 py-1 text-xs font-medium text-slate-300" style={{ background: "rgba(255,255,255,0.08)" }}>
+                    {sectorInfo.label}
+                  </span>
+                )}
+              </div>
+              <h1 className="text-2xl font-black tracking-tight text-white md:text-3xl leading-tight">
+                {active.businessName ? <>{active.businessName}<br /></> : null}
+                <span style={{ background: "linear-gradient(90deg, #818cf8, #c084fc)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                  AI Transformation Readiness
+                </span>
+              </h1>
+              <p className="mt-2 text-sm text-slate-400">Enterprise-grade · Weighted scoring · Sector-specific recommendations</p>
+              <div className="mt-5 flex flex-wrap gap-2">
+                <button onClick={createNew} className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold text-white shadow-lg transition hover:opacity-90" style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)" }}>
+                  <Plus className="h-4 w-4" /> New Assessment
+                </button>
+                <button onClick={() => exportPdf(active)} className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
+                  <Download className="h-4 w-4" /> PDF
+                </button>
+                <button onClick={() => mailTo(active)} className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
+                  <Mail className="h-4 w-4" /> Email
+                </button>
+                <button onClick={duplicate} className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
+                  <Copy className="h-4 w-4" /> Duplicate
+                </button>
+              </div>
             </div>
-            <h1 className="text-2xl font-semibold tracking-tight">AI Transformation Readiness Assessment</h1>
-            <p className="mt-1 text-sm text-slate-600">Enterprise-grade assessment with weighted scoring, risk analysis, and strategic recommendations.</p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Button onClick={createNew}><Plus className="mr-2 h-4 w-4" />New</Button>
-            <Button variant="outline" onClick={duplicate}><Copy className="mr-2 h-4 w-4" />Duplicate</Button>
-            <Button variant="outline" onClick={() => exportPdf(active)}><Download className="mr-2 h-4 w-4" />PDF</Button>
-            <Button variant="outline" onClick={() => mailTo(active)}><Mail className="mr-2 h-4 w-4" />Email</Button>
-            <Button variant="outline" onClick={() => window.print()}><Printer className="mr-2 h-4 w-4" />Print</Button>
+            <div className="flex items-center gap-5 flex-shrink-0">
+              <ScoreRing score={overall} size={148} />
+              <div className="hidden md:flex flex-col gap-2">
+                <div className={`rounded-xl px-4 py-2.5 text-center border ${band.tone}`}>
+                  <p className="text-base font-black">{band.label}</p>
+                  <p className="text-xs opacity-70 mt-0.5">Maturity Band</p>
+                </div>
+                <div className={`rounded-xl px-4 py-2.5 text-center ${risk.level === "high" ? "bg-red-100 text-red-800 border border-red-200" : risk.level === "medium" ? "bg-amber-100 text-amber-800 border border-amber-200" : "bg-emerald-100 text-emerald-800 border border-emerald-200"}`}>
+                  <p className="text-sm font-bold">{risk.level.charAt(0).toUpperCase() + risk.level.slice(1)} Risk</p>
+                  <p className="text-xs opacity-70 mt-0.5">Risk Profile</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Sidebar + Summary Cards */}
-        <div className="mb-6 grid gap-4 lg:grid-cols-[320px,1fr]">
-          <Card className="rounded-3xl">
-            <CardHeader>
-              <CardTitle className="text-base">Assessments</CardTitle>
-              <CardDescription>Switch, manage and compare saved scorecards.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {assessments.map((item) => {
-                const itemOverall = getWeightedOverallScore(item);
-                const itemSector = SECTORS.find((s) => s.value === item.sector);
-                return (
-                  <div key={item.id} className={`rounded-2xl border p-3 transition ${item.id === active.id ? "border-slate-900 bg-slate-50" : "bg-white"}`}>
-                    <button className="w-full text-left" onClick={() => setActiveId(item.id)}>
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-medium">{item.name}</p>
-                          <p className="truncate text-xs text-slate-500">{item.businessName || "No organisation set"}</p>
-                          {itemSector && <Badge variant="outline" className="mt-1 text-xs">{itemSector.label}</Badge>}
+        {/* KPI strip */}
+        <div className="mt-6" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+          <div className="mx-auto max-w-7xl px-4 py-4 md:px-8">
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+              {[
+                { label: "AI Maturity", value: `${overall}%`, sub: band.label, icon: <TrendingUp className="h-3.5 w-3.5" />, color: "#818cf8" },
+                { label: "Operational Impact", value: `${operationalImpact}%`, sub: "Process & tech", icon: <Activity className="h-3.5 w-3.5" />, color: "#c084fc" },
+                { label: "Efficiency Opportunity", value: `${efficiencyOpportunity}%`, sub: "Improvement gap", icon: <Zap className="h-3.5 w-3.5" />, color: "#38bdf8" },
+                { label: "Risk Exposure", value: `${riskExposure}%`, sub: `${risk.level.charAt(0).toUpperCase() + risk.level.slice(1)} risk`, icon: <AlertTriangle className="h-3.5 w-3.5" />, color: riskExposure >= 60 ? "#f87171" : riskExposure >= 30 ? "#fbbf24" : "#34d399" },
+              ].map((kpi) => (
+                <div key={kpi.label} className="rounded-2xl p-3" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                  <div className="flex items-center gap-1.5 text-xs font-semibold mb-1.5" style={{ color: kpi.color }}>
+                    {kpi.icon} {kpi.label}
+                  </div>
+                  <p className="text-2xl font-black text-white">{kpi.value}</p>
+                  <p className="text-xs text-slate-400 mt-0.5">{kpi.sub}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* MAIN CONTENT */}
+      <div className="mx-auto max-w-7xl p-4 md:p-8">
+        <div className="grid gap-6 lg:grid-cols-[260px,1fr]">
+
+          {/* Sidebar */}
+          <div className="space-y-4">
+            <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
+              <div className="px-4 py-3" style={{ borderBottom: "1px solid #f1f5f9" }}>
+                <p className="text-sm font-bold text-slate-900">Assessments</p>
+                <p className="text-xs text-slate-400 mt-0.5">Switch between saved scorecards</p>
+              </div>
+              <div className="p-3 space-y-2">
+                {assessments.map((item) => {
+                  const itemOverall = getWeightedOverallScore(item);
+                  const itemSector = SECTORS.find((s) => s.value === item.sector);
+                  const isActive = item.id === active.id;
+                  return (
+                    <div key={item.id} className="rounded-xl p-3 transition cursor-pointer" style={{ border: isActive ? "1px solid #6366f1" : "1px solid #f1f5f9", background: isActive ? "#eef2ff" : "white" }}>
+                      <button className="w-full text-left" onClick={() => setActiveId(item.id)}>
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-bold" style={{ color: isActive ? "#3730a3" : "#0f172a" }}>{item.name}</p>
+                            <p className="truncate text-xs text-slate-400 mt-0.5">{item.businessName || "No organisation set"}</p>
+                            {itemSector && <span className="inline-block mt-1.5 text-xs px-2 py-0.5 rounded-full" style={{ background: isActive ? "#c7d2fe" : "#f1f5f9", color: isActive ? "#3730a3" : "#64748b" }}>{itemSector.label}</span>}
+                          </div>
+                          <span className="text-xs font-black rounded-full px-2.5 py-1 flex-shrink-0" style={{ background: itemOverall >= 70 ? "#d1fae5" : itemOverall >= 50 ? "#e0e7ff" : itemOverall >= 30 ? "#fef3c7" : "#fee2e2", color: itemOverall >= 70 ? "#065f46" : itemOverall >= 50 ? "#3730a3" : itemOverall >= 30 ? "#92400e" : "#991b1b" }}>
+                            {itemOverall}%
+                          </span>
                         </div>
-                        <Badge variant="secondary">{itemOverall}%</Badge>
+                      </button>
+                      <div className="mt-2 flex justify-end">
+                        <button onClick={() => removeAssessment(item.id)} className="p-1.5 rounded-lg text-slate-300 hover:text-red-400 hover:bg-red-50 transition">
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
                       </div>
-                    </button>
-                    <div className="mt-3 flex justify-end">
-                      <Button variant="ghost" size="sm" onClick={() => removeAssessment(item.id)}><Trash2 className="h-4 w-4" /></Button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Main content */}
+          <div>
+            <Tabs value={tab} onValueChange={setTab} className="space-y-5">
+              <TabsList className="grid w-full grid-cols-5 rounded-2xl bg-white shadow-sm p-1 h-auto" style={{ border: "1px solid #e2e8f0" }}>
+                {[
+                  { value: "assess", label: "Assess", icon: <Target className="h-3.5 w-3.5" /> },
+                  { value: "results", label: "Results", icon: <Activity className="h-3.5 w-3.5" /> },
+                  { value: "report", label: "Report", icon: <FileText className="h-3.5 w-3.5" /> },
+                  { value: "compare", label: "Compare", icon: <TrendingUp className="h-3.5 w-3.5" /> },
+                  { value: "recommendations", label: "Actions", icon: <Sparkles className="h-3.5 w-3.5" /> },
+                ].map((t) => (
+                  <TabsTrigger key={t.value} value={t.value} className="flex items-center justify-center gap-1.5 rounded-xl text-xs font-semibold py-2.5 transition data-[state=active]:text-white data-[state=active]:shadow-sm" style={{ ["--tw-ring-color" as string]: "transparent" }}>
+                    {t.icon}
+                    <span className="hidden sm:inline">{t.label}</span>
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+
+              {/* ─── ASSESS TAB ─── */}
+              <TabsContent value="assess" className="space-y-5">
+                {/* Assessment Details */}
+                <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
+                  <div className="px-6 py-4" style={{ background: "linear-gradient(135deg, #0f172a, #1e1b4b)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                    <h2 className="text-base font-bold text-white">Assessment Details</h2>
+                    <p className="text-xs text-slate-400 mt-0.5">Set context before completing the pillar questions.</p>
+                  </div>
+                  <div className="p-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Assessment Name</Label>
+                      <Input value={active.name} onChange={(e) => updateActive({ name: e.target.value })} className="rounded-xl" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Organisation</Label>
+                      <Input value={active.businessName} onChange={(e) => updateActive({ businessName: e.target.value })} className="rounded-xl" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Assessor</Label>
+                      <Input value={active.assessor} onChange={(e) => updateActive({ assessor: e.target.value })} className="rounded-xl" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Sector</Label>
+                      <Select value={active.sector} onValueChange={(value: Sector) => updateActive({ sector: value })}>
+                        <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          {SECTORS.map((sector) => (
+                            <SelectItem key={sector.value} value={sector.value}>
+                              <div><div className="font-semibold">{sector.label}</div><div className="text-xs text-slate-500">{sector.description}</div></div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1.5 md:col-span-2 lg:col-span-4">
+                      <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Notes</Label>
+                      <Textarea value={active.notes} onChange={(e) => updateActive({ notes: e.target.value })} placeholder="Context, assumptions, known blockers, target operating model notes..." className="rounded-xl" />
                     </div>
                   </div>
-                );
-              })}
-            </CardContent>
-          </Card>
-
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <Card className="rounded-3xl">
-              <CardHeader className="pb-2">
-                <CardDescription className="flex items-center gap-2"><TrendingUp className="h-4 w-4" />AI Maturity Score</CardDescription>
-                <CardTitle className="text-3xl">{overall}%</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Progress value={overall} className="h-3" />
-                <p className="mt-2 text-xs text-slate-500">Band: {band.label}</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="rounded-3xl">
-              <CardHeader className="pb-2">
-                <CardDescription className="flex items-center gap-2"><Activity className="h-4 w-4" />Operational Impact</CardDescription>
-                <CardTitle className="text-3xl">{operationalImpact}%</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Progress value={operationalImpact} className="h-3" />
-                <p className="mt-2 text-xs text-slate-500">Process & tech readiness</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="rounded-3xl">
-              <CardHeader className="pb-2">
-                <CardDescription className="flex items-center gap-2"><Zap className="h-4 w-4" />Efficiency Opportunity</CardDescription>
-                <CardTitle className="text-3xl">{efficiencyOpportunity}%</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Progress value={efficiencyOpportunity} className="h-3" />
-                <p className="mt-2 text-xs text-slate-500">Improvement potential</p>
-              </CardContent>
-            </Card>
-            
-            <Card className={`rounded-3xl border-2 ${riskExposure >= 60 ? "border-red-200 bg-red-50/50" : riskExposure >= 30 ? "border-amber-200 bg-amber-50/50" : "border-emerald-200 bg-emerald-50/50"}`}>
-              <CardHeader className="pb-2">
-                <CardDescription className="flex items-center gap-2"><AlertTriangle className="h-4 w-4" />Risk Exposure</CardDescription>
-                <CardTitle className={`text-3xl ${riskExposure >= 60 ? "text-red-700" : riskExposure >= 30 ? "text-amber-700" : "text-emerald-700"}`}>
-                  {riskExposure}%
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Progress value={riskExposure} className="h-3" />
-                <p className="mt-2 text-xs text-slate-600">{risk.level.charAt(0).toUpperCase() + risk.level.slice(1)} risk level</p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-          <TabsList className="grid w-full grid-cols-5 rounded-2xl">
-            <TabsTrigger value="assess">Assess</TabsTrigger>
-            <TabsTrigger value="results">Results</TabsTrigger>
-            <TabsTrigger value="report">Report</TabsTrigger>
-            <TabsTrigger value="compare">Compare</TabsTrigger>
-            <TabsTrigger value="recommendations">Actions</TabsTrigger>
-          </TabsList>
-
-          {/* ASSESS TAB */}
-          <TabsContent value="assess" className="space-y-4">
-            <Card className="rounded-3xl">
-              <CardHeader>
-                <CardTitle>Assessment Details</CardTitle>
-                <CardDescription>Set the context for this scorecard and then complete the pillar questions below.</CardDescription>
-              </CardHeader>
-              <CardContent className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <div className="space-y-2">
-                  <Label>Assessment Name</Label>
-                  <Input value={active.name} onChange={(e) => updateActive({ name: e.target.value })} />
                 </div>
-                <div className="space-y-2">
-                  <Label>Organisation</Label>
-                  <Input value={active.businessName} onChange={(e) => updateActive({ businessName: e.target.value })} />
+
+                {/* Business Profile */}
+                <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
+                  <div className="px-6 py-4" style={{ background: "linear-gradient(135deg, #1e1b4b, #2e1065)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                    <h2 className="text-base font-bold text-white">Business Profile</h2>
+                    <p className="text-xs text-slate-400 mt-0.5">Organisation context that influences readiness interpretation.</p>
+                  </div>
+                  <div className="p-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Company Size</Label>
+                      <Select value={active.companySize} onValueChange={(value: CompanySize) => updateActive({ companySize: value })}>
+                        <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          {COMPANY_SIZES.map((size) => (
+                            <SelectItem key={size.value} value={size.value}>
+                              <div><div className="font-semibold">{size.label}</div><div className="text-xs text-slate-500">{size.description}</div></div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Number of Sites</Label>
+                      <Input value={active.numberOfSites} onChange={(e) => updateActive({ numberOfSites: e.target.value })} placeholder="e.g. 25 sites" className="rounded-xl" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Annual Revenue</Label>
+                      <Select value={active.annualRevenue} onValueChange={(value) => updateActive({ annualRevenue: value })}>
+                        <SelectTrigger className="rounded-xl"><SelectValue placeholder="Select range" /></SelectTrigger>
+                        <SelectContent>
+                          {REVENUE_RANGES.map((range) => (<SelectItem key={range} value={range}>{range}</SelectItem>))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Operational Complexity</Label>
+                      <Select value={active.operationalComplexity} onValueChange={(value: OperationalComplexity) => updateActive({ operationalComplexity: value })}>
+                        <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          {COMPLEXITY_LEVELS.map((level) => (
+                            <SelectItem key={level.value} value={level.value}>
+                              <div><div className="font-semibold">{level.label}</div><div className="text-xs text-slate-500">{level.description}</div></div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label>Assessor</Label>
-                  <Input value={active.assessor} onChange={(e) => updateActive({ assessor: e.target.value })} />
-                </div>
-                <div className="space-y-2">
-                  <Label>Sector</Label>
-                  <Select value={active.sector} onValueChange={(value: Sector) => updateActive({ sector: value })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {SECTORS.map((sector) => (
-                        <SelectItem key={sector.value} value={sector.value}>
-                          <div>
-                            <div className="font-medium">{sector.label}</div>
-                            <div className="text-xs text-slate-500">{sector.description}</div>
+
+                {/* Pillar cards */}
+                {PILLARS.map((pillar, pillarIdx) => {
+                  const pillarScore = getWeightedPillarScore(pillar, active.scores);
+                  const color = PILLAR_COLORS[pillarIdx];
+                  return (
+                    <div key={pillar.id} className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0", borderLeft: `4px solid ${color.from}` }}>
+                      <div className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
+                        <div className="flex items-start gap-4">
+                          <div className="flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-md" style={{ background: `linear-gradient(135deg, ${color.from}, ${color.to})` }}>
+                            {pillar.icon}
                           </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2 md:col-span-2 lg:col-span-4">
-                  <Label>Notes</Label>
-                  <Textarea value={active.notes} onChange={(e) => updateActive({ notes: e.target.value })} placeholder="Context, assumptions, known blockers, target operating model notes..." />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Business Profile */}
-            <Card className="rounded-3xl">
-              <CardHeader>
-                <CardTitle>Business Profile</CardTitle>
-                <CardDescription>Organisation context that influences AI readiness interpretation and recommendations.</CardDescription>
-              </CardHeader>
-              <CardContent className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <div className="space-y-2">
-                  <Label>Company Size</Label>
-                  <Select value={active.companySize} onValueChange={(value: CompanySize) => updateActive({ companySize: value })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {COMPANY_SIZES.map((size) => (
-                        <SelectItem key={size.value} value={size.value}>
                           <div>
-                            <div className="font-medium">{size.label}</div>
-                            <div className="text-xs text-slate-500">{size.description}</div>
+                            <h3 className="text-lg font-black text-slate-900">{pillar.title}</h3>
+                            <p className="text-sm text-slate-500 mt-0.5">{pillar.description}</p>
+                            <p className="text-xs text-slate-400 mt-1 italic">{pillar.businessImpact}</p>
                           </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>Number of Sites / Locations</Label>
-                  <Input value={active.numberOfSites} onChange={(e) => updateActive({ numberOfSites: e.target.value })} placeholder="e.g. 25 sites" />
-                </div>
-                <div className="space-y-2">
-                  <Label>Annual Revenue Range</Label>
-                  <Select value={active.annualRevenue} onValueChange={(value) => updateActive({ annualRevenue: value })}>
-                    <SelectTrigger><SelectValue placeholder="Select range" /></SelectTrigger>
-                    <SelectContent>
-                      {REVENUE_RANGES.map((range) => (
-                        <SelectItem key={range} value={range}>{range}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>Operational Complexity</Label>
-                  <Select value={active.operationalComplexity} onValueChange={(value: OperationalComplexity) => updateActive({ operationalComplexity: value })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {COMPLEXITY_LEVELS.map((level) => (
-                        <SelectItem key={level.value} value={level.value}>
-                          <div>
-                            <div className="font-medium">{level.label}</div>
-                            <div className="text-xs text-slate-500">{level.description}</div>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </CardContent>
-            </Card>
-
-            {PILLARS.map((pillar) => {
-              const pillarScore = getWeightedPillarScore(pillar, active.scores);
-              return (
-                <Card key={pillar.id} className="rounded-3xl">
-                  <CardHeader>
-                    <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                      <div>
-                        <CardTitle className="text-xl">{pillar.icon} {pillar.title}</CardTitle>
-                        <CardDescription className="mt-1">{pillar.description}</CardDescription>
-                        <p className="mt-2 text-xs text-slate-500">{pillar.businessImpact}</p>
-                      </div>
-                      <div className="min-w-[180px]">
-                        <div className="mb-2 flex items-center justify-between text-sm">
-                          <span>Weighted Score</span>
-                          <span className="font-medium">{pillarScore}%</span>
                         </div>
-                        <Progress value={pillarScore} className="h-3" />
+                        <div className="min-w-[200px]">
+                          <div className="flex justify-between text-sm mb-2">
+                            <span className="text-xs text-slate-400 font-semibold uppercase tracking-wide">Weighted Score</span>
+                            <span className="text-sm font-black" style={{ color: color.from }}>{pillarScore}%</span>
+                          </div>
+                          <div className="h-2.5 rounded-full bg-slate-100 overflow-hidden">
+                            <div className="h-full rounded-full transition-all duration-700" style={{ width: `${pillarScore}%`, background: `linear-gradient(90deg, ${color.from}, ${color.to})` }} />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid gap-3 px-6 pb-6 md:grid-cols-2">
+                        {pillar.factors.map((factor) => {
+                          const weightInfo = getWeightLabel(factor.weight);
+                          const currentScore = active.scores[factor.id];
+                          const btnBg = ["", "#ef4444", "#f97316", "#eab308", "#14b8a6", "#22c55e"];
+                          return (
+                            <div key={factor.id} className="rounded-xl p-4" style={{ border: "1px solid #f1f5f9", background: "#f8fafc" }}>
+                              <div className="mb-3 flex items-start justify-between gap-2">
+                                <p className="text-sm font-bold text-slate-800">{factor.label}</p>
+                                <span className={`flex-shrink-0 text-xs px-2 py-0.5 rounded-full font-semibold ${weightInfo.color}`}>{weightInfo.label}</span>
+                              </div>
+                              <div className="grid grid-cols-5 gap-1.5">
+                                {([1, 2, 3, 4, 5] as const).map((value) => {
+                                  const isSelected = currentScore === value;
+                                  return (
+                                    <button
+                                      key={value}
+                                      onClick={() => updateScore(factor.id, value)}
+                                      className="rounded-xl py-3 text-xs font-bold transition"
+                                      style={{
+                                        background: isSelected ? btnBg[value] : "white",
+                                        color: isSelected ? "white" : "#94a3b8",
+                                        border: isSelected ? `2px solid ${btnBg[value]}` : "2px solid #e2e8f0",
+                                        transform: isSelected ? "scale(1.08)" : "scale(1)",
+                                        boxShadow: isSelected ? `0 4px 12px ${btnBg[value]}40` : "none",
+                                      }}
+                                    >
+                                      <div className="text-base leading-none">{value}</div>
+                                      <div className="mt-1 text-[10px] hidden md:block leading-tight opacity-80">{SCALE[value].split(" ")[0]}</div>
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              <p className="mt-2.5 text-xs text-slate-400">Selected: <span className="font-semibold text-slate-600">{scoreLabel(currentScore)}</span></p>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
-                  </CardHeader>
-                  <CardContent className="grid gap-4 md:grid-cols-2">
-                    {pillar.factors.map((factor) => {
-                      const weightInfo = getWeightLabel(factor.weight);
+                  );
+                })}
+              </TabsContent>
+
+              {/* ─── RESULTS TAB ─── */}
+              <TabsContent value="results" className="space-y-5">
+                <div className="grid gap-4 xl:grid-cols-2">
+                  <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
+                    <div className="px-6 py-4" style={{ borderBottom: "1px solid #f1f5f9" }}>
+                      <h3 className="font-black text-slate-900">Pillar Score Overview</h3>
+                      <p className="text-xs text-slate-400 mt-0.5">Weighted scores across readiness dimensions</p>
+                    </div>
+                    <div className="p-4 h-[320px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={pillarData}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                          <XAxis dataKey="fullName" tick={{ fontSize: 11, fill: "#64748b" }} interval={0} angle={-18} textAnchor="end" height={80} />
+                          <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: "#64748b" }} />
+                          <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0", boxShadow: "0 10px 25px rgba(0,0,0,0.1)" }} />
+                          <Bar dataKey="score" radius={[8, 8, 0, 0]}>
+                            {pillarData.map((_, index) => (
+                              <Cell key={`cell-${index}`} fill={PILLAR_COLORS[index]?.from || "#6366f1"} />
+                            ))}
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
+                    <div className="px-6 py-4" style={{ borderBottom: "1px solid #f1f5f9" }}>
+                      <h3 className="font-black text-slate-900">Readiness Shape</h3>
+                      <p className="text-xs text-slate-400 mt-0.5">Visual capability balance across all dimensions</p>
+                    </div>
+                    <div className="p-4 h-[320px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <RadarChart data={pillarData}>
+                          <PolarGrid stroke="#e2e8f0" />
+                          <PolarAngleAxis dataKey="fullName" tick={{ fontSize: 11, fill: "#64748b" }} />
+                          <PolarRadiusAxis domain={[0, 100]} tick={{ fontSize: 10, fill: "#94a3b8" }} />
+                          <Radar dataKey="score" fill="#6366f1" fillOpacity={0.2} stroke="#6366f1" strokeWidth={2.5} />
+                          <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0" }} />
+                        </RadarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className={`rounded-2xl p-5 ${risk.level === "high" ? "bg-red-50 border-2 border-red-200" : risk.level === "medium" ? "bg-amber-50 border-2 border-amber-200" : "bg-emerald-50 border-2 border-emerald-200"}`}>
+                    <div className="flex items-center gap-2 mb-3">
+                      <AlertTriangle className={`h-5 w-5 ${risk.level === "high" ? "text-red-600" : risk.level === "medium" ? "text-amber-600" : "text-emerald-600"}`} />
+                      <span className="font-black text-slate-800">Risk Assessment</span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="h-24 w-24">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart><Pie data={riskPieData} dataKey="value" innerRadius={25} outerRadius={40} startAngle={90} endAngle={-270} /></PieChart>
+                        </ResponsiveContainer>
+                      </div>
+                      <div>
+                        <p className={`text-2xl font-black ${risk.level === "high" ? "text-red-700" : risk.level === "medium" ? "text-amber-700" : "text-emerald-700"}`}>
+                          {risk.level.charAt(0).toUpperCase() + risk.level.slice(1)}
+                        </p>
+                        <p className="text-sm text-slate-500 mt-0.5">Score: {risk.score}/100</p>
+                      </div>
+                    </div>
+                    {risk.factors.length > 0 && (
+                      <div className="mt-3 pt-3" style={{ borderTop: "1px solid rgba(0,0,0,0.08)" }}>
+                        <p className="text-xs font-bold text-slate-700 mb-1.5">Critical Factors:</p>
+                        <ul className="space-y-1">{risk.factors.map((f, i) => <li key={i} className="text-xs text-slate-600 flex items-start gap-1"><span className="text-red-400 mt-0.5 flex-shrink-0">•</span>{f}</li>)}</ul>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className={`rounded-2xl p-5 border-2 ${impact.color}`}>
+                    <div className="flex items-center gap-2 mb-3">
+                      <Building2 className="h-5 w-5" />
+                      <span className="font-black">Business Impact</span>
+                    </div>
+                    <p className="text-xl font-black leading-tight">{impact.category}</p>
+                    <p className="mt-2 text-sm leading-relaxed opacity-80">{impact.description}</p>
+                  </div>
+
+                  <div className="rounded-2xl bg-white p-5 shadow-sm" style={{ border: "1px solid #e2e8f0" }}>
+                    <div className="flex items-center gap-2 mb-3">
+                      <TrendingUp className="h-5 w-5 text-indigo-600" />
+                      <span className="font-black text-slate-800">ROI Opportunity</span>
+                    </div>
+                    <p className="text-4xl font-black" style={{ background: "linear-gradient(135deg, #4f46e5, #7c3aed)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{roi.range}</p>
+                    <p className="text-xs text-slate-400 mt-1 mb-4">Efficiency improvement potential</p>
+                    <div className="grid grid-cols-3 gap-2 text-center">
+                      <div className="rounded-xl p-2" style={{ background: "#f8fafc", border: "1px solid #e2e8f0" }}>
+                        <p className="text-xs text-slate-400">Low</p>
+                        <p className="text-sm font-black text-slate-700">{roi.scenarios.low}</p>
+                      </div>
+                      <div className="rounded-xl p-2" style={{ background: "#eef2ff", border: "1px solid #c7d2fe" }}>
+                        <p className="text-xs text-indigo-400">Mid</p>
+                        <p className="text-sm font-black text-indigo-700">{roi.scenarios.mid}</p>
+                      </div>
+                      <div className="rounded-xl p-2" style={{ background: "#f5f3ff", border: "1px solid #ddd6fe" }}>
+                        <p className="text-xs text-violet-400">High</p>
+                        <p className="text-sm font-black text-violet-700">{roi.scenarios.high}</p>
+                      </div>
+                    </div>
+                    <p className="mt-2 text-xs text-slate-400">{roi.confidence} confidence</p>
+                  </div>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="rounded-2xl overflow-hidden" style={{ background: "#f0fdf4", border: "1px solid #bbf7d0" }}>
+                    <div className="px-5 py-4" style={{ borderBottom: "1px solid #bbf7d0" }}>
+                      <div className="flex items-center gap-2"><Target className="h-4 w-4 text-emerald-700" /><h3 className="font-black text-emerald-900">Top 3 AI Opportunities</h3></div>
+                      <p className="text-xs text-emerald-600 mt-0.5">Highest-impact opportunities for {sectorInfo?.label}</p>
+                    </div>
+                    <div className="p-4 space-y-3">
+                      {topOpportunities.map((opp, idx) => (
+                        <div key={idx} className="rounded-xl bg-white p-4" style={{ border: "1px solid #bbf7d0" }}>
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <p className="font-bold text-slate-900 text-sm">{opp.title}</p>
+                              <p className="text-xs text-slate-500 mt-1">{opp.description}</p>
+                            </div>
+                            <span className="flex-shrink-0 text-xs px-2 py-1 rounded-full font-bold" style={{ background: "#d1fae5", color: "#065f46" }}>{opp.impact}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl overflow-hidden" style={{ background: "#fff1f2", border: "1px solid #fecdd3" }}>
+                    <div className="px-5 py-4" style={{ borderBottom: "1px solid #fecdd3" }}>
+                      <div className="flex items-center gap-2"><AlertTriangle className="h-4 w-4 text-red-700" /><h3 className="font-black text-red-900">Top 3 Risks if No Action</h3></div>
+                      <p className="text-xs text-red-600 mt-0.5">Consequences of delaying AI transformation</p>
+                    </div>
+                    <div className="p-4 space-y-3">
+                      {topRisks.map((r, idx) => (
+                        <div key={idx} className="rounded-xl bg-white p-4" style={{ border: "1px solid #fecdd3" }}>
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <p className="font-bold text-slate-900 text-sm">{r.title}</p>
+                              <p className="text-xs text-slate-500 mt-1">{r.description}</p>
+                            </div>
+                            <span className="flex-shrink-0 text-xs px-2 py-1 rounded-full font-bold" style={{ background: r.severity === "High" ? "#fee2e2" : "#fef3c7", color: r.severity === "High" ? "#991b1b" : "#92400e" }}>{r.severity}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
+                  <div className="px-6 py-4" style={{ borderBottom: "1px solid #f1f5f9" }}>
+                    <h3 className="font-black text-slate-900">Interpretation</h3>
+                  </div>
+                  <div className="p-5 grid gap-3 md:grid-cols-3">
+                    <div className={`rounded-2xl border-2 p-5 ${band.tone}`}>
+                      <p className="text-xs font-bold uppercase tracking-wider opacity-60">Current Maturity</p>
+                      <p className="mt-2 text-3xl font-black">{band.label}</p>
+                      <p className="mt-2 text-sm leading-relaxed">{band.advice}</p>
+                    </div>
+                    <div className="rounded-2xl p-5" style={{ background: "#eef2ff", border: "1px solid #c7d2fe" }}>
+                      <p className="text-xs font-bold uppercase tracking-wider text-indigo-400">Strongest Pillar</p>
+                      <p className="mt-2 text-xl font-black text-indigo-900">{[...pillarData].sort((a, b) => b.score - a.score)[0].fullName}</p>
+                      <p className="mt-1 text-sm text-indigo-600 font-semibold">{[...pillarData].sort((a, b) => b.score - a.score)[0].score}%</p>
+                    </div>
+                    <div className="rounded-2xl p-5" style={{ background: "#fffbeb", border: "1px solid #fde68a" }}>
+                      <p className="text-xs font-bold uppercase tracking-wider text-amber-500">Priority Development</p>
+                      <p className="mt-2 text-xl font-black text-amber-900">{lowestPillars[0].fullName}</p>
+                      <p className="mt-1 text-sm text-amber-600 font-semibold">{lowestPillars[0].score}%</p>
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+
+              {/* ─── REPORT TAB ─── */}
+              <TabsContent value="report" className="space-y-5">
+                <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
+                  <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: "1px solid #f1f5f9" }}>
+                    <div>
+                      <h3 className="font-black text-slate-900 flex items-center gap-2"><FileText className="h-4 w-4 text-indigo-600" /> Client Report Summary</h3>
+                      <p className="text-xs text-slate-400 mt-0.5">Executive-level summary for stakeholder communication</p>
+                    </div>
+                    <button onClick={() => navigator.clipboard.writeText(generateExecutiveSummary(active))} className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold transition" style={{ background: "#eef2ff", color: "#4338ca" }}>
+                      <Copy className="h-3.5 w-3.5" /> Copy
+                    </button>
+                  </div>
+                  <div className="p-6">
+                    <div className="rounded-2xl p-6" style={{ background: "#f8fafc", border: "1px solid #e2e8f0" }}>
+                      <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-slate-700">{generateExecutiveSummary(active)}</pre>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
+                    <div className="px-6 py-4" style={{ borderBottom: "1px solid #f1f5f9" }}>
+                      <h3 className="font-black text-slate-900">Key Metrics</h3>
+                    </div>
+                    <div className="divide-y divide-slate-50 px-6">
+                      {[
+                        { label: "Overall Readiness", value: `${overall}%` },
+                        { label: "Maturity Band", badge: <span className={`text-xs px-2.5 py-1 rounded-full font-bold border ${band.tone}`}>{band.label}</span> },
+                        { label: "Risk Level", badge: <span className="text-xs px-2.5 py-1 rounded-full font-bold" style={{ background: risk.level === "high" ? "#fee2e2" : risk.level === "medium" ? "#fef3c7" : "#d1fae5", color: risk.level === "high" ? "#991b1b" : risk.level === "medium" ? "#92400e" : "#065f46" }}>{risk.level.charAt(0).toUpperCase() + risk.level.slice(1)}</span> },
+                        { label: "ROI Potential", value: roi.range },
+                        { label: "Sector", value: sectorInfo?.label },
+                      ].map((row, i) => (
+                        <div key={i} className="flex items-center justify-between py-3.5">
+                          <span className="text-sm text-slate-500">{row.label}</span>
+                          {row.badge || <span className="text-sm font-black text-slate-900">{row.value}</span>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
+                    <div className="px-6 py-4" style={{ borderBottom: "1px solid #f1f5f9" }}>
+                      <h3 className="font-black text-slate-900">Pillar Summary</h3>
+                    </div>
+                    <div className="p-6 space-y-4">
+                      {pillarData.map((pillar, idx) => (
+                        <div key={pillar.fullName}>
+                          <div className="flex justify-between text-sm mb-1.5">
+                            <span className="font-semibold text-slate-700">{pillar.fullName}</span>
+                            <span className="font-black" style={{ color: PILLAR_COLORS[idx]?.from }}>{pillar.score}%</span>
+                          </div>
+                          <div className="h-2.5 rounded-full bg-slate-100 overflow-hidden">
+                            <div className="h-full rounded-full transition-all duration-700" style={{ width: `${pillar.score}%`, background: `linear-gradient(90deg, ${PILLAR_COLORS[idx]?.from || "#6366f1"}, ${PILLAR_COLORS[idx]?.to || "#4338ca"})` }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+
+              {/* ─── COMPARE TAB ─── */}
+              <TabsContent value="compare" className="space-y-4">
+                <CompareView assessments={assessments} />
+              </TabsContent>
+
+              {/* ─── RECOMMENDATIONS TAB ─── */}
+              <TabsContent value="recommendations" className="space-y-5">
+                <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
+                  <div className="px-6 py-4" style={{ background: "linear-gradient(135deg, #0f172a, #1e1b4b)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                    <h2 className="font-black text-white flex items-center gap-2"><Sparkles className="h-4 w-4 text-indigo-300" /> Strategic Recommendations</h2>
+                    <p className="text-xs text-slate-400 mt-0.5">Sector-specific action items for {sectorInfo?.label} operations</p>
+                  </div>
+                  <div className="p-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                    {PILLARS.filter((pillar) => getWeightedPillarScore(pillar, active.scores) < 60).map((pillar) => {
+                      const score = getWeightedPillarScore(pillar, active.scores);
+                      const color = PILLAR_COLORS[PILLARS.indexOf(pillar)];
                       return (
-                        <div key={factor.id} className="rounded-2xl border p-4">
-                          <div className="mb-3 flex items-start justify-between gap-2">
-                            <Label className="text-sm font-medium">{factor.label}</Label>
-                            <Badge className={`text-xs ${weightInfo.color}`}>{weightInfo.label}</Badge>
+                        <div key={pillar.id} className="rounded-2xl p-5 hover:shadow-md transition" style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderTop: `3px solid ${color.from}` }}>
+                          <div className="flex items-center justify-between gap-2 mb-3">
+                            <p className="font-black text-slate-900 text-sm">{pillar.icon} {pillar.title}</p>
+                            <span className="text-xs px-2 py-0.5 rounded-full font-black" style={{ background: `${color.from}15`, color: color.from }}>{score}%</span>
                           </div>
-                          <div className="grid grid-cols-5 gap-2">
-                            {([1, 2, 3, 4, 5] as const).map((value) => {
-                              const isActive = active.scores[factor.id] === value;
-                              return (
-                                <button
-                                  key={value}
-                                  onClick={() => updateScore(factor.id, value)}
-                                  className={`rounded-2xl border px-2 py-3 text-xs transition ${isActive ? "border-slate-900 bg-slate-900 text-white" : "bg-white hover:bg-slate-50"}`}
-                                >
-                                  <div className="font-semibold">{value}</div>
-                                  <div className="mt-1 hidden md:block">{SCALE[value]}</div>
-                                </button>
-                              );
-                            })}
+                          <p className="text-sm text-slate-600 leading-relaxed">{pillar.strategicRecommendations[active.sector]}</p>
+                          <div className="mt-3 pt-3" style={{ borderTop: "1px solid #e2e8f0" }}>
+                            <p className="text-xs text-slate-400 italic">{pillar.businessImpact}</p>
                           </div>
-                          <p className="mt-3 text-xs text-slate-500">Selected: {scoreLabel(active.scores[factor.id])}</p>
                         </div>
                       );
                     })}
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </TabsContent>
-
-          {/* RESULTS TAB */}
-          <TabsContent value="results" className="space-y-4">
-            <div className="grid gap-4 xl:grid-cols-2">
-              <Card className="rounded-3xl">
-                <CardHeader>
-                  <CardTitle>Pillar Score Overview</CardTitle>
-                  <CardDescription>Weighted scores across readiness dimensions.</CardDescription>
-                </CardHeader>
-                <CardContent className="h-[360px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={pillarData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="fullName" tick={{ fontSize: 11 }} interval={0} angle={-18} textAnchor="end" height={80} />
-                      <YAxis domain={[0, 100]} />
-                      <Tooltip />
-                      <Bar dataKey="score" radius={[10, 10, 0, 0]}>
-                        {pillarData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.score >= 60 ? "#22c55e" : entry.score >= 40 ? "#f59e0b" : "#ef4444"} />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-
-              <Card className="rounded-3xl">
-                <CardHeader>
-                  <CardTitle>Readiness Shape</CardTitle>
-                  <CardDescription>Visual representation of capability balance.</CardDescription>
-                </CardHeader>
-                <CardContent className="h-[360px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <RadarChart data={pillarData}>
-                      <PolarGrid />
-                      <PolarAngleAxis dataKey="fullName" tick={{ fontSize: 11 }} />
-                      <PolarRadiusAxis domain={[0, 100]} tick={{ fontSize: 10 }} />
-                      <Radar dataKey="score" fill="hsl(var(--primary))" fillOpacity={0.4} stroke="hsl(var(--primary))" />
-                      <Tooltip />
-                    </RadarChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Risk Dashboard */}
-            <div className="grid gap-4 md:grid-cols-3">
-              <Card className={`rounded-3xl border-2 ${risk.level === "high" ? "border-red-200" : risk.level === "medium" ? "border-amber-200" : "border-emerald-200"}`}>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <AlertTriangle className={`h-5 w-5 ${risk.level === "high" ? "text-red-600" : risk.level === "medium" ? "text-amber-600" : "text-emerald-600"}`} />
-                    Risk Assessment
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center gap-4">
-                    <div className="h-24 w-24">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie data={riskPieData} dataKey="value" innerRadius={25} outerRadius={40} startAngle={90} endAngle={-270} />
-                        </PieChart>
-                      </ResponsiveContainer>
-                    </div>
-                    <div>
-                      <p className={`text-2xl font-bold ${risk.level === "high" ? "text-red-600" : risk.level === "medium" ? "text-amber-600" : "text-emerald-600"}`}>
-                        {risk.level.charAt(0).toUpperCase() + risk.level.slice(1)} Risk
-                      </p>
-                      <p className="text-sm text-slate-600">Score: {risk.score}/100</p>
-                    </div>
-                  </div>
-                  {risk.factors.length > 0 && (
-                    <div className="mt-4">
-                      <p className="text-xs font-medium text-slate-700">Critical Factors:</p>
-                      <ul className="mt-1 text-xs text-slate-600">
-                        {risk.factors.map((f, i) => (
-                          <li key={i} className="truncate">- {f}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              <Card className={`rounded-3xl border ${impact.color}`}>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Building2 className="h-5 w-5" />
-                    Business Impact
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-lg font-semibold">{impact.category}</p>
-                  <p className="mt-2 text-sm text-slate-600">{impact.description}</p>
-                </CardContent>
-              </Card>
-
-              <Card className="rounded-3xl">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5" />
-                    ROI Opportunity
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-3xl font-bold text-slate-900">{roi.range}</p>
-                  <p className="text-sm text-slate-600">Efficiency improvement potential</p>
-                  <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-                    <div className="rounded-lg bg-slate-100 p-2">
-                      <p className="text-xs text-slate-500">Low</p>
-                      <p className="font-semibold">{roi.scenarios.low}</p>
-                    </div>
-                    <div className="rounded-lg bg-slate-200 p-2">
-                      <p className="text-xs text-slate-500">Mid</p>
-                      <p className="font-semibold">{roi.scenarios.mid}</p>
-                    </div>
-                    <div className="rounded-lg bg-slate-300 p-2">
-                      <p className="text-xs text-slate-500">High</p>
-                      <p className="font-semibold">{roi.scenarios.high}</p>
-                    </div>
-                  </div>
-                  <p className="mt-2 text-xs text-slate-600">{roi.confidence} confidence</p>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Top 3 Opportunities and Risks */}
-            <div className="grid gap-4 md:grid-cols-2">
-              <Card className="rounded-3xl border-emerald-200 bg-emerald-50/30">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-emerald-800">
-                    <Target className="h-5 w-5" />
-                    Top 3 AI Opportunities
-                  </CardTitle>
-                  <CardDescription className="text-emerald-700">Highest-impact opportunities based on current readiness and sector context.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {topOpportunities.map((opp, idx) => (
-                    <div key={idx} className="rounded-xl border border-emerald-200 bg-white p-4">
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <p className="font-semibold text-emerald-900">{opp.title}</p>
-                          <p className="mt-1 text-sm text-slate-600">{opp.description}</p>
-                        </div>
-                        <Badge className="bg-emerald-100 text-emerald-700 whitespace-nowrap">{opp.impact}</Badge>
+                    {PILLARS.every((pillar) => getWeightedPillarScore(pillar, active.scores) >= 60) && (
+                      <div className="rounded-2xl p-5 md:col-span-2 xl:col-span-3" style={{ background: "linear-gradient(135deg, #f0fdf4, #ecfdf5)", border: "1px solid #bbf7d0" }}>
+                        <div className="flex items-center gap-2 mb-2 text-emerald-700"><Sparkles className="h-5 w-5" /><p className="font-black">Strong Performance Across All Dimensions</p></div>
+                        <p className="text-sm text-emerald-700 leading-relaxed">Your organisation demonstrates mature AI readiness. Focus now shifts to scaling proven use cases, establishing enterprise-wide governance frameworks, designing sustainable operating models, and implementing comprehensive benefit tracking programmes.</p>
                       </div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
+                    )}
+                  </div>
+                </div>
 
-              <Card className="rounded-3xl border-red-200 bg-red-50/30">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-red-800">
-                    <AlertTriangle className="h-5 w-5" />
-                    Top 3 Risks if No Action Taken
-                  </CardTitle>
-                  <CardDescription className="text-red-700">Key risks to address if AI transformation is delayed or deprioritised.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {topRisks.map((risk, idx) => (
-                    <div key={idx} className="rounded-xl border border-red-200 bg-white p-4">
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <p className="font-semibold text-red-900">{risk.title}</p>
-                          <p className="mt-1 text-sm text-slate-600">{risk.description}</p>
+                {risk.factors.length > 0 && (
+                  <div className="rounded-2xl overflow-hidden" style={{ background: "#fff1f2", border: "1px solid #fecdd3" }}>
+                    <div className="px-6 py-4" style={{ borderBottom: "1px solid #fecdd3" }}>
+                      <h3 className="font-black text-red-900 flex items-center gap-2"><AlertTriangle className="h-4 w-4" /> Risk Mitigation Priorities</h3>
+                      <p className="text-xs text-red-600 mt-0.5">Critical factors requiring immediate attention</p>
+                    </div>
+                    <div className="p-5 grid gap-3 md:grid-cols-2">
+                      {risk.factors.map((factor, idx) => (
+                        <div key={idx} className="rounded-xl bg-white p-3" style={{ border: "1px solid #fecdd3" }}>
+                          <p className="text-sm font-bold text-red-800">{factor}</p>
+                          <p className="text-xs text-red-400 mt-1 font-semibold">Priority: Immediate action required</p>
                         </div>
-                        <Badge className={`whitespace-nowrap ${risk.severity === "High" ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"}`}>{risk.severity}</Badge>
-                      </div>
+                      ))}
                     </div>
-                  ))}
-                </CardContent>
-              </Card>
-            </div>
-
-            <Card className="rounded-3xl">
-              <CardHeader>
-                <CardTitle>Interpretation</CardTitle>
-                <CardDescription>Executive summary for reporting or stakeholder discussion.</CardDescription>
-              </CardHeader>
-              <CardContent className="grid gap-3 md:grid-cols-3">
-                <div className={`rounded-2xl border p-4 ${band.tone}`}>
-                  <p className="text-sm font-semibold">Current Maturity</p>
-                  <p className="mt-2 text-2xl font-semibold">{band.label}</p>
-                  <p className="mt-2 text-sm">{band.advice}</p>
-                </div>
-                <div className="rounded-2xl border p-4">
-                  <p className="text-sm font-semibold">Strongest Pillar</p>
-                  <p className="mt-2 text-xl font-semibold">{[...pillarData].sort((a, b) => b.score - a.score)[0].fullName}</p>
-                  <p className="mt-1 text-sm text-slate-600">{[...pillarData].sort((a, b) => b.score - a.score)[0].score}% weighted score</p>
-                </div>
-                <div className="rounded-2xl border p-4">
-                  <p className="text-sm font-semibold">Priority Development</p>
-                  <p className="mt-2 text-xl font-semibold">{lowestPillars[0].fullName}</p>
-                  <p className="mt-1 text-sm text-slate-600">{lowestPillars[0].score}% weighted score</p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* REPORT TAB - Executive Summary */}
-          <TabsContent value="report" className="space-y-4">
-            <Card className="rounded-3xl">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="flex items-center gap-2">
-                      <FileText className="h-5 w-5" />
-                      Client Report Summary
-                    </CardTitle>
-                    <CardDescription>Executive-level summary for stakeholder communication.</CardDescription>
-                  </div>
-                  <Button variant="outline" onClick={() => {
-                    const text = generateExecutiveSummary(active);
-                    navigator.clipboard.writeText(text);
-                  }}>
-                    <Copy className="mr-2 h-4 w-4" />Copy to Clipboard
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="rounded-2xl border bg-slate-50 p-6">
-                  <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-slate-700">
-                    {generateExecutiveSummary(active)}
-                  </pre>
-                </div>
-              </CardContent>
-            </Card>
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <Card className="rounded-3xl">
-                <CardHeader>
-                  <CardTitle>Key Metrics at a Glance</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex justify-between items-center py-2 border-b">
-                    <span className="text-sm text-slate-600">Overall Readiness</span>
-                    <span className="font-semibold">{overall}%</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b">
-                    <span className="text-sm text-slate-600">Maturity Band</span>
-                    <Badge className={band.tone}>{band.label}</Badge>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b">
-                    <span className="text-sm text-slate-600">Risk Level</span>
-                    <Badge className={risk.level === "high" ? "bg-red-100 text-red-700" : risk.level === "medium" ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"}>
-                      {risk.level.charAt(0).toUpperCase() + risk.level.slice(1)}
-                    </Badge>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b">
-                    <span className="text-sm text-slate-600">ROI Potential</span>
-                    <span className="font-semibold">{roi.range}</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2">
-                    <span className="text-sm text-slate-600">Sector</span>
-                    <span className="font-semibold">{sectorInfo?.label}</span>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="rounded-3xl">
-                <CardHeader>
-                  <CardTitle>Pillar Summary</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {pillarData.map((pillar) => (
-                    <div key={pillar.fullName} className="flex items-center gap-3">
-                      <div className="flex-1">
-                        <div className="flex justify-between text-sm mb-1">
-                          <span>{pillar.fullName}</span>
-                          <span className="font-medium">{pillar.score}%</span>
-                        </div>
-                        <Progress value={pillar.score} className="h-2" />
-                      </div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          {/* COMPARE TAB */}
-          <TabsContent value="compare" className="space-y-4">
-            <CompareView assessments={assessments} />
-          </TabsContent>
-
-          {/* RECOMMENDATIONS TAB */}
-          <TabsContent value="recommendations" className="space-y-4">
-            <Card className="rounded-3xl">
-              <CardHeader>
-                <CardTitle>Strategic Recommendations</CardTitle>
-                <CardDescription>Sector-specific action items driven by assessment results. Recommendations are tailored for {sectorInfo?.label} operations.</CardDescription>
-              </CardHeader>
-              <CardContent className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {PILLARS.filter((pillar) => getWeightedPillarScore(pillar, active.scores) < 60).map((pillar) => (
-                  <div key={pillar.id} className="rounded-2xl border p-4">
-                    <div className="mb-2 flex items-center justify-between gap-2">
-                      <p className="font-semibold">{pillar.icon} {pillar.title}</p>
-                      <Badge variant="secondary">{getWeightedPillarScore(pillar, active.scores)}%</Badge>
-                    </div>
-                    <p className="text-sm text-slate-600 mb-3">{pillar.strategicRecommendations[active.sector]}</p>
-                    <div className="pt-3 border-t">
-                      <p className="text-xs text-slate-500">{pillar.businessImpact}</p>
-                    </div>
-                  </div>
-                ))}
-                {PILLARS.every((pillar) => getWeightedPillarScore(pillar, active.scores) >= 60) && (
-                  <div className="rounded-2xl border p-4 md:col-span-2 xl:col-span-3 bg-emerald-50 border-emerald-200">
-                    <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-emerald-700">
-                      <Sparkles className="h-4 w-4" />
-                      Strong Performance Across All Dimensions
-                    </div>
-                    <p className="text-sm text-emerald-700">
-                      Your organisation demonstrates mature AI readiness. Focus now shifts to scaling proven use cases, 
-                      establishing enterprise-wide governance frameworks, designing sustainable operating models, and 
-                      implementing comprehensive benefit tracking and realisation programmes.
-                    </p>
                   </div>
                 )}
-              </CardContent>
-            </Card>
-
-            {/* Risk-Based Priorities */}
-            {risk.factors.length > 0 && (
-              <Card className="rounded-3xl border-red-200 bg-red-50/30">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-red-800">
-                    <AlertTriangle className="h-5 w-5" />
-                    Risk Mitigation Priorities
-                  </CardTitle>
-                  <CardDescription className="text-red-700">Critical factors requiring immediate attention to reduce operational and compliance risk.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid gap-3 md:grid-cols-2">
-                    {risk.factors.map((factor, idx) => (
-                      <div key={idx} className="rounded-xl border border-red-200 bg-white p-3">
-                        <p className="text-sm font-medium text-red-800">{factor}</p>
-                        <p className="mt-1 text-xs text-red-600">Priority: Immediate action required</p>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-          </TabsContent>
-        </Tabs>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -1448,9 +1457,10 @@ function CompareView({ assessments }: { assessments: Assessment[] }) {
 
   if (assessments.length < 2) {
     return (
-      <Card className="rounded-3xl">
-        <CardContent className="p-10 text-center text-sm text-slate-600">You need at least two saved assessments to use comparison mode.</CardContent>
-      </Card>
+      <div className="rounded-2xl bg-white p-10 text-center" style={{ border: "1px solid #e2e8f0" }}>
+        <p className="text-sm text-slate-500">You need at least two saved assessments to use comparison mode.</p>
+        <p className="text-xs text-slate-400 mt-1">Create a second assessment to compare results side by side.</p>
+      </div>
     );
   }
 
@@ -1467,69 +1477,63 @@ function CompareView({ assessments }: { assessments: Assessment[] }) {
 
   return (
     <>
-      <Card className="rounded-3xl">
-        <CardHeader>
-          <CardTitle>Compare Assessments</CardTitle>
-          <CardDescription>Benchmark two scorecards side by side using weighted scores.</CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-4 md:grid-cols-2">
-          <div className="space-y-2">
-            <Label>Primary</Label>
+      <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
+        <div className="px-6 py-4" style={{ borderBottom: "1px solid #f1f5f9" }}>
+          <h3 className="font-black text-slate-900">Compare Assessments</h3>
+          <p className="text-xs text-slate-400 mt-0.5">Benchmark two scorecards side by side using weighted scores</p>
+        </div>
+        <div className="p-6 grid gap-4 md:grid-cols-2">
+          <div className="space-y-1.5">
+            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Primary</Label>
             <Select value={leftId} onValueChange={setLeftId}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>{assessments.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}</SelectContent>
             </Select>
           </div>
-          <div className="space-y-2">
-            <Label>Secondary</Label>
+          <div className="space-y-1.5">
+            <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Secondary</Label>
             <Select value={rightId} onValueChange={setRightId}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>{assessments.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}</SelectContent>
             </Select>
           </div>
-        </CardContent>
-      </Card>
-
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Card className="rounded-3xl">
-          <CardHeader>
-            <CardTitle>{left.name}</CardTitle>
-            <CardDescription>{left.businessName || "No organisation set"} {leftSector && `| ${leftSector.label}`}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-4xl font-semibold">{getWeightedOverallScore(left)}%</div>
-            <p className="mt-1 text-sm text-slate-600">Risk: {getRiskScore(left).level}</p>
-          </CardContent>
-        </Card>
-        <Card className="rounded-3xl">
-          <CardHeader>
-            <CardTitle>{right.name}</CardTitle>
-            <CardDescription>{right.businessName || "No organisation set"} {rightSector && `| ${rightSector.label}`}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-4xl font-semibold">{getWeightedOverallScore(right)}%</div>
-            <p className="mt-1 text-sm text-slate-600">Risk: {getRiskScore(right).level}</p>
-          </CardContent>
-        </Card>
+        </div>
       </div>
 
-      <Card className="rounded-3xl">
-        <CardHeader>
-          <CardTitle>Pillar Comparison</CardTitle>
-        </CardHeader>
-        <CardContent className="h-[420px]">
+      <div className="grid gap-4 lg:grid-cols-2">
+        <div className="rounded-2xl p-5" style={{ background: "#eef2ff", border: "2px solid #6366f1" }}>
+          <p className="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-1">Primary</p>
+          <h3 className="font-black text-indigo-900 text-lg">{left.name}</h3>
+          <p className="text-sm text-indigo-600">{left.businessName || "No organisation set"}{leftSector && ` · ${leftSector.label}`}</p>
+          <p className="text-4xl font-black text-indigo-700 mt-3">{getWeightedOverallScore(left)}%</p>
+          <p className="text-xs text-indigo-400 mt-1">Risk: <span className="font-bold capitalize">{getRiskScore(left).level}</span></p>
+        </div>
+        <div className="rounded-2xl p-5" style={{ background: "#f5f3ff", border: "2px solid #7c3aed" }}>
+          <p className="text-xs font-bold text-violet-400 uppercase tracking-wider mb-1">Secondary</p>
+          <h3 className="font-black text-violet-900 text-lg">{right.name}</h3>
+          <p className="text-sm text-violet-600">{right.businessName || "No organisation set"}{rightSector && ` · ${rightSector.label}`}</p>
+          <p className="text-4xl font-black text-violet-700 mt-3">{getWeightedOverallScore(right)}%</p>
+          <p className="text-xs text-violet-400 mt-1">Risk: <span className="font-bold capitalize">{getRiskScore(right).level}</span></p>
+        </div>
+      </div>
+
+      <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
+        <div className="px-6 py-4" style={{ borderBottom: "1px solid #f1f5f9" }}>
+          <h3 className="font-black text-slate-900">Pillar Comparison</h3>
+        </div>
+        <div className="p-4 h-[420px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="pillar" tick={{ fontSize: 11 }} interval={0} angle={-18} textAnchor="end" height={80} />
-              <YAxis domain={[0, 100]} />
-              <Tooltip />
-              <Bar dataKey="left" name="Primary" radius={[8, 8, 0, 0]} fill="hsl(var(--primary))" />
-              <Bar dataKey="right" name="Secondary" radius={[8, 8, 0, 0]} fill="hsl(var(--muted-foreground))" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+              <XAxis dataKey="pillar" tick={{ fontSize: 11, fill: "#64748b" }} interval={0} angle={-18} textAnchor="end" height={80} />
+              <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: "#64748b" }} />
+              <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0", boxShadow: "0 10px 25px rgba(0,0,0,0.1)" }} />
+              <Bar dataKey="left" name="Primary" radius={[8, 8, 0, 0]} fill="#6366f1" />
+              <Bar dataKey="right" name="Secondary" radius={[8, 8, 0, 0]} fill="#7c3aed" />
             </BarChart>
           </ResponsiveContainer>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </>
   );
 }
