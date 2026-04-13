@@ -1,0 +1,24 @@
+modules = ["nodejs-20"]
+
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+run = ["sh", "-c", "npm run start"]
+build = ["sh", "-c", "npm run build"]
+
+[[ports]]
+localPort = 3000
+externalPort = 80
+
+[workflows]
+runButton = "Start Dev Server"
+
+[[workflows.workflow]]
+name = "Start Dev Server"
+mode = "sequential"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm install && npm run dev"
