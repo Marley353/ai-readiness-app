@@ -1506,11 +1506,12 @@ export default function AIReadinessScorecardApp() {
                   <Sparkles className="h-4 w-4 text-indigo-300" />
                   <p className="text-xs font-bold uppercase tracking-wider text-indigo-200">8-Dimension Framework</p>
                 </div>
-                <p className="text-xs text-indigo-100/80 leading-relaxed">Aligned with leading enterprise frameworks from Microsoft, AIMRI and the EU AI Act readiness standards.</p>
-                <div className="mt-3 grid grid-cols-4 gap-1">
+                <p className="text-[11px] text-indigo-100/70 leading-relaxed mb-3">Aligned with Microsoft, AIMRI and EU AI Act readiness standards.</p>
+                <div className="space-y-1">
                   {PILLARS.map((p, i) => (
-                    <div key={p.id} className="aspect-square rounded-md flex items-center justify-center text-base" title={p.title} style={{ background: `linear-gradient(135deg, ${PILLAR_COLORS[i].from}, ${PILLAR_COLORS[i].to})`, opacity: 0.9 }}>
-                      {p.icon}
+                    <div key={p.id} className="flex items-center gap-2 rounded-md px-2 py-1.5" style={{ background: "rgba(255,255,255,0.05)" }}>
+                      <div className="w-1.5 h-6 rounded-full flex-shrink-0" style={{ background: `linear-gradient(180deg, ${PILLAR_COLORS[i].from}, ${PILLAR_COLORS[i].to})` }} />
+                      <span className="text-xs text-indigo-100/90 font-medium leading-tight">{p.title}</span>
                     </div>
                   ))}
                 </div>
