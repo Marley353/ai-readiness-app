@@ -1187,6 +1187,31 @@ const PILLAR_COLORS = [
   { from: "#f59e0b", to: "#d97706" },  // amber - Innovation & Experimentation
 ];
 
+// Smooth count-up animation for numeric displays
+function AnimatedNumber({ value, duration = 900, suffix = "", className = "" }: { value: number; duration?: number; suffix?: string; className?: string }) {
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    let startTime: number | null = null;
+    const startValue = displayValue;
+    const delta = value - startValue;
+    let rafId: number;
+    const step = (timestamp: number) => {
+      if (startTime === null) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      // ease-out-cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplayValue(Math.round(startValue + delta * eased));
+      if (progress < 1) rafId = requestAnimationFrame(step);
+    };
+    rafId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, duration]);
+
+  return <span className={className}>{displayValue}{suffix}</span>;
+}
+
 function ScoreRing({ score, size = 140 }: { score: number; size?: number }) {
   const strokeWidth = 10;
   const radius = (size - strokeWidth * 2) / 2;
@@ -1203,7 +1228,7 @@ function ScoreRing({ score, size = 140 }: { score: number; size?: number }) {
           strokeDasharray={`${filled} ${circumference - filled}`} strokeLinecap="round" />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-3xl font-black text-white leading-none">{score}%</span>
+        <AnimatedNumber value={score} suffix="%" className="text-3xl font-black text-white leading-none" />
         <span className="text-xs text-slate-400 mt-1">Readiness</span>
       </div>
     </div>
@@ -1383,8 +1408,8 @@ export default function AIReadinessScorecardApp() {
       )}
 
       {/* HERO HEADER */}
-      <div style={{ background: "linear-gradient(135deg, #1e1b4b 0%, #312e81 30%, #1e3a5f 65%, #0f3d3e 100%)" }}>
-        <div className="mx-auto max-w-7xl px-4 pt-6 pb-0 md:px-8">
+      <div className="aurora-bg" style={{ background: "linear-gradient(135deg, #1e1b4b 0%, #312e81 30%, #1e3a5f 65%, #0f3d3e 100%)" }}>
+        <div className="relative mx-auto max-w-7xl px-4 pt-6 pb-0 md:px-8">
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div className="flex-1 min-w-0">
               <div className="mb-3 flex flex-wrap items-center gap-2">
@@ -1440,16 +1465,16 @@ export default function AIReadinessScorecardApp() {
           <div className="mx-auto max-w-7xl px-4 py-4 md:px-8">
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4 stagger-children">
               {[
-                { label: "AI Maturity", value: `${overall}%`, sub: band.label, icon: <TrendingUp className="h-3.5 w-3.5" />, color: "#a5b4fc" },
-                { label: "Operational Impact", value: `${operationalImpact}%`, sub: "Process & tech", icon: <Activity className="h-3.5 w-3.5" />, color: "#5eead4" },
-                { label: "Efficiency Opportunity", value: `${efficiencyOpportunity}%`, sub: "Improvement gap", icon: <Zap className="h-3.5 w-3.5" />, color: "#c4b5fd" },
-                { label: "Risk Exposure", value: `${riskExposure}%`, sub: `${risk.level.charAt(0).toUpperCase() + risk.level.slice(1)} risk`, icon: <AlertTriangle className="h-3.5 w-3.5" />, color: riskExposure >= 60 ? "#fda4af" : riskExposure >= 30 ? "#fcd34d" : "#86efac" },
+                { label: "AI Maturity", numeric: overall, sub: band.label, icon: <TrendingUp className="h-3.5 w-3.5" />, color: "#a5b4fc" },
+                { label: "Operational Impact", numeric: operationalImpact, sub: "Process & tech", icon: <Activity className="h-3.5 w-3.5" />, color: "#5eead4" },
+                { label: "Efficiency Opportunity", numeric: efficiencyOpportunity, sub: "Improvement gap", icon: <Zap className="h-3.5 w-3.5" />, color: "#c4b5fd" },
+                { label: "Risk Exposure", numeric: riskExposure, sub: `${risk.level.charAt(0).toUpperCase() + risk.level.slice(1)} risk`, icon: <AlertTriangle className="h-3.5 w-3.5" />, color: riskExposure >= 60 ? "#fda4af" : riskExposure >= 30 ? "#fcd34d" : "#86efac" },
               ].map((kpi) => (
-                <div key={kpi.label} className="glass rounded-2xl p-3 hover-lift">
+                <div key={kpi.label} className="glass-strong rounded-2xl p-3 hover-lift">
                   <div className="flex items-center gap-1.5 text-xs font-semibold mb-1.5" style={{ color: kpi.color }}>
                     {kpi.icon} {kpi.label}
                   </div>
-                  <p className="text-2xl font-black text-white">{kpi.value}</p>
+                  <AnimatedNumber value={kpi.numeric} suffix="%" className="text-2xl font-black text-white" />
                   <p className="text-xs text-slate-400 mt-0.5">{kpi.sub}</p>
                 </div>
               ))}
