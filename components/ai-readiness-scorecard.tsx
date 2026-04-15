@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Cell, PieChart, Pie, Legend } from "recharts";
-import { Download, Mail, Plus, Printer, Trash2, Copy, Sparkles, AlertTriangle, TrendingUp, Shield, Building2, FileText, Zap, Target, Activity, ArrowRight, Clock, CheckCircle2 } from "lucide-react";
+import { Download, Mail, Plus, Printer, Trash2, Copy, Sparkles, AlertTriangle, TrendingUp, Shield, Building2, FileText, Zap, Target, Activity, ArrowRight, Clock, CheckCircle2, Upload, FileJson } from "lucide-react";
 import jsPDF from "jspdf";
 
 const STORAGE_KEY = "ai-readiness-assessments-v3";
@@ -1166,6 +1166,87 @@ function mailTo(assessment: Assessment) {
   window.location.href = `mailto:?subject=${encodeURIComponent(`AI Readiness Report - ${assessment.businessName || assessment.name}`)}&body=${body}`;
 }
 
+// ─── JSON IMPORT / EXPORT ────────────────────────────────────────────────────
+type ExportEnvelope = {
+  schemaVersion: 1;
+  exportedAt: string;
+  app: "ai-readiness";
+  assessment?: Assessment;
+  assessments?: Assessment[];
+};
+
+function downloadFile(filename: string, content: string, mime = "application/json") {
+  const blob = new Blob([content], { type: `${mime};charset=utf-8` });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 100);
+}
+
+function exportAssessmentJson(assessment: Assessment) {
+  const envelope: ExportEnvelope = {
+    schemaVersion: 1,
+    exportedAt: new Date().toISOString(),
+    app: "ai-readiness",
+    assessment,
+  };
+  const safeName = `${assessment.businessName || "assessment"}-${assessment.name}`.replace(/[^a-z0-9]+/gi, "-");
+  downloadFile(`AI-Readiness-${safeName}.json`, JSON.stringify(envelope, null, 2));
+}
+
+function exportAllAssessmentsJson(assessments: Assessment[]) {
+  const envelope: ExportEnvelope = {
+    schemaVersion: 1,
+    exportedAt: new Date().toISOString(),
+    app: "ai-readiness",
+    assessments,
+  };
+  downloadFile(`AI-Readiness-All-${new Date().toISOString().slice(0,10)}.json`, JSON.stringify(envelope, null, 2));
+}
+
+function isValidAssessment(x: unknown): x is Assessment {
+  if (!x || typeof x !== "object") return false;
+  const a = x as Record<string, unknown>;
+  return typeof a.id === "string"
+    && typeof a.name === "string"
+    && typeof a.businessName === "string"
+    && typeof a.assessor === "string"
+    && typeof a.notes === "string"
+    && typeof a.sector === "string"
+    && typeof a.scores === "object"
+    && a.scores !== null;
+}
+
+// Parses a JSON file and returns the assessments array it contains.
+// Accepts both single-assessment and multi-assessment envelopes.
+async function parseAssessmentFile(file: File): Promise<Assessment[]> {
+  const text = await file.text();
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    throw new Error("File is not valid JSON");
+  }
+  if (!parsed || typeof parsed !== "object") throw new Error("Unexpected file contents");
+  const env = parsed as ExportEnvelope;
+  if (env.app && env.app !== "ai-readiness") {
+    throw new Error("This JSON was not produced by the AI Readiness app");
+  }
+  const list: Assessment[] = [];
+  if (env.assessment && isValidAssessment(env.assessment)) list.push(env.assessment);
+  if (Array.isArray(env.assessments)) {
+    env.assessments.forEach((a) => { if (isValidAssessment(a)) list.push(a); });
+  }
+  // Also accept a bare Assessment object (no envelope) for forgiving imports
+  if (list.length === 0 && isValidAssessment(parsed)) list.push(parsed);
+  if (list.length === 0) throw new Error("No valid assessments found in file");
+  return list;
+}
+
 function scoreLabel(value: ScoreValue) {
   return `${value} - ${SCALE[value]}`;
 }
@@ -1241,6 +1322,8 @@ export default function AIReadinessScorecardApp() {
   const [tab, setTab] = useState("assess");
   const [mounted, setMounted] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [importFeedback, setImportFeedback] = useState<{ kind: "success" | "error"; text: string } | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (mounted && typeof window !== "undefined") {
@@ -1309,6 +1392,29 @@ export default function AIReadinessScorecardApp() {
     };
     setAssessments((curr) => [...curr, copy]);
     setActiveId(copy.id);
+  };
+
+  const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    // Always reset so the same file can be selected again after a failed import
+    e.target.value = "";
+    if (!file) return;
+    try {
+      const imported = await parseAssessmentFile(file);
+      // Re-id each imported assessment so we never clash with existing IDs
+      const reIded = imported.map((a) => ({
+        ...a,
+        id: uid(),
+        updatedAt: new Date().toISOString(),
+      }));
+      setAssessments((curr) => [...curr, ...reIded]);
+      setActiveId(reIded[0].id);
+      setTab("assess");
+      setImportFeedback({ kind: "success", text: `Imported ${reIded.length} assessment${reIded.length === 1 ? "" : "s"}` });
+    } catch (err) {
+      setImportFeedback({ kind: "error", text: err instanceof Error ? err.message : "Import failed" });
+    }
+    setTimeout(() => setImportFeedback(null), 4000);
   };
 
   const removeAssessment = (id: string) => {
@@ -1407,6 +1513,16 @@ export default function AIReadinessScorecardApp() {
         </div>
       )}
 
+      {/* Import toast */}
+      {importFeedback && (
+        <div className="fixed top-6 right-6 z-[60] animate-slide-in-right">
+          <div className="glass-strong rounded-2xl px-4 py-3 shadow-2xl flex items-center gap-3" style={{ background: importFeedback.kind === "success" ? "linear-gradient(135deg, rgba(16,185,129,0.95), rgba(5,150,105,0.95))" : "linear-gradient(135deg, rgba(244,63,94,0.95), rgba(225,29,72,0.95))" }}>
+            {importFeedback.kind === "success" ? <CheckCircle2 className="h-5 w-5 text-white" /> : <AlertTriangle className="h-5 w-5 text-white" />}
+            <p className="text-sm font-bold text-white">{importFeedback.text}</p>
+          </div>
+        </div>
+      )}
+
       {/* HERO HEADER */}
       <div className="aurora-bg" style={{ background: "linear-gradient(135deg, #1e1b4b 0%, #312e81 30%, #1e3a5f 65%, #0f3d3e 100%)" }}>
         <div className="relative mx-auto max-w-7xl px-4 pt-6 pb-0 md:px-8">
@@ -1433,16 +1549,24 @@ export default function AIReadinessScorecardApp() {
                 <button onClick={createNew} className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold text-white shadow-lg shadow-indigo-500/30 transition hover:opacity-90 hover:scale-[1.02]" style={{ background: "linear-gradient(135deg, #6366f1, #14b8a6)" }}>
                   <Plus className="h-4 w-4" /> New Assessment
                 </button>
-                <button onClick={() => exportPdf(active)} className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
+                <button onClick={() => exportPdf(active)} className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80 hover:scale-[1.02]" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
                   <Download className="h-4 w-4" /> PDF
                 </button>
-                <button onClick={() => mailTo(active)} className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
+                <button onClick={() => exportAssessmentJson(active)} title="Export this assessment as JSON" className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80 hover:scale-[1.02]" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
+                  <FileJson className="h-4 w-4" /> JSON
+                </button>
+                <button onClick={() => fileInputRef.current?.click()} title="Import assessments from a JSON file" className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80 hover:scale-[1.02]" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
+                  <Upload className="h-4 w-4" /> Import
+                </button>
+                <button onClick={() => mailTo(active)} className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80 hover:scale-[1.02]" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
                   <Mail className="h-4 w-4" /> Email
                 </button>
-                <button onClick={duplicate} className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
+                <button onClick={duplicate} className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80 hover:scale-[1.02]" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
                   <Copy className="h-4 w-4" /> Duplicate
                 </button>
               </div>
+              {/* Hidden file input used by the Import button */}
+              <input ref={fileInputRef} type="file" accept="application/json,.json" className="hidden" onChange={handleImportFile} />
             </div>
             <div className="flex items-center gap-5 flex-shrink-0">
               <ScoreRing score={overall} size={148} />
@@ -1490,9 +1614,16 @@ export default function AIReadinessScorecardApp() {
           {/* Sidebar */}
           <div className="space-y-4">
             <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
-              <div className="px-4 py-3" style={{ borderBottom: "1px solid #f1f5f9" }}>
-                <p className="text-sm font-bold text-slate-900">Assessments</p>
-                <p className="text-xs text-slate-400 mt-0.5">Switch between saved scorecards</p>
+              <div className="px-4 py-3 flex items-start justify-between gap-2" style={{ borderBottom: "1px solid #f1f5f9" }}>
+                <div>
+                  <p className="text-sm font-bold text-slate-900">Assessments</p>
+                  <p className="text-xs text-slate-400 mt-0.5">Switch between saved scorecards</p>
+                </div>
+                {assessments.length > 1 && (
+                  <button onClick={() => exportAllAssessmentsJson(assessments)} title="Export all assessments as JSON" className="flex-shrink-0 inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-bold text-indigo-600 hover:bg-indigo-50 transition">
+                    <FileJson className="h-3 w-3" /> All
+                  </button>
+                )}
               </div>
               <div className="p-3 space-y-2">
                 {assessments.map((item) => {
@@ -1686,10 +1817,10 @@ export default function AIReadinessScorecardApp() {
                   const pillarScore = getWeightedPillarScore(pillar, active.scores);
                   const color = PILLAR_COLORS[pillarIdx];
                   return (
-                    <div key={pillar.id} className="rounded-2xl bg-white shadow-sm overflow-hidden hover-lift animate-fade-in" style={{ border: "1px solid #e2e8f0", borderLeft: `4px solid ${color.from}` }}>
+                    <div key={pillar.id} className="rounded-2xl bg-white shadow-sm overflow-hidden hover-lift animate-slide-up" style={{ border: "1px solid #e2e8f0", borderLeft: `4px solid ${color.from}`, animationDelay: `${pillarIdx * 60}ms` }}>
                       <div className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
                         <div className="flex items-start gap-4">
-                          <div className="flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-md" style={{ background: `linear-gradient(135deg, ${color.from}, ${color.to})` }}>
+                          <div className="flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-lg" style={{ background: `linear-gradient(135deg, ${color.from}, ${color.to})`, boxShadow: `0 8px 20px -4px ${color.from}66` }}>
                             {pillar.icon}
                           </div>
                           <div>
@@ -1723,7 +1854,7 @@ export default function AIReadinessScorecardApp() {
                           const currentScore = active.scores[factor.id];
                           const btnBg = ["", "#f43f5e", "#f97316", "#eab308", "#14b8a6", "#10b981"];
                           return (
-                            <div key={factor.id} className="rounded-xl p-4" style={{ border: "1px solid #f1f5f9", background: "#f8fafc" }}>
+                            <div key={factor.id} className="rounded-xl p-4 transition-colors hover:bg-white hover:shadow-sm" style={{ border: "1px solid #f1f5f9", background: "#f8fafc" }}>
                               <div className="mb-3 flex items-start justify-between gap-2">
                                 <p className="text-sm font-bold text-slate-800">{factor.label}</p>
                                 <span className={`flex-shrink-0 text-xs px-2 py-0.5 rounded-full font-semibold ${weightInfo.color}`}>{weightInfo.label}</span>
