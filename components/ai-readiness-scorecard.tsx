@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Cell, PieChart, Pie, Legend } from "recharts";
-import { Download, Mail, Plus, Printer, Trash2, Copy, Sparkles, AlertTriangle, TrendingUp, Shield, Building2, FileText, Zap, Target, Activity, ArrowRight, Clock, CheckCircle2, Upload, FileJson } from "lucide-react";
+import { Download, Mail, Plus, Printer, Trash2, Copy, Sparkles, AlertTriangle, TrendingUp, Shield, Building2, FileText, Zap, Target, Activity, ArrowRight, Clock, CheckCircle2 } from "lucide-react";
 import jsPDF from "jspdf";
 
 const STORAGE_KEY = "ai-readiness-assessments-v3";
@@ -1166,87 +1166,6 @@ function mailTo(assessment: Assessment) {
   window.location.href = `mailto:?subject=${encodeURIComponent(`AI Readiness Report - ${assessment.businessName || assessment.name}`)}&body=${body}`;
 }
 
-// ─── JSON IMPORT / EXPORT ────────────────────────────────────────────────────
-type ExportEnvelope = {
-  schemaVersion: 1;
-  exportedAt: string;
-  app: "ai-readiness";
-  assessment?: Assessment;
-  assessments?: Assessment[];
-};
-
-function downloadFile(filename: string, content: string, mime = "application/json") {
-  const blob = new Blob([content], { type: `${mime};charset=utf-8` });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 100);
-}
-
-function exportAssessmentJson(assessment: Assessment) {
-  const envelope: ExportEnvelope = {
-    schemaVersion: 1,
-    exportedAt: new Date().toISOString(),
-    app: "ai-readiness",
-    assessment,
-  };
-  const safeName = `${assessment.businessName || "assessment"}-${assessment.name}`.replace(/[^a-z0-9]+/gi, "-");
-  downloadFile(`AI-Readiness-${safeName}.json`, JSON.stringify(envelope, null, 2));
-}
-
-function exportAllAssessmentsJson(assessments: Assessment[]) {
-  const envelope: ExportEnvelope = {
-    schemaVersion: 1,
-    exportedAt: new Date().toISOString(),
-    app: "ai-readiness",
-    assessments,
-  };
-  downloadFile(`AI-Readiness-All-${new Date().toISOString().slice(0,10)}.json`, JSON.stringify(envelope, null, 2));
-}
-
-function isValidAssessment(x: unknown): x is Assessment {
-  if (!x || typeof x !== "object") return false;
-  const a = x as Record<string, unknown>;
-  return typeof a.id === "string"
-    && typeof a.name === "string"
-    && typeof a.businessName === "string"
-    && typeof a.assessor === "string"
-    && typeof a.notes === "string"
-    && typeof a.sector === "string"
-    && typeof a.scores === "object"
-    && a.scores !== null;
-}
-
-// Parses a JSON file and returns the assessments array it contains.
-// Accepts both single-assessment and multi-assessment envelopes.
-async function parseAssessmentFile(file: File): Promise<Assessment[]> {
-  const text = await file.text();
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(text);
-  } catch {
-    throw new Error("File is not valid JSON");
-  }
-  if (!parsed || typeof parsed !== "object") throw new Error("Unexpected file contents");
-  const env = parsed as ExportEnvelope;
-  if (env.app && env.app !== "ai-readiness") {
-    throw new Error("This JSON was not produced by the AI Readiness app");
-  }
-  const list: Assessment[] = [];
-  if (env.assessment && isValidAssessment(env.assessment)) list.push(env.assessment);
-  if (Array.isArray(env.assessments)) {
-    env.assessments.forEach((a) => { if (isValidAssessment(a)) list.push(a); });
-  }
-  // Also accept a bare Assessment object (no envelope) for forgiving imports
-  if (list.length === 0 && isValidAssessment(parsed)) list.push(parsed);
-  if (list.length === 0) throw new Error("No valid assessments found in file");
-  return list;
-}
-
 function scoreLabel(value: ScoreValue) {
   return `${value} - ${SCALE[value]}`;
 }
@@ -1322,8 +1241,6 @@ export default function AIReadinessScorecardApp() {
   const [tab, setTab] = useState("assess");
   const [mounted, setMounted] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
-  const [importFeedback, setImportFeedback] = useState<{ kind: "success" | "error"; text: string } | null>(null);
-  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (mounted && typeof window !== "undefined") {
@@ -1394,29 +1311,6 @@ export default function AIReadinessScorecardApp() {
     setActiveId(copy.id);
   };
 
-  const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    // Always reset so the same file can be selected again after a failed import
-    e.target.value = "";
-    if (!file) return;
-    try {
-      const imported = await parseAssessmentFile(file);
-      // Re-id each imported assessment so we never clash with existing IDs
-      const reIded = imported.map((a) => ({
-        ...a,
-        id: uid(),
-        updatedAt: new Date().toISOString(),
-      }));
-      setAssessments((curr) => [...curr, ...reIded]);
-      setActiveId(reIded[0].id);
-      setTab("assess");
-      setImportFeedback({ kind: "success", text: `Imported ${reIded.length} assessment${reIded.length === 1 ? "" : "s"}` });
-    } catch (err) {
-      setImportFeedback({ kind: "error", text: err instanceof Error ? err.message : "Import failed" });
-    }
-    setTimeout(() => setImportFeedback(null), 4000);
-  };
-
   const removeAssessment = (id: string) => {
     const filtered = assessments.filter((a) => a.id !== id);
     if (!filtered.length) {
@@ -1459,21 +1353,22 @@ export default function AIReadinessScorecardApp() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-screen" style={{ background: "#fafafa" }}>
       {/* WELCOME OVERLAY */}
       {showWelcome && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in" style={{ background: "rgba(15, 23, 42, 0.7)", backdropFilter: "blur(8px)" }}>
-          <div className="relative max-w-2xl w-full rounded-3xl overflow-hidden animate-scale-in shadow-2xl" style={{ background: "linear-gradient(135deg, #1e1b4b 0%, #312e81 35%, #134e4a 100%)" }}>
-            <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full opacity-30 blur-3xl" style={{ background: "radial-gradient(circle, #818cf8, transparent)" }}></div>
-            <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full opacity-30 blur-3xl" style={{ background: "radial-gradient(circle, #14b8a6, transparent)" }}></div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in" style={{ background: "rgba(0, 0, 0, 0.75)", backdropFilter: "blur(12px)" }}>
+          <div className="relative max-w-2xl w-full rounded-3xl overflow-hidden animate-scale-in shadow-2xl" style={{ background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.1)" }}>
+            <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full opacity-60 blur-[100px] pointer-events-none" style={{ background: "radial-gradient(circle, #0066ff, transparent 60%)" }}></div>
+            <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full opacity-50 blur-[100px] pointer-events-none" style={{ background: "radial-gradient(circle, #ec4899, transparent 60%)" }}></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full opacity-30 blur-[100px] pointer-events-none" style={{ background: "radial-gradient(circle, #a855f7, transparent 60%)" }}></div>
             <div className="relative p-8 md:p-12">
-              <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-bold tracking-wide text-indigo-200 mb-5" style={{ background: "rgba(99,102,241,0.2)", border: "1px solid rgba(129,140,248,0.4)" }}>
+              <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold tracking-wide text-white/90 mb-5" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", backdropFilter: "blur(10px)" }}>
                 <Sparkles className="h-3 w-3" /> WELCOME
               </div>
-              <h2 className="text-3xl md:text-4xl font-black text-white leading-tight">
-                Assess your <span style={{ background: "linear-gradient(90deg, #818cf8, #5eead4)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>AI readiness</span> like a Fortune 500 leader
+              <h2 className="text-3xl md:text-5xl font-black text-white leading-[1.05] tracking-tight">
+                Assess your <span style={{ background: "linear-gradient(90deg, #0066ff, #a855f7 45%, #ec4899 90%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>AI readiness</span> like a Fortune 500 leader.
               </h2>
-              <p className="mt-4 text-indigo-100/80 text-base leading-relaxed">
+              <p className="mt-5 text-white/70 text-base leading-relaxed">
                 A professional 8-dimension framework with weighted scoring, sector-specific benchmarks, and an actionable 12-month roadmap — all in one beautifully designed tool.
               </p>
               <div className="mt-7 grid gap-3 md:grid-cols-2">
@@ -1483,11 +1378,11 @@ export default function AIReadinessScorecardApp() {
                   { icon: <TrendingUp className="h-4 w-4" />, title: "Phased Roadmap", desc: "0–90 day foundations through 12-month enterprise scaling" },
                   { icon: <FileText className="h-4 w-4" />, title: "Executive PDF", desc: "Beautifully designed, board-ready report in one click" },
                 ].map((item) => (
-                  <div key={item.title} className="glass rounded-xl p-3.5 flex items-start gap-3">
-                    <div className="rounded-lg p-2 flex-shrink-0" style={{ background: "rgba(99,102,241,0.25)", color: "#a5b4fc" }}>{item.icon}</div>
+                  <div key={item.title} className="rounded-xl p-3.5 flex items-start gap-3" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                    <div className="rounded-lg p-2 flex-shrink-0" style={{ background: "rgba(255,255,255,0.06)", color: "#fff" }}>{item.icon}</div>
                     <div>
                       <p className="text-sm font-bold text-white">{item.title}</p>
-                      <p className="text-xs text-indigo-200/70 mt-0.5 leading-relaxed">{item.desc}</p>
+                      <p className="text-xs text-white/60 mt-0.5 leading-relaxed">{item.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -1495,15 +1390,14 @@ export default function AIReadinessScorecardApp() {
               <div className="mt-7 flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={dismissWelcome}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-500/30 transition hover:scale-[1.02]"
-                  style={{ background: "linear-gradient(135deg, #6366f1, #14b8a6)" }}
+                  className="group inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-black bg-white transition hover:scale-[1.02] hover:shadow-[0_0_32px_rgba(255,255,255,0.35)]"
                 >
-                  Start My Assessment <ArrowRight className="h-4 w-4" />
+                  Start My Assessment <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </button>
                 <button
                   onClick={dismissWelcome}
-                  className="inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-semibold text-indigo-100 transition hover:bg-white/10"
-                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.15)" }}
+                  className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-white/80 transition hover:bg-white/5 hover:text-white"
+                  style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.15)" }}
                 >
                   Skip for now
                 </button>
@@ -1513,23 +1407,13 @@ export default function AIReadinessScorecardApp() {
         </div>
       )}
 
-      {/* Import toast */}
-      {importFeedback && (
-        <div className="fixed top-6 right-6 z-[60] animate-slide-in-right">
-          <div className="glass-strong rounded-2xl px-4 py-3 shadow-2xl flex items-center gap-3" style={{ background: importFeedback.kind === "success" ? "linear-gradient(135deg, rgba(16,185,129,0.95), rgba(5,150,105,0.95))" : "linear-gradient(135deg, rgba(244,63,94,0.95), rgba(225,29,72,0.95))" }}>
-            {importFeedback.kind === "success" ? <CheckCircle2 className="h-5 w-5 text-white" /> : <AlertTriangle className="h-5 w-5 text-white" />}
-            <p className="text-sm font-bold text-white">{importFeedback.text}</p>
-          </div>
-        </div>
-      )}
-
       {/* HERO HEADER */}
-      <div className="aurora-bg" style={{ background: "linear-gradient(135deg, #1e1b4b 0%, #312e81 30%, #1e3a5f 65%, #0f3d3e 100%)" }}>
+      <div className="aurora-bg" style={{ background: "radial-gradient(ellipse at 20% 0%, rgba(0,102,255,0.35) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(236,72,153,0.25) 0%, transparent 50%), radial-gradient(ellipse at 50% 50%, rgba(168,85,247,0.2) 0%, transparent 60%), #0a0a0a" }}>
         <div className="relative mx-auto max-w-7xl px-4 pt-6 pb-0 md:px-8">
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div className="flex-1 min-w-0">
               <div className="mb-3 flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold tracking-wide text-indigo-200 animate-fade-in" style={{ background: "rgba(99,102,241,0.18)", border: "1px solid rgba(129,140,248,0.4)" }}>
+                <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold tracking-wide text-white/90 animate-fade-in" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", backdropFilter: "blur(10px)" }}>
                   <Sparkles className="h-3 w-3" /> AI READINESS · 8-DIMENSION FRAMEWORK
                 </span>
                 {sectorInfo && (
@@ -1540,33 +1424,25 @@ export default function AIReadinessScorecardApp() {
               </div>
               <h1 className="text-2xl font-black tracking-tight text-white md:text-4xl leading-tight animate-slide-up">
                 {active.businessName ? <>{active.businessName}<br /></> : null}
-                <span style={{ background: "linear-gradient(90deg, #818cf8, #a78bfa, #5eead4)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundSize: "200% 200%" }} className="animate-gradient">
+                <span style={{ background: "linear-gradient(90deg, #0066ff, #a855f7 45%, #ec4899 90%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundSize: "200% 200%" }} className="animate-gradient">
                   AI Transformation Readiness
                 </span>
               </h1>
               <p className="mt-2 text-sm text-indigo-200/70">8 Dimensions · Industry Benchmarks · Phased Roadmap · Sector-specific Insight</p>
               <div className="mt-5 flex flex-wrap gap-2">
-                <button onClick={createNew} className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold text-white shadow-lg shadow-indigo-500/30 transition hover:opacity-90 hover:scale-[1.02]" style={{ background: "linear-gradient(135deg, #6366f1, #14b8a6)" }}>
+                <button onClick={createNew} className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-black bg-white transition hover:scale-[1.02] hover:shadow-[0_0_24px_rgba(255,255,255,0.3)]">
                   <Plus className="h-4 w-4" /> New Assessment
                 </button>
-                <button onClick={() => exportPdf(active)} className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80 hover:scale-[1.02]" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
+                <button onClick={() => exportPdf(active)} className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white/90 transition hover:text-white hover:scale-[1.02]" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(10px)" }}>
                   <Download className="h-4 w-4" /> PDF
                 </button>
-                <button onClick={() => exportAssessmentJson(active)} title="Export this assessment as JSON" className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80 hover:scale-[1.02]" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
-                  <FileJson className="h-4 w-4" /> JSON
-                </button>
-                <button onClick={() => fileInputRef.current?.click()} title="Import assessments from a JSON file" className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80 hover:scale-[1.02]" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
-                  <Upload className="h-4 w-4" /> Import
-                </button>
-                <button onClick={() => mailTo(active)} className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80 hover:scale-[1.02]" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
+                <button onClick={() => mailTo(active)} className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white/90 transition hover:text-white hover:scale-[1.02]" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(10px)" }}>
                   <Mail className="h-4 w-4" /> Email
                 </button>
-                <button onClick={duplicate} className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80 hover:scale-[1.02]" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
+                <button onClick={duplicate} className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white/90 transition hover:text-white hover:scale-[1.02]" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(10px)" }}>
                   <Copy className="h-4 w-4" /> Duplicate
                 </button>
               </div>
-              {/* Hidden file input used by the Import button */}
-              <input ref={fileInputRef} type="file" accept="application/json,.json" className="hidden" onChange={handleImportFile} />
             </div>
             <div className="flex items-center gap-5 flex-shrink-0">
               <ScoreRing score={overall} size={148} />
@@ -1614,16 +1490,9 @@ export default function AIReadinessScorecardApp() {
           {/* Sidebar */}
           <div className="space-y-4">
             <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
-              <div className="px-4 py-3 flex items-start justify-between gap-2" style={{ borderBottom: "1px solid #f1f5f9" }}>
-                <div>
-                  <p className="text-sm font-bold text-slate-900">Assessments</p>
-                  <p className="text-xs text-slate-400 mt-0.5">Switch between saved scorecards</p>
-                </div>
-                {assessments.length > 1 && (
-                  <button onClick={() => exportAllAssessmentsJson(assessments)} title="Export all assessments as JSON" className="flex-shrink-0 inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-bold text-indigo-600 hover:bg-indigo-50 transition">
-                    <FileJson className="h-3 w-3" /> All
-                  </button>
-                )}
+              <div className="px-4 py-3" style={{ borderBottom: "1px solid #f1f5f9" }}>
+                <p className="text-sm font-bold text-slate-900">Assessments</p>
+                <p className="text-xs text-slate-400 mt-0.5">Switch between saved scorecards</p>
               </div>
               <div className="p-3 space-y-2">
                 {assessments.map((item) => {
@@ -1656,18 +1525,20 @@ export default function AIReadinessScorecardApp() {
             </div>
 
             {/* Framework info card */}
-            <div className="rounded-2xl overflow-hidden hover-lift" style={{ background: "linear-gradient(135deg, #1e1b4b, #312e81 65%, #134e4a)", border: "1px solid #312e81" }}>
-              <div className="p-4">
+            <div className="relative rounded-2xl overflow-hidden hover-lift" style={{ background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.08)" }}>
+              <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full opacity-40 blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, #0066ff, transparent)" }} />
+              <div className="absolute -bottom-20 -left-10 w-40 h-40 rounded-full opacity-30 blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, #ec4899, transparent)" }} />
+              <div className="relative p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Sparkles className="h-4 w-4 text-indigo-300" />
-                  <p className="text-xs font-bold uppercase tracking-wider text-indigo-200">8-Dimension Framework</p>
+                  <Sparkles className="h-4 w-4 text-white" />
+                  <p className="text-xs font-bold uppercase tracking-wider text-white">8-Dimension Framework</p>
                 </div>
-                <p className="text-[11px] text-indigo-100/70 leading-relaxed mb-3">Aligned with Microsoft, AIMRI and EU AI Act readiness standards.</p>
+                <p className="text-[11px] text-white/60 leading-relaxed mb-3">Aligned with Microsoft, AIMRI and EU AI Act standards.</p>
                 <div className="space-y-1">
                   {PILLARS.map((p, i) => (
-                    <div key={p.id} className="flex items-center gap-2 rounded-md px-2 py-1.5" style={{ background: "rgba(255,255,255,0.05)" }}>
+                    <div key={p.id} className="flex items-center gap-2 rounded-md px-2 py-1.5" style={{ background: "rgba(255,255,255,0.04)" }}>
                       <div className="w-1.5 h-6 rounded-full flex-shrink-0" style={{ background: `linear-gradient(180deg, ${PILLAR_COLORS[i].from}, ${PILLAR_COLORS[i].to})` }} />
-                      <span className="text-xs text-indigo-100/90 font-medium leading-tight">{p.title}</span>
+                      <span className="text-xs text-white/85 font-medium leading-tight">{p.title}</span>
                     </div>
                   ))}
                 </div>
@@ -1706,7 +1577,7 @@ export default function AIReadinessScorecardApp() {
           {/* Main content */}
           <div>
             <Tabs value={tab} onValueChange={setTab} className="space-y-5">
-              <TabsList className="grid w-full grid-cols-6 rounded-2xl bg-white shadow-sm p-1 h-auto" style={{ border: "1px solid #e2e8f0" }}>
+              <TabsList className="grid w-full grid-cols-6 rounded-full bg-black/90 p-1 h-auto shadow-sm" style={{ border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(10px)" }}>
                 {[
                   { value: "assess", label: "Assess", icon: <Target className="h-3.5 w-3.5" /> },
                   { value: "results", label: "Results", icon: <Activity className="h-3.5 w-3.5" /> },
@@ -1715,7 +1586,7 @@ export default function AIReadinessScorecardApp() {
                   { value: "compare", label: "Compare", icon: <Building2 className="h-3.5 w-3.5" /> },
                   { value: "recommendations", label: "Actions", icon: <Sparkles className="h-3.5 w-3.5" /> },
                 ].map((t) => (
-                  <TabsTrigger key={t.value} value={t.value} className="flex items-center justify-center gap-1.5 rounded-xl text-xs font-semibold py-2.5 transition data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:bg-gradient-to-br data-[state=active]:from-indigo-600 data-[state=active]:to-violet-600" style={{ ["--tw-ring-color" as string]: "transparent" }}>
+                  <TabsTrigger key={t.value} value={t.value} className="flex items-center justify-center gap-1.5 rounded-full text-xs font-semibold py-2.5 transition text-white/60 hover:text-white/90 data-[state=active]:text-black data-[state=active]:bg-white data-[state=active]:shadow-[0_0_16px_rgba(255,255,255,0.25)]" style={{ ["--tw-ring-color" as string]: "transparent" }}>
                     {t.icon}
                     <span className="hidden sm:inline">{t.label}</span>
                   </TabsTrigger>
@@ -1726,9 +1597,9 @@ export default function AIReadinessScorecardApp() {
               <TabsContent value="assess" className="space-y-5">
                 {/* Assessment Details */}
                 <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
-                  <div className="px-6 py-4" style={{ background: "linear-gradient(135deg, #1e1b4b, #312e81)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                  <div className="px-6 py-4" style={{ background: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
                     <h2 className="text-base font-bold text-white">Assessment Details</h2>
-                    <p className="text-xs text-slate-400 mt-0.5">Set context before completing the pillar questions.</p>
+                    <p className="text-xs text-white/60 mt-0.5">Set context before completing the pillar questions.</p>
                   </div>
                   <div className="p-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <div className="space-y-1.5">
@@ -1765,9 +1636,9 @@ export default function AIReadinessScorecardApp() {
 
                 {/* Business Profile */}
                 <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
-                  <div className="px-6 py-4" style={{ background: "linear-gradient(135deg, #1e1b4b, #312e81)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                  <div className="px-6 py-4" style={{ background: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
                     <h2 className="text-base font-bold text-white">Business Profile</h2>
-                    <p className="text-xs text-slate-400 mt-0.5">Organisation context that influences readiness interpretation.</p>
+                    <p className="text-xs text-white/60 mt-0.5">Organisation context that influences readiness interpretation.</p>
                   </div>
                   <div className="p-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <div className="space-y-1.5">
@@ -2069,14 +1940,16 @@ export default function AIReadinessScorecardApp() {
               {/* ─── ROADMAP TAB ─── */}
               <TabsContent value="roadmap" className="space-y-5">
                 <div className="rounded-2xl bg-white shadow-sm overflow-hidden animate-fade-in" style={{ border: "1px solid #e2e8f0" }}>
-                  <div className="px-6 py-5" style={{ background: "linear-gradient(135deg, #1e1b4b, #312e81 60%, #0f3d3e)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-                    <div className="flex items-center gap-3">
-                      <div className="rounded-xl p-2.5" style={{ background: "rgba(255,255,255,0.1)" }}>
-                        <TrendingUp className="h-5 w-5 text-indigo-200" />
+                  <div className="relative px-6 py-5 overflow-hidden" style={{ background: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                    <div className="absolute -top-20 -right-10 w-60 h-60 rounded-full opacity-50 blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, #0066ff, transparent 60%)" }} />
+                    <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full opacity-40 blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, #ec4899, transparent 60%)" }} />
+                    <div className="relative flex items-center gap-3">
+                      <div className="rounded-xl p-2.5" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                        <TrendingUp className="h-5 w-5 text-white" />
                       </div>
                       <div>
-                        <h2 className="text-lg font-black text-white">12-Month AI Maturity Roadmap</h2>
-                        <p className="text-xs text-indigo-200/70 mt-0.5">A phased plan tailored to your current readiness scores and sector context</p>
+                        <h2 className="text-lg font-black text-white tracking-tight">12-Month AI Maturity Roadmap</h2>
+                        <p className="text-xs text-white/60 mt-0.5">A phased plan tailored to your current readiness scores and sector context</p>
                       </div>
                     </div>
                   </div>
@@ -2223,9 +2096,9 @@ export default function AIReadinessScorecardApp() {
               {/* ─── RECOMMENDATIONS TAB ─── */}
               <TabsContent value="recommendations" className="space-y-5">
                 <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
-                  <div className="px-6 py-4" style={{ background: "linear-gradient(135deg, #1e1b4b, #312e81)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-                    <h2 className="font-black text-white flex items-center gap-2"><Sparkles className="h-4 w-4 text-sky-300" /> Strategic Recommendations</h2>
-                    <p className="text-xs text-slate-400 mt-0.5">Sector-specific action items for {sectorInfo?.label} operations</p>
+                  <div className="px-6 py-4" style={{ background: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                    <h2 className="font-black text-white flex items-center gap-2 tracking-tight"><Sparkles className="h-4 w-4 text-white" /> Strategic Recommendations</h2>
+                    <p className="text-xs text-white/60 mt-0.5">Sector-specific action items for {sectorInfo?.label} operations</p>
                   </div>
                   <div className="p-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                     {PILLARS.filter((pillar) => getWeightedPillarScore(pillar, active.scores) < 60).map((pillar) => {
@@ -2270,6 +2143,25 @@ export default function AIReadinessScorecardApp() {
                   </div>
                 )}
               </TabsContent>
+
+              {/* Sticky bottom tab bar — so users don't scroll back to the top */}
+              <div className="sticky bottom-4 z-40 mt-8 mx-auto w-full max-w-2xl animate-fade-in">
+                <TabsList className="grid w-full grid-cols-6 rounded-full p-1 h-auto shadow-[0_12px_40px_rgba(0,0,0,0.35)]" style={{ background: "rgba(10,10,10,0.92)", border: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(14px)" }}>
+                  {[
+                    { value: "assess", label: "Assess", icon: <Target className="h-3.5 w-3.5" /> },
+                    { value: "results", label: "Results", icon: <Activity className="h-3.5 w-3.5" /> },
+                    { value: "roadmap", label: "Roadmap", icon: <TrendingUp className="h-3.5 w-3.5" /> },
+                    { value: "report", label: "Report", icon: <FileText className="h-3.5 w-3.5" /> },
+                    { value: "compare", label: "Compare", icon: <Building2 className="h-3.5 w-3.5" /> },
+                    { value: "recommendations", label: "Actions", icon: <Sparkles className="h-3.5 w-3.5" /> },
+                  ].map((t) => (
+                    <TabsTrigger key={t.value} value={t.value} className="flex items-center justify-center gap-1.5 rounded-full text-xs font-semibold py-2.5 transition text-white/60 hover:text-white/90 data-[state=active]:text-black data-[state=active]:bg-white data-[state=active]:shadow-[0_0_16px_rgba(255,255,255,0.25)]" style={{ ["--tw-ring-color" as string]: "transparent" }}>
+                      {t.icon}
+                      <span className="hidden sm:inline">{t.label}</span>
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </div>
             </Tabs>
           </div>
         </div>
