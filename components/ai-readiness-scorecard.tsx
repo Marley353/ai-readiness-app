@@ -10,8 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Cell, PieChart, Pie } from "recharts";
-import { Download, Mail, Plus, Printer, Trash2, Copy, Sparkles, AlertTriangle, TrendingUp, Shield, Building2, FileText, Zap, Target, Activity } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Cell, PieChart, Pie, Legend } from "recharts";
+import { Download, Mail, Plus, Printer, Trash2, Copy, Sparkles, AlertTriangle, TrendingUp, Shield, Building2, FileText, Zap, Target, Activity, ArrowRight, Clock, CheckCircle2, Compass, Users, Workflow, Database, Cpu, Scale, Heart, Rocket, Beaker, type LucideIcon } from "lucide-react";
 import jsPDF from "jspdf";
 
 const STORAGE_KEY = "ai-readiness-assessments-v3";
@@ -30,12 +30,12 @@ type Factor = {
   riskCategory: "operational" | "security" | "compliance" | "strategic";
 };
 
-type Pillar = { 
-  id: string; 
-  title: string; 
-  icon: string; 
-  description: string; 
-  factors: Factor[]; 
+type Pillar = {
+  id: string;
+  title: string;
+  Icon: LucideIcon;
+  description: string;
+  factors: Factor[];
   strategicRecommendations: Record<Sector, string>;
   businessImpact: string;
 };
@@ -97,11 +97,21 @@ const SCALE: Record<ScoreValue, string> = {
   5: "Optimised",
 };
 
+// Short labels that fit inside the narrow score buttons (full text is still
+// shown in the "Selected: X - Label" line below the buttons).
+const SHORT_SCALE: Record<ScoreValue, string> = {
+  1: "None",
+  2: "Early",
+  3: "Dev",
+  4: "Est",
+  5: "Opt",
+};
+
 const PILLARS: Pillar[] = [
   {
     id: "strategy",
     title: "Strategy & Leadership",
-    icon: "🎯",
+    Icon: Compass,
     description: "Clarity of vision, sponsorship and measurable AI outcomes.",
     businessImpact: "Strategic alignment directly impacts ROI realisation speed and stakeholder confidence.",
     strategicRecommendations: {
@@ -123,7 +133,7 @@ const PILLARS: Pillar[] = [
   {
     id: "people",
     title: "People & Capability",
-    icon: "👥",
+    Icon: Users,
     description: "Skills, confidence, change readiness and cross-functional adoption.",
     businessImpact: "Workforce readiness determines adoption velocity and sustainable competitive advantage.",
     strategicRecommendations: {
@@ -145,7 +155,7 @@ const PILLARS: Pillar[] = [
   {
     id: "process",
     title: "Process & Operations",
-    icon: "⚙️",
+    Icon: Workflow,
     description: "Suitability of workflows for automation, augmentation and measurement.",
     businessImpact: "Process maturity determines automation potential and time-to-value for AI investments.",
     strategicRecommendations: {
@@ -167,7 +177,7 @@ const PILLARS: Pillar[] = [
   {
     id: "data",
     title: "Data & Insight",
-    icon: "📊",
+    Icon: Database,
     description: "Data availability, quality, ownership and accessibility.",
     businessImpact: "Data foundation quality directly correlates with AI model accuracy and business decision confidence.",
     strategicRecommendations: {
@@ -189,7 +199,7 @@ const PILLARS: Pillar[] = [
   {
     id: "tech",
     title: "Technology & Integration",
-    icon: "🧩",
+    Icon: Cpu,
     description: "Tooling, interoperability, security and production readiness.",
     businessImpact: "Technology infrastructure determines scalability potential and total cost of AI ownership.",
     strategicRecommendations: {
@@ -208,7 +218,84 @@ const PILLARS: Pillar[] = [
       { id: "tech_scale", label: "Ability to move from pilot to scale", weight: 2, riskCategory: "strategic" },
     ],
   },
+  {
+    id: "ethics",
+    title: "Ethics & Governance",
+    Icon: Scale,
+    description: "Responsible AI practices, regulatory compliance, transparency and fairness.",
+    businessImpact: "Strong AI governance builds stakeholder trust and prevents costly regulatory penalties.",
+    strategicRecommendations: {
+      retail: "Focus on customer data privacy, algorithmic fairness in pricing and recommendations, and transparency in automated customer decisions. Establish clear policies for AI-driven personalisation aligned with consumer protection regulations.",
+      fm: "Establish governance for AI-driven building management decisions. Ensure compliance with safety regulations and implement audit trails for automated systems and decisions affecting occupants.",
+      security: "Prioritise ethical frameworks for surveillance and access control AI. Ensure bias-free threat assessment, maintain regulatory compliance across jurisdictions, and build robust audit trails.",
+      logistics: "Address fairness in route optimisation and workforce scheduling algorithms. Ensure transparency in automated dispatch decisions and comply with transport and labour regulations.",
+      manufacturing: "Implement safety-first governance for AI in production. Address worker privacy concerns with monitoring systems and ensure quality control AI meets industry standards and audit requirements.",
+      corporate: "Establish responsible AI policies for HR and recruitment AI. Ensure transparency in performance analytics and develop clear frameworks for AI-assisted decision accountability.",
+      other: "Build comprehensive AI governance frameworks with clear accountability. Establish ethics review processes and ensure regulatory compliance across all AI applications.",
+    },
+    factors: [
+      { id: "ethics_policy", label: "AI ethics policies and frameworks", weight: 3, riskCategory: "compliance" },
+      { id: "ethics_bias", label: "Bias detection and fairness monitoring", weight: 2, riskCategory: "compliance" },
+      { id: "ethics_compliance", label: "Regulatory compliance readiness (EU AI Act, GDPR)", weight: 3, riskCategory: "compliance" },
+      { id: "ethics_transparency", label: "Transparency and explainability practices", weight: 2, riskCategory: "compliance" },
+    ],
+  },
+  {
+    id: "culture",
+    title: "Culture & Change",
+    Icon: Heart,
+    description: "Organisational culture, change appetite, collaboration and digital mindset.",
+    businessImpact: "Cultural readiness is the strongest predictor of successful AI adoption and sustained value creation.",
+    strategicRecommendations: {
+      retail: "Build a data-driven culture across stores and head office. Engage frontline teams in AI pilot design and celebrate early wins visibly to drive grassroots adoption.",
+      fm: "Foster collaboration between operations, IT and data teams. Address change resistance through hands-on pilot participation and visible efficiency gains for site-based staff.",
+      security: "Cultivate a culture that embraces AI as augmenting human judgement, not replacing it. Build trust through transparent AI decision explanations and gradual deployment.",
+      logistics: "Develop a culture of continuous improvement powered by data. Engage drivers and warehouse staff early in AI tool design to build buy-in and practical adoption.",
+      manufacturing: "Bridge the gap between shop floor and digital teams. Create innovation champions at each site and build a culture where AI augments skilled workers rather than replacing them.",
+      corporate: "Champion AI adoption from leadership down with clear communication of benefits. Create safe spaces for experimentation and learning from failure across knowledge work teams.",
+      other: "Invest in cultural transformation alongside technology implementation. Develop change management playbooks, create AI champions, and celebrate early adoption wins systematically.",
+    },
+    factors: [
+      { id: "culture_innovation", label: "Innovation culture and digital mindset", weight: 2, riskCategory: "operational" },
+      { id: "culture_change", label: "Change management capabilities", weight: 3, riskCategory: "operational" },
+      { id: "culture_collaboration", label: "Cross-functional collaboration maturity", weight: 2, riskCategory: "operational" },
+      { id: "culture_leadership", label: "Leadership communication and vision alignment", weight: 2, riskCategory: "strategic" },
+    ],
+  },
+  {
+    id: "innovation",
+    title: "Innovation & Experimentation",
+    Icon: Rocket,
+    description: "Piloting capabilities, experimentation culture, learning velocity and scaling pathways.",
+    businessImpact: "Experimentation capability accelerates AI time-to-value and reduces implementation risk.",
+    strategicRecommendations: {
+      retail: "Establish an AI innovation lab focused on customer experience and store operations. Run structured pilots with clear success criteria and measurement frameworks for scaling decisions.",
+      fm: "Create a testing environment for predictive maintenance and energy optimisation AI. Implement structured pilot frameworks with clear ROI tracking and scaling criteria.",
+      security: "Develop controlled testing environments for threat detection AI. Establish red-team/blue-team AI testing protocols and iterate based on false positive/negative analysis.",
+      logistics: "Build sandbox environments for route optimisation and demand prediction testing. Run A/B tests on AI-driven scheduling and measure impact on delivery performance.",
+      manufacturing: "Establish digital twin capabilities for safe AI experimentation. Run production line pilots with clear quality and efficiency metrics, plus defined scaling pathways.",
+      corporate: "Create internal AI innovation challenges and hackathons. Establish pilot frameworks for document AI and workflow automation with clear success criteria and adoption metrics.",
+      other: "Build systematic experimentation capabilities with clear pilot-to-production pathways. Establish innovation metrics, learning loops, and scaling decision frameworks.",
+    },
+    factors: [
+      { id: "innovation_pilot", label: "Proof of concept and pilot capabilities", weight: 2, riskCategory: "strategic" },
+      { id: "innovation_proto", label: "Rapid prototyping infrastructure", weight: 2, riskCategory: "operational" },
+      { id: "innovation_learning", label: "Learning loops and iteration processes", weight: 2, riskCategory: "operational" },
+      { id: "innovation_metrics", label: "Innovation metrics and success tracking", weight: 3, riskCategory: "strategic" },
+    ],
+  },
 ];
+
+// Industry benchmark scores by sector (average maturity by pillar)
+const INDUSTRY_BENCHMARKS: Record<Sector, Record<string, number>> = {
+  retail:        { strategy: 48, people: 42, process: 52, data: 45, tech: 50, ethics: 38, culture: 44, innovation: 40 },
+  fm:            { strategy: 40, people: 36, process: 48, data: 40, tech: 44, ethics: 34, culture: 38, innovation: 32 },
+  security:      { strategy: 52, people: 44, process: 50, data: 48, tech: 55, ethics: 50, culture: 40, innovation: 38 },
+  logistics:     { strategy: 45, people: 40, process: 55, data: 44, tech: 48, ethics: 36, culture: 42, innovation: 36 },
+  manufacturing: { strategy: 50, people: 38, process: 58, data: 46, tech: 52, ethics: 40, culture: 36, innovation: 42 },
+  corporate:     { strategy: 55, people: 50, process: 45, data: 48, tech: 50, ethics: 48, culture: 52, innovation: 44 },
+  other:         { strategy: 45, people: 40, process: 48, data: 42, tech: 46, ethics: 38, culture: 42, innovation: 36 },
+};
 
 function uid() {
   return Math.random().toString(36).slice(2, 10);
@@ -598,6 +685,79 @@ ${overall >= 70 ? "The organisation is well-positioned to accelerate AI adoption
 This assessment provides a point-in-time view of AI readiness and should be reviewed quarterly as capabilities evolve.`;
 }
 
+// ─── ROADMAP GENERATION ──────────────────────────────────────────────────────
+type RoadmapPriority = "Critical" | "Important" | "Strategic" | "Standard";
+type RoadmapItem = { pillar: string; PillarIcon: LucideIcon; action: string; priority: RoadmapPriority; score: number };
+type RoadmapPhase = {
+  phase: string;
+  timeline: string;
+  focus: string;
+  description: string;
+  color: string;
+  bgColor: string;
+  borderColor: string;
+  items: RoadmapItem[];
+};
+
+function generateRoadmap(assessment: Assessment): RoadmapPhase[] {
+  const pillarScores = PILLARS.map((p) => ({
+    pillar: p,
+    score: getWeightedPillarScore(p, assessment.scores),
+  }));
+
+  const critical = pillarScores.filter((p) => p.score < 40).sort((a, b) => a.score - b.score);
+  const developing = pillarScores.filter((p) => p.score >= 40 && p.score < 65).sort((a, b) => a.score - b.score);
+  const strong = pillarScores.filter((p) => p.score >= 65).sort((a, b) => b.score - a.score);
+
+  const buildItems = (list: typeof pillarScores, priority: RoadmapPriority): RoadmapItem[] =>
+    list.map(({ pillar, score }) => ({
+      pillar: pillar.title,
+      PillarIcon: pillar.Icon,
+      action: pillar.strategicRecommendations[assessment.sector].split(". ")[0] + ".",
+      priority,
+      score,
+    }));
+
+  return [
+    {
+      phase: "Phase 1 — Foundation",
+      timeline: "0–90 Days",
+      focus: "Address critical gaps & establish baseline",
+      description: "Stabilise high-risk areas and build the foundations needed before any AI initiative can succeed.",
+      color: "#9f1239",
+      bgColor: "#ffffff",
+      borderColor: "#e2e8f0",
+      items: critical.length > 0
+        ? buildItems(critical, "Critical")
+        : [{ pillar: "Quick Wins", PillarIcon: Zap, action: "Identify 2-3 lower-risk AI use cases that can deliver value within 60 days while broader capability building continues.", priority: "Standard", score: 70 }],
+    },
+    {
+      phase: "Phase 2 — Build",
+      timeline: "3–6 Months",
+      focus: "Develop capabilities & run targeted pilots",
+      description: "Move beyond foundations: build skills, launch focused pilots, and create the operating model for sustainable AI delivery.",
+      color: "#854d0e",
+      bgColor: "#ffffff",
+      borderColor: "#e2e8f0",
+      items: developing.length > 0
+        ? buildItems(developing, "Important")
+        : [{ pillar: "Pilot Acceleration", PillarIcon: Beaker, action: "Scale successful pilots to wider business units and deepen cross-functional integration of AI tools.", priority: "Important", score: 60 }],
+    },
+    {
+      phase: "Phase 3 — Scale",
+      timeline: "6–12 Months",
+      focus: "Scale proven solutions & measure impact",
+      description: "Translate proven pilots into enterprise-wide deployment with clear governance, KPIs and continuous improvement loops.",
+      color: "#065f46",
+      bgColor: "#ffffff",
+      borderColor: "#e2e8f0",
+      items: strong.length > 0
+        ? buildItems(strong.slice(0, 4), "Strategic")
+        : [{ pillar: "Enterprise Scaling", PillarIcon: Building2, action: "Establish enterprise AI governance, value tracking, and a continuous improvement framework across all business units.", priority: "Strategic", score: 75 }],
+    },
+  ];
+}
+
 function exportPdf(assessment: Assessment) {
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const W = 210;
@@ -615,9 +775,9 @@ function exportPdf(assessment: Assessment) {
   const dateStr = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 
   const addPageFooter = (pageNum: number) => {
-    doc.setFillColor(10, 22, 40);
+    doc.setFillColor(30, 27, 75);
     doc.rect(0, 285, W, 12, "F");
-    doc.setTextColor(148, 163, 184);
+    doc.setTextColor(165, 180, 252);
     doc.setFont("helvetica", "normal");
     doc.setFontSize(7);
     doc.text("AI Transformation Readiness Report — Confidential", MARGIN, 292);
@@ -628,18 +788,18 @@ function exportPdf(assessment: Assessment) {
     s >= 70 ? [5, 150, 105] : s >= 50 ? [8, 145, 178] : s >= 30 ? [217, 119, 6] : [239, 68, 68];
 
   // ─── PAGE 1: COVER ───────────────────────────────────────────────────────────
-  doc.setFillColor(10, 22, 40);
+  doc.setFillColor(30, 27, 75); // deep indigo
   doc.rect(0, 0, W, 297, "F");
 
-  // Accent bar
-  doc.setFillColor(8, 145, 178);
+  // Accent bar - indigo gradient effect (solid color simulation)
+  doc.setFillColor(99, 102, 241);
   doc.rect(0, 0, 6, 297, "F");
 
   // Logo / brand strip
-  doc.setTextColor(8, 145, 178);
+  doc.setTextColor(165, 180, 252);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8);
-  doc.text("AI READINESS ASSESSMENT PLATFORM", MARGIN + 6, 22);
+  doc.text("AI READINESS · 8-DIMENSION ENTERPRISE FRAMEWORK", MARGIN + 6, 22);
 
   // Main title
   doc.setTextColor(255, 255, 255);
@@ -648,7 +808,7 @@ function exportPdf(assessment: Assessment) {
   doc.text("Readiness Report", MARGIN + 6, 94);
 
   // Divider
-  doc.setFillColor(8, 145, 178);
+  doc.setFillColor(99, 102, 241);
   doc.rect(MARGIN + 6, 100, 80, 1.5, "F");
 
   // Org name
@@ -693,8 +853,8 @@ function exportPdf(assessment: Assessment) {
   doc.text(band.label, W - 50, 132, { align: "center" });
 
   // Bottom strip
-  doc.setFillColor(8, 145, 178, 0.15);
-  doc.setFillColor(15, 39, 68);
+  doc.setFillColor(20, 184, 166, 0.15);
+  doc.setFillColor(49, 46, 129);
   doc.rect(0, 265, W, 32, "F");
   doc.setFont("helvetica", "normal");
   doc.setFontSize(7.5);
@@ -707,9 +867,9 @@ function exportPdf(assessment: Assessment) {
   doc.addPage();
 
   const sectionHeader = (title: string, y: number): number => {
-    doc.setFillColor(10, 22, 40);
+    doc.setFillColor(30, 27, 75);
     doc.rect(0, y - 6, W, 14, "F");
-    doc.setFillColor(8, 145, 178);
+    doc.setFillColor(99, 102, 241);
     doc.rect(0, y - 6, 4, 14, "F");
     doc.setTextColor(255, 255, 255);
     doc.setFont("helvetica", "bold");
@@ -1027,12 +1187,40 @@ function getWeightLabel(weight: number) {
 }
 
 const PILLAR_COLORS = [
-  { from: "#0891b2", to: "#0369a1" },  // sky
-  { from: "#3b82f6", to: "#1d4ed8" },  // blue
-  { from: "#0d9488", to: "#047857" },  // teal
-  { from: "#059669", to: "#047857" },  // emerald
-  { from: "#d97706", to: "#b45309" },  // amber
+  { from: "#6366f1", to: "#4f46e5" },  // indigo - Strategy & Leadership
+  { from: "#3b82f6", to: "#2563eb" },  // blue - People & Capability
+  { from: "#06b6d4", to: "#0891b2" },  // cyan - Process & Operations
+  { from: "#14b8a6", to: "#0d9488" },  // teal - Data & Insight
+  { from: "#10b981", to: "#059669" },  // emerald - Technology & Integration
+  { from: "#8b5cf6", to: "#7c3aed" },  // violet - Ethics & Governance
+  { from: "#f43f5e", to: "#e11d48" },  // rose - Culture & Change
+  { from: "#f59e0b", to: "#d97706" },  // amber - Innovation & Experimentation
 ];
+
+// Smooth count-up animation for numeric displays
+function AnimatedNumber({ value, duration = 900, suffix = "", className = "" }: { value: number; duration?: number; suffix?: string; className?: string }) {
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    let startTime: number | null = null;
+    const startValue = displayValue;
+    const delta = value - startValue;
+    let rafId: number;
+    const step = (timestamp: number) => {
+      if (startTime === null) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      // ease-out-cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplayValue(Math.round(startValue + delta * eased));
+      if (progress < 1) rafId = requestAnimationFrame(step);
+    };
+    rafId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, duration]);
+
+  return <span className={className}>{displayValue}{suffix}</span>;
+}
 
 function ScoreRing({ score, size = 140 }: { score: number; size?: number }) {
   const strokeWidth = 10;
@@ -1050,7 +1238,7 @@ function ScoreRing({ score, size = 140 }: { score: number; size?: number }) {
           strokeDasharray={`${filled} ${circumference - filled}`} strokeLinecap="round" />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-3xl font-black text-white leading-none">{score}%</span>
+        <AnimatedNumber value={score} suffix="%" className="text-3xl font-black text-white leading-none" />
         <span className="text-xs text-slate-400 mt-1">Readiness</span>
       </div>
     </div>
@@ -1062,6 +1250,21 @@ export default function AIReadinessScorecardApp() {
   const [activeId, setActiveId] = useState<string>("");
   const [tab, setTab] = useState("assess");
   const [mounted, setMounted] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
+
+  useEffect(() => {
+    if (mounted && typeof window !== "undefined") {
+      const seenWelcome = localStorage.getItem("ai-readiness-welcome-seen-v1");
+      if (!seenWelcome) setShowWelcome(true);
+    }
+  }, [mounted]);
+
+  const dismissWelcome = () => {
+    setShowWelcome(false);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("ai-readiness-welcome-seen-v1", "true");
+    }
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -1147,6 +1350,7 @@ export default function AIReadinessScorecardApp() {
   const pillarData = PILLARS.map((pillar) => ({
     name: pillar.title.replace(" & ", "\n"),
     score: getWeightedPillarScore(pillar, active.scores),
+    benchmark: INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45,
     fullName: pillar.title,
     recommendation: pillar.strategicRecommendations[active.sector],
     businessImpact: pillar.businessImpact,
@@ -1159,15 +1363,68 @@ export default function AIReadinessScorecardApp() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-screen" style={{ background: "#fafafa" }}>
+      {/* WELCOME OVERLAY */}
+      {showWelcome && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in" style={{ background: "rgba(0, 0, 0, 0.75)", backdropFilter: "blur(12px)" }}>
+          <div className="relative max-w-2xl w-full rounded-3xl overflow-hidden animate-scale-in shadow-2xl" style={{ background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.1)" }}>
+            <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full opacity-60 blur-[100px] pointer-events-none" style={{ background: "radial-gradient(circle, #0066ff, transparent 60%)" }}></div>
+            <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full opacity-50 blur-[100px] pointer-events-none" style={{ background: "radial-gradient(circle, #ec4899, transparent 60%)" }}></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full opacity-30 blur-[100px] pointer-events-none" style={{ background: "radial-gradient(circle, #a855f7, transparent 60%)" }}></div>
+            <div className="relative p-8 md:p-12">
+              <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold tracking-wide text-white/90 mb-5" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", backdropFilter: "blur(10px)" }}>
+                <Sparkles className="h-3 w-3" /> WELCOME
+              </div>
+              <h2 className="text-3xl md:text-5xl font-black text-white leading-[1.05] tracking-tight">
+                Assess your <span style={{ background: "linear-gradient(90deg, #0066ff, #a855f7 45%, #ec4899 90%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>AI readiness</span> like a Fortune 500 leader.
+              </h2>
+              <p className="mt-5 text-white/70 text-base leading-relaxed">
+                A professional 8-dimension framework with weighted scoring, sector-specific benchmarks, and an actionable 12-month roadmap — all in one beautifully designed tool.
+              </p>
+              <div className="mt-7 grid gap-3 md:grid-cols-2">
+                {[
+                  { icon: <Target className="h-4 w-4" />, title: "8 Dimensions", desc: "Strategy, People, Process, Data, Tech, Ethics, Culture, Innovation" },
+                  { icon: <Activity className="h-4 w-4" />, title: "Industry Benchmarks", desc: "Compare against sector averages from real organisations" },
+                  { icon: <TrendingUp className="h-4 w-4" />, title: "Phased Roadmap", desc: "0–90 day foundations through 12-month enterprise scaling" },
+                  { icon: <FileText className="h-4 w-4" />, title: "Executive PDF", desc: "Beautifully designed, board-ready report in one click" },
+                ].map((item) => (
+                  <div key={item.title} className="rounded-xl p-3.5 flex items-start gap-3" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                    <div className="rounded-lg p-2 flex-shrink-0" style={{ background: "rgba(255,255,255,0.06)", color: "#fff" }}>{item.icon}</div>
+                    <div>
+                      <p className="text-sm font-bold text-white">{item.title}</p>
+                      <p className="text-xs text-white/60 mt-0.5 leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-7 flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={dismissWelcome}
+                  className="group inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-black bg-white transition hover:scale-[1.02] hover:shadow-[0_0_32px_rgba(255,255,255,0.35)]"
+                >
+                  Start My Assessment <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                </button>
+                <button
+                  onClick={dismissWelcome}
+                  className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-white/80 transition hover:bg-white/5 hover:text-white"
+                  style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.15)" }}
+                >
+                  Skip for now
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* HERO HEADER */}
-      <div style={{ background: "linear-gradient(135deg, #0a1628 0%, #0f2744 40%, #0c1e38 100%)" }}>
-        <div className="mx-auto max-w-7xl px-4 pt-6 pb-0 md:px-8">
+      <div className="aurora-bg" style={{ background: "radial-gradient(ellipse at 20% 0%, rgba(0,102,255,0.35) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(236,72,153,0.25) 0%, transparent 50%), radial-gradient(ellipse at 50% 50%, rgba(168,85,247,0.2) 0%, transparent 60%), #0a0a0a" }}>
+        <div className="relative mx-auto max-w-7xl px-4 pt-6 pb-0 md:px-8">
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div className="flex-1 min-w-0">
               <div className="mb-3 flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold tracking-wide text-sky-300" style={{ background: "rgba(8,145,178,0.2)", border: "1px solid rgba(8,145,178,0.4)" }}>
-                  <Sparkles className="h-3 w-3" /> AI READINESS ASSESSMENT
+                <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold tracking-wide text-white/90 animate-fade-in" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", backdropFilter: "blur(10px)" }}>
+                  <Sparkles className="h-3 w-3" /> AI READINESS · 8-DIMENSION FRAMEWORK
                 </span>
                 {sectorInfo && (
                   <span className="rounded-full px-3 py-1 text-xs font-medium text-slate-300" style={{ background: "rgba(255,255,255,0.08)" }}>
@@ -1175,24 +1432,24 @@ export default function AIReadinessScorecardApp() {
                   </span>
                 )}
               </div>
-              <h1 className="text-2xl font-black tracking-tight text-white md:text-3xl leading-tight">
+              <h1 className="text-2xl font-black tracking-tight text-white md:text-4xl leading-tight animate-slide-up">
                 {active.businessName ? <>{active.businessName}<br /></> : null}
-                <span style={{ background: "linear-gradient(90deg, #38bdf8, #0d9488)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                <span style={{ background: "linear-gradient(90deg, #0066ff, #a855f7 45%, #ec4899 90%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundSize: "200% 200%" }} className="animate-gradient">
                   AI Transformation Readiness
                 </span>
               </h1>
-              <p className="mt-2 text-sm text-slate-400">Enterprise-grade · Weighted scoring · Sector-specific recommendations</p>
+              <p className="mt-2 text-sm text-indigo-200/70">8 Dimensions · Industry Benchmarks · Phased Roadmap · Sector-specific Insight</p>
               <div className="mt-5 flex flex-wrap gap-2">
-                <button onClick={createNew} className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold text-white shadow-lg transition hover:opacity-90" style={{ background: "linear-gradient(135deg, #0891b2, #0d9488)" }}>
+                <button onClick={createNew} className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-black bg-white transition hover:scale-[1.02] hover:shadow-[0_0_24px_rgba(255,255,255,0.3)]">
                   <Plus className="h-4 w-4" /> New Assessment
                 </button>
-                <button onClick={() => exportPdf(active)} className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
+                <button onClick={() => exportPdf(active)} className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white/90 transition hover:text-white hover:scale-[1.02]" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(10px)" }}>
                   <Download className="h-4 w-4" /> PDF
                 </button>
-                <button onClick={() => mailTo(active)} className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
+                <button onClick={() => mailTo(active)} className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white/90 transition hover:text-white hover:scale-[1.02]" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(10px)" }}>
                   <Mail className="h-4 w-4" /> Email
                 </button>
-                <button onClick={duplicate} className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80" style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}>
+                <button onClick={duplicate} className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white/90 transition hover:text-white hover:scale-[1.02]" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(10px)" }}>
                   <Copy className="h-4 w-4" /> Duplicate
                 </button>
               </div>
@@ -1216,18 +1473,18 @@ export default function AIReadinessScorecardApp() {
         {/* KPI strip */}
         <div className="mt-6" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
           <div className="mx-auto max-w-7xl px-4 py-4 md:px-8">
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-4 stagger-children">
               {[
-                { label: "AI Maturity", value: `${overall}%`, sub: band.label, icon: <TrendingUp className="h-3.5 w-3.5" />, color: "#38bdf8" },
-                { label: "Operational Impact", value: `${operationalImpact}%`, sub: "Process & tech", icon: <Activity className="h-3.5 w-3.5" />, color: "#7dd3fc" },
-                { label: "Efficiency Opportunity", value: `${efficiencyOpportunity}%`, sub: "Improvement gap", icon: <Zap className="h-3.5 w-3.5" />, color: "#38bdf8" },
-                { label: "Risk Exposure", value: `${riskExposure}%`, sub: `${risk.level.charAt(0).toUpperCase() + risk.level.slice(1)} risk`, icon: <AlertTriangle className="h-3.5 w-3.5" />, color: riskExposure >= 60 ? "#f87171" : riskExposure >= 30 ? "#fbbf24" : "#34d399" },
+                { label: "AI Maturity", numeric: overall, sub: band.label, icon: <TrendingUp className="h-3.5 w-3.5" />, color: "#a5b4fc" },
+                { label: "Operational Impact", numeric: operationalImpact, sub: "Process & tech", icon: <Activity className="h-3.5 w-3.5" />, color: "#5eead4" },
+                { label: "Efficiency Opportunity", numeric: efficiencyOpportunity, sub: "Improvement gap", icon: <Zap className="h-3.5 w-3.5" />, color: "#c4b5fd" },
+                { label: "Risk Exposure", numeric: riskExposure, sub: `${risk.level.charAt(0).toUpperCase() + risk.level.slice(1)} risk`, icon: <AlertTriangle className="h-3.5 w-3.5" />, color: riskExposure >= 60 ? "#fda4af" : riskExposure >= 30 ? "#fcd34d" : "#86efac" },
               ].map((kpi) => (
-                <div key={kpi.label} className="rounded-2xl p-3" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                <div key={kpi.label} className="glass-strong rounded-2xl p-3 hover-lift">
                   <div className="flex items-center gap-1.5 text-xs font-semibold mb-1.5" style={{ color: kpi.color }}>
                     {kpi.icon} {kpi.label}
                   </div>
-                  <p className="text-2xl font-black text-white">{kpi.value}</p>
+                  <AnimatedNumber value={kpi.numeric} suffix="%" className="text-2xl font-black text-white" />
                   <p className="text-xs text-slate-400 mt-0.5">{kpi.sub}</p>
                 </div>
               ))}
@@ -1253,15 +1510,15 @@ export default function AIReadinessScorecardApp() {
                   const itemSector = SECTORS.find((s) => s.value === item.sector);
                   const isActive = item.id === active.id;
                   return (
-                    <div key={item.id} className="rounded-xl p-3 transition cursor-pointer" style={{ border: isActive ? "1px solid #0891b2" : "1px solid #f1f5f9", background: isActive ? "#f0f9ff" : "white" }}>
+                    <div key={item.id} className="rounded-xl p-3 transition cursor-pointer hover-lift" style={{ border: isActive ? "1px solid #6366f1" : "1px solid #f1f5f9", background: isActive ? "linear-gradient(135deg, #eef2ff, #f5f3ff)" : "white" }}>
                       <button className="w-full text-left" onClick={() => setActiveId(item.id)}>
                         <div className="flex items-start justify-between gap-2">
                           <div className="min-w-0">
-                            <p className="truncate text-sm font-bold" style={{ color: isActive ? "#0c4a6e" : "#0f172a" }}>{item.name}</p>
+                            <p className="truncate text-sm font-bold" style={{ color: isActive ? "#3730a3" : "#0f172a" }}>{item.name}</p>
                             <p className="truncate text-xs text-slate-400 mt-0.5">{item.businessName || "No organisation set"}</p>
-                            {itemSector && <span className="inline-block mt-1.5 text-xs px-2 py-0.5 rounded-full" style={{ background: isActive ? "#bae6fd" : "#f1f5f9", color: isActive ? "#0c4a6e" : "#64748b" }}>{itemSector.label}</span>}
+                            {itemSector && <span className="inline-block mt-1.5 text-xs px-2 py-0.5 rounded-full" style={{ background: isActive ? "#c7d2fe" : "#f1f5f9", color: isActive ? "#3730a3" : "#64748b" }}>{itemSector.label}</span>}
                           </div>
-                          <span className="text-xs font-black rounded-full px-2.5 py-1 flex-shrink-0" style={{ background: itemOverall >= 70 ? "#d1fae5" : itemOverall >= 50 ? "#e0f2fe" : itemOverall >= 30 ? "#fef3c7" : "#fee2e2", color: itemOverall >= 70 ? "#065f46" : itemOverall >= 50 ? "#0c4a6e" : itemOverall >= 30 ? "#92400e" : "#991b1b" }}>
+                          <span className="text-xs font-black rounded-full px-2.5 py-1 flex-shrink-0" style={{ background: itemOverall >= 70 ? "#d1fae5" : itemOverall >= 50 ? "#e0e7ff" : itemOverall >= 30 ? "#fef3c7" : "#ffe4e6", color: itemOverall >= 70 ? "#065f46" : itemOverall >= 50 ? "#3730a3" : itemOverall >= 30 ? "#92400e" : "#9f1239" }}>
                             {itemOverall}%
                           </span>
                         </div>
@@ -1276,20 +1533,70 @@ export default function AIReadinessScorecardApp() {
                 })}
               </div>
             </div>
+
+            {/* Framework info card */}
+            <div className="relative rounded-2xl overflow-hidden hover-lift" style={{ background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.08)" }}>
+              <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full opacity-40 blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, #0066ff, transparent)" }} />
+              <div className="absolute -bottom-20 -left-10 w-40 h-40 rounded-full opacity-30 blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, #ec4899, transparent)" }} />
+              <div className="relative p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Sparkles className="h-4 w-4 text-white" />
+                  <p className="text-xs font-bold uppercase tracking-wider text-white">8-Dimension Framework</p>
+                </div>
+                <p className="text-[11px] text-white/60 leading-relaxed mb-3">Aligned with Microsoft, AIMRI and EU AI Act standards.</p>
+                <div className="space-y-1">
+                  {PILLARS.map((p, i) => (
+                    <div key={p.id} className="flex items-center gap-2 rounded-md px-2 py-1.5" style={{ background: "rgba(255,255,255,0.04)" }}>
+                      <div className="w-1.5 h-6 rounded-full flex-shrink-0" style={{ background: `linear-gradient(180deg, ${PILLAR_COLORS[i].from}, ${PILLAR_COLORS[i].to})` }} />
+                      <span className="text-xs text-white/85 font-medium leading-tight">{p.title}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Quick stats card */}
+            <div className="rounded-2xl bg-white shadow-sm overflow-hidden hover-lift" style={{ border: "1px solid #e2e8f0" }}>
+              <div className="px-4 py-3" style={{ borderBottom: "1px solid #f1f5f9" }}>
+                <p className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-indigo-600" />
+                  Active Assessment
+                </p>
+              </div>
+              <div className="p-4 space-y-2.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-500">Maturity</span>
+                  <span className="font-bold" style={{ color: overall >= 70 ? "#10b981" : overall >= 50 ? "#6366f1" : overall >= 30 ? "#f59e0b" : "#f43f5e" }}>{band.label}</span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-500">Risk profile</span>
+                  <span className="font-bold capitalize" style={{ color: risk.level === "high" ? "#f43f5e" : risk.level === "medium" ? "#f59e0b" : "#10b981" }}>{risk.level}</span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-500">ROI range</span>
+                  <span className="font-bold text-slate-700">{roi.range}</span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-500">Last updated</span>
+                  <span className="font-bold text-slate-700">{new Date(active.updatedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Main content */}
           <div>
             <Tabs value={tab} onValueChange={setTab} className="space-y-5">
-              <TabsList className="grid w-full grid-cols-5 rounded-2xl bg-white shadow-sm p-1 h-auto" style={{ border: "1px solid #e2e8f0" }}>
+              <TabsList className="grid w-full grid-cols-6 rounded-full bg-black/90 p-1 h-auto shadow-sm" style={{ border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(10px)" }}>
                 {[
                   { value: "assess", label: "Assess", icon: <Target className="h-3.5 w-3.5" /> },
                   { value: "results", label: "Results", icon: <Activity className="h-3.5 w-3.5" /> },
+                  { value: "roadmap", label: "Roadmap", icon: <TrendingUp className="h-3.5 w-3.5" /> },
                   { value: "report", label: "Report", icon: <FileText className="h-3.5 w-3.5" /> },
-                  { value: "compare", label: "Compare", icon: <TrendingUp className="h-3.5 w-3.5" /> },
+                  { value: "compare", label: "Compare", icon: <Building2 className="h-3.5 w-3.5" /> },
                   { value: "recommendations", label: "Actions", icon: <Sparkles className="h-3.5 w-3.5" /> },
                 ].map((t) => (
-                  <TabsTrigger key={t.value} value={t.value} className="flex items-center justify-center gap-1.5 rounded-xl text-xs font-semibold py-2.5 transition data-[state=active]:text-white data-[state=active]:shadow-sm" style={{ ["--tw-ring-color" as string]: "transparent" }}>
+                  <TabsTrigger key={t.value} value={t.value} className="flex items-center justify-center gap-1.5 rounded-full text-xs font-semibold py-2.5 transition text-white/60 hover:text-white/90 data-[state=active]:text-black data-[state=active]:bg-white data-[state=active]:shadow-[0_0_16px_rgba(255,255,255,0.25)]" style={{ ["--tw-ring-color" as string]: "transparent" }}>
                     {t.icon}
                     <span className="hidden sm:inline">{t.label}</span>
                   </TabsTrigger>
@@ -1300,9 +1607,9 @@ export default function AIReadinessScorecardApp() {
               <TabsContent value="assess" className="space-y-5">
                 {/* Assessment Details */}
                 <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
-                  <div className="px-6 py-4" style={{ background: "linear-gradient(135deg, #0a1628, #1e293b)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                  <div className="px-6 py-4" style={{ background: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
                     <h2 className="text-base font-bold text-white">Assessment Details</h2>
-                    <p className="text-xs text-slate-400 mt-0.5">Set context before completing the pillar questions.</p>
+                    <p className="text-xs text-white/60 mt-0.5">Set context before completing the pillar questions.</p>
                   </div>
                   <div className="p-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <div className="space-y-1.5">
@@ -1339,9 +1646,9 @@ export default function AIReadinessScorecardApp() {
 
                 {/* Business Profile */}
                 <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
-                  <div className="px-6 py-4" style={{ background: "linear-gradient(135deg, #0a1628, #1e293b)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                  <div className="px-6 py-4" style={{ background: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
                     <h2 className="text-base font-bold text-white">Business Profile</h2>
-                    <p className="text-xs text-slate-400 mt-0.5">Organisation context that influences readiness interpretation.</p>
+                    <p className="text-xs text-white/60 mt-0.5">Organisation context that influences readiness interpretation.</p>
                   </div>
                   <div className="p-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <div className="space-y-1.5">
@@ -1386,16 +1693,17 @@ export default function AIReadinessScorecardApp() {
                   </div>
                 </div>
 
-                {/* Pillar cards */}
+                {/* Pillar cards — 2 per row on desktop for denser scanning */}
+                <div className="grid gap-5 lg:grid-cols-2">
                 {PILLARS.map((pillar, pillarIdx) => {
                   const pillarScore = getWeightedPillarScore(pillar, active.scores);
                   const color = PILLAR_COLORS[pillarIdx];
                   return (
-                    <div key={pillar.id} className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0", borderLeft: `4px solid ${color.from}` }}>
+                    <div key={pillar.id} className="rounded-2xl bg-white shadow-sm overflow-hidden hover-lift animate-slide-up" style={{ border: "1px solid #e2e8f0", borderLeft: `4px solid ${color.from}`, animationDelay: `${pillarIdx * 60}ms` }}>
                       <div className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
                         <div className="flex items-start gap-4">
-                          <div className="flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-md" style={{ background: `linear-gradient(135deg, ${color.from}, ${color.to})` }}>
-                            {pillar.icon}
+                          <div className="flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg" style={{ background: `linear-gradient(135deg, ${color.from}, ${color.to})`, boxShadow: `0 8px 20px -4px ${color.from}66` }}>
+                            <pillar.Icon className="h-5 w-5 text-white" strokeWidth={2.2} />
                           </div>
                           <div>
                             <h3 className="text-lg font-black text-slate-900">{pillar.title}</h3>
@@ -1403,13 +1711,21 @@ export default function AIReadinessScorecardApp() {
                             <p className="text-xs text-slate-400 mt-1 italic">{pillar.businessImpact}</p>
                           </div>
                         </div>
-                        <div className="min-w-[200px]">
+                        <div className="min-w-[220px]">
                           <div className="flex justify-between text-sm mb-2">
                             <span className="text-xs text-slate-400 font-semibold uppercase tracking-wide">Weighted Score</span>
                             <span className="text-sm font-black" style={{ color: color.from }}>{pillarScore}%</span>
                           </div>
-                          <div className="h-2.5 rounded-full bg-slate-100 overflow-hidden">
-                            <div className="h-full rounded-full transition-all duration-700" style={{ width: `${pillarScore}%`, background: `linear-gradient(90deg, ${color.from}, ${color.to})` }} />
+                          <div className="relative h-2.5 rounded-full bg-slate-100 overflow-hidden">
+                            <div className="h-full rounded-full progress-fill" style={{ width: `${pillarScore}%`, background: `linear-gradient(90deg, ${color.from}, ${color.to})` }} />
+                            {/* Benchmark marker */}
+                            <div className="absolute top-0 h-full w-0.5 bg-slate-700/60" style={{ left: `${INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45}%` }} title={`Industry benchmark: ${INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45}%`} />
+                          </div>
+                          <div className="flex items-center justify-between mt-1.5 text-[10px] text-slate-400">
+                            <span>vs. {sectorInfo?.label} avg <span className="font-bold text-slate-600">{INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45}%</span></span>
+                            <span className={`font-bold ${pillarScore > (INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45) ? "text-emerald-600" : "text-amber-600"}`}>
+                              {pillarScore > (INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45) ? "↑ Above" : "↓ Below"}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -1418,9 +1734,10 @@ export default function AIReadinessScorecardApp() {
                         {pillar.factors.map((factor) => {
                           const weightInfo = getWeightLabel(factor.weight);
                           const currentScore = active.scores[factor.id];
-                          const btnBg = ["", "#ef4444", "#f97316", "#eab308", "#14b8a6", "#22c55e"];
+                          // Muted, Framer-aligned score palette — dark & sophisticated, still signals low-to-high
+                          const btnBg = ["", "#9f1239", "#9a3412", "#854d0e", "#115e59", "#065f46"];
                           return (
-                            <div key={factor.id} className="rounded-xl p-4" style={{ border: "1px solid #f1f5f9", background: "#f8fafc" }}>
+                            <div key={factor.id} className="rounded-xl p-4 transition-colors hover:bg-white hover:shadow-sm" style={{ border: "1px solid #f1f5f9", background: "#f8fafc" }}>
                               <div className="mb-3 flex items-start justify-between gap-2">
                                 <p className="text-sm font-bold text-slate-800">{factor.label}</p>
                                 <span className={`flex-shrink-0 text-xs px-2 py-0.5 rounded-full font-semibold ${weightInfo.color}`}>{weightInfo.label}</span>
@@ -1432,17 +1749,17 @@ export default function AIReadinessScorecardApp() {
                                     <button
                                       key={value}
                                       onClick={() => updateScore(factor.id, value)}
-                                      className="rounded-xl py-3 text-xs font-bold transition"
+                                      className="rounded-xl py-3 text-xs font-bold score-btn"
                                       style={{
                                         background: isSelected ? btnBg[value] : "white",
                                         color: isSelected ? "white" : "#94a3b8",
                                         border: isSelected ? `2px solid ${btnBg[value]}` : "2px solid #e2e8f0",
                                         transform: isSelected ? "scale(1.08)" : "scale(1)",
-                                        boxShadow: isSelected ? `0 4px 12px ${btnBg[value]}40` : "none",
+                                        boxShadow: isSelected ? `0 6px 16px ${btnBg[value]}55` : "none",
                                       }}
                                     >
                                       <div className="text-base leading-none">{value}</div>
-                                      <div className="mt-1 text-[10px] hidden md:block leading-tight opacity-80">{SCALE[value].split(" ")[0]}</div>
+                                      <div className="mt-1 text-[10px] hidden md:block leading-tight opacity-80 truncate px-0.5">{SHORT_SCALE[value]}</div>
                                     </button>
                                   );
                                 })}
@@ -1455,6 +1772,7 @@ export default function AIReadinessScorecardApp() {
                     </div>
                   );
                 })}
+                </div>
               </TabsContent>
 
               {/* ─── RESULTS TAB ─── */}
@@ -1469,14 +1787,16 @@ export default function AIReadinessScorecardApp() {
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={pillarData}>
                           <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                          <XAxis dataKey="fullName" tick={{ fontSize: 11, fill: "#64748b" }} interval={0} angle={-18} textAnchor="end" height={80} />
+                          <XAxis dataKey="fullName" tick={{ fontSize: 10, fill: "#64748b" }} interval={0} angle={-25} textAnchor="end" height={90} />
                           <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: "#64748b" }} />
                           <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0", boxShadow: "0 10px 25px rgba(0,0,0,0.1)" }} />
-                          <Bar dataKey="score" radius={[8, 8, 0, 0]}>
+                          <Legend wrapperStyle={{ fontSize: 11, paddingTop: 8 }} />
+                          <Bar dataKey="score" name="Your Score" radius={[8, 8, 0, 0]}>
                             {pillarData.map((_, index) => (
-                              <Cell key={`cell-${index}`} fill={PILLAR_COLORS[index]?.from || "#0891b2"} />
+                              <Cell key={`cell-${index}`} fill={PILLAR_COLORS[index]?.from || "#6366f1"} />
                             ))}
                           </Bar>
+                          <Bar dataKey="benchmark" name="Industry Avg" radius={[8, 8, 0, 0]} fill="#94a3b8" fillOpacity={0.5} />
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
@@ -1493,7 +1813,9 @@ export default function AIReadinessScorecardApp() {
                           <PolarGrid stroke="#e2e8f0" />
                           <PolarAngleAxis dataKey="fullName" tick={{ fontSize: 11, fill: "#64748b" }} />
                           <PolarRadiusAxis domain={[0, 100]} tick={{ fontSize: 10, fill: "#94a3b8" }} />
-                          <Radar dataKey="score" fill="#0891b2" fillOpacity={0.2} stroke="#0891b2" strokeWidth={2.5} />
+                          <Radar name="Your Score" dataKey="score" fill="#6366f1" fillOpacity={0.25} stroke="#6366f1" strokeWidth={2.5} />
+                          <Radar name="Industry Benchmark" dataKey="benchmark" fill="#14b8a6" fillOpacity={0.1} stroke="#14b8a6" strokeWidth={2} strokeDasharray="4 4" />
+                          <Legend wrapperStyle={{ fontSize: 11, paddingTop: 8 }} />
                           <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0" }} />
                         </RadarChart>
                       </ResponsiveContainer>
@@ -1502,10 +1824,10 @@ export default function AIReadinessScorecardApp() {
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-3">
-                  <div className={`rounded-2xl p-5 ${risk.level === "high" ? "bg-red-50 border-2 border-red-200" : risk.level === "medium" ? "bg-amber-50 border-2 border-amber-200" : "bg-emerald-50 border-2 border-emerald-200"}`}>
+                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0", borderTop: `3px solid ${risk.level === "high" ? "#9f1239" : risk.level === "medium" ? "#854d0e" : "#065f46"}` }}>
                     <div className="flex items-center gap-2 mb-3">
-                      <AlertTriangle className={`h-5 w-5 ${risk.level === "high" ? "text-red-600" : risk.level === "medium" ? "text-amber-600" : "text-emerald-600"}`} />
-                      <span className="font-black text-slate-800">Risk Assessment</span>
+                      <AlertTriangle className="h-4 w-4 text-slate-800" strokeWidth={2.2} />
+                      <span className="font-black text-slate-900 tracking-tight">Risk Assessment</span>
                     </div>
                     <div className="flex items-center gap-4">
                       <div className="h-24 w-24">
@@ -1514,48 +1836,48 @@ export default function AIReadinessScorecardApp() {
                         </ResponsiveContainer>
                       </div>
                       <div>
-                        <p className={`text-2xl font-black ${risk.level === "high" ? "text-red-700" : risk.level === "medium" ? "text-amber-700" : "text-emerald-700"}`}>
+                        <p className="text-2xl font-black tracking-tight" style={{ color: risk.level === "high" ? "#9f1239" : risk.level === "medium" ? "#854d0e" : "#065f46" }}>
                           {risk.level.charAt(0).toUpperCase() + risk.level.slice(1)}
                         </p>
                         <p className="text-sm text-slate-500 mt-0.5">Score: {risk.score}/100</p>
                       </div>
                     </div>
                     {risk.factors.length > 0 && (
-                      <div className="mt-3 pt-3" style={{ borderTop: "1px solid rgba(0,0,0,0.08)" }}>
+                      <div className="mt-3 pt-3" style={{ borderTop: "1px solid #f1f5f9" }}>
                         <p className="text-xs font-bold text-slate-700 mb-1.5">Critical Factors:</p>
-                        <ul className="space-y-1">{risk.factors.map((f, i) => <li key={i} className="text-xs text-slate-600 flex items-start gap-1"><span className="text-red-400 mt-0.5 flex-shrink-0">•</span>{f}</li>)}</ul>
+                        <ul className="space-y-1">{risk.factors.map((f, i) => <li key={i} className="text-xs text-slate-600 flex items-start gap-1"><span className="text-slate-400 mt-0.5 flex-shrink-0">•</span>{f}</li>)}</ul>
                       </div>
                     )}
                   </div>
 
-                  <div className={`rounded-2xl p-5 border-2 ${impact.color}`}>
+                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #0a0a0a" }}>
                     <div className="flex items-center gap-2 mb-3">
-                      <Building2 className="h-5 w-5" />
-                      <span className="font-black">Business Impact</span>
+                      <Building2 className="h-4 w-4 text-slate-800" strokeWidth={2.2} />
+                      <span className="font-black text-slate-900 tracking-tight">Business Impact</span>
                     </div>
-                    <p className="text-xl font-black leading-tight">{impact.category}</p>
-                    <p className="mt-2 text-sm leading-relaxed opacity-80">{impact.description}</p>
+                    <p className="text-xl font-black text-slate-900 leading-tight tracking-tight">{impact.category}</p>
+                    <p className="mt-2 text-sm text-slate-600 leading-relaxed">{impact.description}</p>
                   </div>
 
-                  <div className="rounded-2xl bg-white p-5 shadow-sm" style={{ border: "1px solid #e2e8f0" }}>
+                  <div className="rounded-2xl bg-white p-5 shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #0066ff" }}>
                     <div className="flex items-center gap-2 mb-3">
-                      <TrendingUp className="h-5 w-5 text-sky-600" />
-                      <span className="font-black text-slate-800">ROI Opportunity</span>
+                      <TrendingUp className="h-4 w-4 text-slate-800" strokeWidth={2.2} />
+                      <span className="font-black text-slate-900 tracking-tight">ROI Opportunity</span>
                     </div>
-                    <p className="text-4xl font-black" style={{ background: "linear-gradient(135deg, #0891b2, #0d9488)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{roi.range}</p>
+                    <p className="text-4xl font-black tracking-tight" style={{ background: "linear-gradient(135deg, #0066ff, #a855f7 60%, #ec4899)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{roi.range}</p>
                     <p className="text-xs text-slate-400 mt-1 mb-4">Efficiency improvement potential</p>
                     <div className="grid grid-cols-3 gap-2 text-center">
-                      <div className="rounded-xl p-2" style={{ background: "#f8fafc", border: "1px solid #e2e8f0" }}>
-                        <p className="text-xs text-slate-400">Low</p>
+                      <div className="rounded-xl p-2" style={{ background: "#fafafa", border: "1px solid #f1f5f9" }}>
+                        <p className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Low</p>
                         <p className="text-sm font-black text-slate-700">{roi.scenarios.low}</p>
                       </div>
-                      <div className="rounded-xl p-2" style={{ background: "#e0f2fe", border: "1px solid #bae6fd" }}>
-                        <p className="text-xs text-sky-500">Mid</p>
-                        <p className="text-sm font-black text-sky-700">{roi.scenarios.mid}</p>
+                      <div className="rounded-xl p-2" style={{ background: "#fafafa", border: "1px solid #f1f5f9" }}>
+                        <p className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Mid</p>
+                        <p className="text-sm font-black text-slate-900">{roi.scenarios.mid}</p>
                       </div>
-                      <div className="rounded-xl p-2" style={{ background: "#f0fdfa", border: "1px solid #99f6e4" }}>
-                        <p className="text-xs text-teal-500">High</p>
-                        <p className="text-sm font-black text-teal-700">{roi.scenarios.high}</p>
+                      <div className="rounded-xl p-2" style={{ background: "#0a0a0a", border: "1px solid #0a0a0a" }}>
+                        <p className="text-[10px] uppercase tracking-wider text-white/60 font-bold">High</p>
+                        <p className="text-sm font-black text-white">{roi.scenarios.high}</p>
                       </div>
                     </div>
                     <p className="mt-2 text-xs text-slate-400">{roi.confidence} confidence</p>
@@ -1563,40 +1885,40 @@ export default function AIReadinessScorecardApp() {
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2">
-                  <div className="rounded-2xl overflow-hidden" style={{ background: "#f0fdf4", border: "1px solid #bbf7d0" }}>
-                    <div className="px-5 py-4" style={{ borderBottom: "1px solid #bbf7d0" }}>
-                      <div className="flex items-center gap-2"><Target className="h-4 w-4 text-emerald-700" /><h3 className="font-black text-emerald-900">Top 3 AI Opportunities</h3></div>
-                      <p className="text-xs text-emerald-600 mt-0.5">Highest-impact opportunities for {sectorInfo?.label}</p>
+                  <div className="rounded-2xl overflow-hidden bg-white shadow-sm" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #059669" }}>
+                    <div className="px-5 py-4" style={{ borderBottom: "1px solid #f1f5f9" }}>
+                      <div className="flex items-center gap-2"><Target className="h-4 w-4 text-emerald-700" strokeWidth={2.2} /><h3 className="font-black text-slate-900 tracking-tight">Top 3 AI Opportunities</h3></div>
+                      <p className="text-xs text-slate-500 mt-0.5">Highest-impact opportunities for {sectorInfo?.label}</p>
                     </div>
-                    <div className="p-4 space-y-3">
+                    <div className="p-4 space-y-2.5">
                       {topOpportunities.map((opp, idx) => (
-                        <div key={idx} className="rounded-xl bg-white p-4" style={{ border: "1px solid #bbf7d0" }}>
+                        <div key={idx} className="rounded-xl p-4 hover-lift" style={{ border: "1px solid #f1f5f9", background: "#fafafa" }}>
                           <div className="flex items-start justify-between gap-2">
                             <div>
                               <p className="font-bold text-slate-900 text-sm">{opp.title}</p>
-                              <p className="text-xs text-slate-500 mt-1">{opp.description}</p>
+                              <p className="text-xs text-slate-500 mt-1 leading-relaxed">{opp.description}</p>
                             </div>
-                            <span className="flex-shrink-0 text-xs px-2 py-1 rounded-full font-bold" style={{ background: "#d1fae5", color: "#065f46" }}>{opp.impact}</span>
+                            <span className="flex-shrink-0 text-[10px] px-2 py-1 rounded-full font-bold tracking-tight" style={{ background: "#064e3b", color: "#ecfdf5" }}>{opp.impact}</span>
                           </div>
                         </div>
                       ))}
                     </div>
                   </div>
 
-                  <div className="rounded-2xl overflow-hidden" style={{ background: "#fff1f2", border: "1px solid #fecdd3" }}>
-                    <div className="px-5 py-4" style={{ borderBottom: "1px solid #fecdd3" }}>
-                      <div className="flex items-center gap-2"><AlertTriangle className="h-4 w-4 text-red-700" /><h3 className="font-black text-red-900">Top 3 Risks if No Action</h3></div>
-                      <p className="text-xs text-red-600 mt-0.5">Consequences of delaying AI transformation</p>
+                  <div className="rounded-2xl overflow-hidden bg-white shadow-sm" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #9f1239" }}>
+                    <div className="px-5 py-4" style={{ borderBottom: "1px solid #f1f5f9" }}>
+                      <div className="flex items-center gap-2"><AlertTriangle className="h-4 w-4 text-rose-800" strokeWidth={2.2} /><h3 className="font-black text-slate-900 tracking-tight">Top 3 Risks if No Action</h3></div>
+                      <p className="text-xs text-slate-500 mt-0.5">Consequences of delaying AI transformation</p>
                     </div>
-                    <div className="p-4 space-y-3">
+                    <div className="p-4 space-y-2.5">
                       {topRisks.map((r, idx) => (
-                        <div key={idx} className="rounded-xl bg-white p-4" style={{ border: "1px solid #fecdd3" }}>
+                        <div key={idx} className="rounded-xl p-4 hover-lift" style={{ border: "1px solid #f1f5f9", background: "#fafafa" }}>
                           <div className="flex items-start justify-between gap-2">
                             <div>
                               <p className="font-bold text-slate-900 text-sm">{r.title}</p>
-                              <p className="text-xs text-slate-500 mt-1">{r.description}</p>
+                              <p className="text-xs text-slate-500 mt-1 leading-relaxed">{r.description}</p>
                             </div>
-                            <span className="flex-shrink-0 text-xs px-2 py-1 rounded-full font-bold" style={{ background: r.severity === "High" ? "#fee2e2" : "#fef3c7", color: r.severity === "High" ? "#991b1b" : "#92400e" }}>{r.severity}</span>
+                            <span className="flex-shrink-0 text-[10px] px-2 py-1 rounded-full font-bold tracking-tight" style={{ background: r.severity === "High" ? "#9f1239" : "#854d0e", color: "#fff" }}>{r.severity}</span>
                           </div>
                         </div>
                       ))}
@@ -1609,21 +1931,111 @@ export default function AIReadinessScorecardApp() {
                     <h3 className="font-black text-slate-900">Interpretation</h3>
                   </div>
                   <div className="p-5 grid gap-3 md:grid-cols-3">
-                    <div className={`rounded-2xl border-2 p-5 ${band.tone}`}>
-                      <p className="text-xs font-bold uppercase tracking-wider opacity-60">Current Maturity</p>
-                      <p className="mt-2 text-3xl font-black">{band.label}</p>
-                      <p className="mt-2 text-sm leading-relaxed">{band.advice}</p>
+                    <div className="rounded-2xl p-5 hover-lift" style={{ background: "#fafafa", border: "1px solid #e2e8f0", borderTop: `3px solid ${overall >= 80 ? "#065f46" : overall >= 60 ? "#0066ff" : overall >= 40 ? "#854d0e" : "#9f1239"}` }}>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Current Maturity</p>
+                      <p className="mt-2 text-3xl font-black text-slate-900 tracking-tight">{band.label}</p>
+                      <p className="mt-2 text-sm text-slate-600 leading-relaxed">{band.advice}</p>
                     </div>
-                    <div className="rounded-2xl p-5" style={{ background: "#e0f2fe", border: "1px solid #bae6fd" }}>
-                      <p className="text-xs font-bold uppercase tracking-wider text-sky-500">Strongest Pillar</p>
-                      <p className="mt-2 text-xl font-black text-sky-900">{[...pillarData].sort((a, b) => b.score - a.score)[0].fullName}</p>
-                      <p className="mt-1 text-sm text-sky-600 font-semibold">{[...pillarData].sort((a, b) => b.score - a.score)[0].score}%</p>
+                    <div className="rounded-2xl p-5 hover-lift" style={{ background: "#fafafa", border: "1px solid #e2e8f0", borderTop: "3px solid #065f46" }}>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Strongest Pillar</p>
+                      <p className="mt-2 text-xl font-black text-slate-900 tracking-tight">{[...pillarData].sort((a, b) => b.score - a.score)[0].fullName}</p>
+                      <p className="mt-1 text-sm font-bold text-emerald-800">{[...pillarData].sort((a, b) => b.score - a.score)[0].score}%</p>
                     </div>
-                    <div className="rounded-2xl p-5" style={{ background: "#fffbeb", border: "1px solid #fde68a" }}>
-                      <p className="text-xs font-bold uppercase tracking-wider text-amber-500">Priority Development</p>
-                      <p className="mt-2 text-xl font-black text-amber-900">{lowestPillars[0].fullName}</p>
-                      <p className="mt-1 text-sm text-amber-600 font-semibold">{lowestPillars[0].score}%</p>
+                    <div className="rounded-2xl p-5 hover-lift" style={{ background: "#fafafa", border: "1px solid #e2e8f0", borderTop: "3px solid #854d0e" }}>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Priority Development</p>
+                      <p className="mt-2 text-xl font-black text-slate-900 tracking-tight">{lowestPillars[0].fullName}</p>
+                      <p className="mt-1 text-sm font-bold text-amber-800">{lowestPillars[0].score}%</p>
                     </div>
+                  </div>
+                </div>
+              </TabsContent>
+
+              {/* ─── ROADMAP TAB ─── */}
+              <TabsContent value="roadmap" className="space-y-5">
+                <div className="rounded-2xl bg-white shadow-sm overflow-hidden animate-fade-in" style={{ border: "1px solid #e2e8f0" }}>
+                  <div className="relative px-6 py-5 overflow-hidden" style={{ background: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                    <div className="absolute -top-20 -right-10 w-60 h-60 rounded-full opacity-50 blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, #0066ff, transparent 60%)" }} />
+                    <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full opacity-40 blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, #ec4899, transparent 60%)" }} />
+                    <div className="relative flex items-center gap-3">
+                      <div className="rounded-xl p-2.5" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                        <TrendingUp className="h-5 w-5 text-white" />
+                      </div>
+                      <div>
+                        <h2 className="text-lg font-black text-white tracking-tight">12-Month AI Maturity Roadmap</h2>
+                        <p className="text-xs text-white/60 mt-0.5">A phased plan tailored to your current readiness scores and sector context</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-5">
+                    <div className="grid gap-4 md:grid-cols-3 stagger-children">
+                      {generateRoadmap(active).map((phase, idx) => (
+                        <div key={phase.phase} className="rounded-2xl overflow-hidden hover-lift shadow-sm" style={{ background: phase.bgColor, border: `1px solid ${phase.borderColor}`, borderTop: `3px solid ${phase.color}` }}>
+                          <div className="px-5 py-4" style={{ borderBottom: `1px solid ${phase.borderColor}` }}>
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="inline-flex items-center justify-center w-8 h-8 rounded-xl text-xs font-black text-white" style={{ background: phase.color }}>
+                                {idx + 1}
+                              </span>
+                              <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: "white", color: phase.color, border: `1px solid ${phase.borderColor}` }}>
+                                <Clock className="h-3 w-3 inline-block mr-1 -mt-0.5" />
+                                {phase.timeline}
+                              </span>
+                            </div>
+                            <h3 className="font-black text-base mt-2" style={{ color: phase.color }}>{phase.phase}</h3>
+                            <p className="text-xs font-semibold text-slate-700 mt-1">{phase.focus}</p>
+                            <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">{phase.description}</p>
+                          </div>
+                          <div className="p-4 space-y-2.5">
+                            {phase.items.slice(0, 5).map((item, i) => (
+                              <div key={i} className="rounded-xl bg-white p-3 hover-lift" style={{ border: `1px solid ${phase.borderColor}` }}>
+                                <div className="flex items-start justify-between gap-2 mb-1.5">
+                                  <p className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                                    <item.PillarIcon className="h-4 w-4 flex-shrink-0" style={{ color: phase.color }} strokeWidth={2.2} />
+                                    {item.pillar}
+                                  </p>
+                                  <span className="flex-shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-md" style={{ background: phase.color, color: "white" }}>
+                                    {item.priority}
+                                  </span>
+                                </div>
+                                <p className="text-xs text-slate-600 leading-relaxed">{item.action}</p>
+                                {item.score < 100 && (
+                                  <div className="mt-2 flex items-center gap-2">
+                                    <div className="flex-1 h-1 rounded-full bg-slate-100 overflow-hidden">
+                                      <div className="h-full rounded-full progress-fill" style={{ width: `${item.score}%`, background: phase.color }} />
+                                    </div>
+                                    <span className="text-[10px] font-black text-slate-500">{item.score}%</span>
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Roadmap meta info */}
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #0066ff" }}>
+                    <div className="flex items-center gap-2 mb-2">
+                      <Target className="h-4 w-4 text-slate-800" strokeWidth={2.2} />
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Tailored to You</p>
+                    </div>
+                    <p className="text-sm text-slate-700 leading-relaxed">Roadmap actions are derived from your weighted pillar scores and {sectorInfo?.label} sector best practices.</p>
+                  </div>
+                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #065f46" }}>
+                    <div className="flex items-center gap-2 mb-2">
+                      <Activity className="h-4 w-4 text-slate-800" strokeWidth={2.2} />
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Review Quarterly</p>
+                    </div>
+                    <p className="text-sm text-slate-700 leading-relaxed">Re-run the assessment every 90 days to track progress and reprioritise as capabilities mature.</p>
+                  </div>
+                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #a855f7" }}>
+                    <div className="flex items-center gap-2 mb-2">
+                      <Sparkles className="h-4 w-4 text-slate-800" strokeWidth={2.2} />
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Phased ROI</p>
+                    </div>
+                    <p className="text-sm text-slate-700 leading-relaxed">Expect early efficiency gains in Phase 1, transformational impact emerging in Phase 2, and enterprise-wide value in Phase 3.</p>
                   </div>
                 </div>
               </TabsContent>
@@ -1697,9 +2109,9 @@ export default function AIReadinessScorecardApp() {
               {/* ─── RECOMMENDATIONS TAB ─── */}
               <TabsContent value="recommendations" className="space-y-5">
                 <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
-                  <div className="px-6 py-4" style={{ background: "linear-gradient(135deg, #0a1628, #1e293b)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-                    <h2 className="font-black text-white flex items-center gap-2"><Sparkles className="h-4 w-4 text-sky-300" /> Strategic Recommendations</h2>
-                    <p className="text-xs text-slate-400 mt-0.5">Sector-specific action items for {sectorInfo?.label} operations</p>
+                  <div className="px-6 py-4" style={{ background: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                    <h2 className="font-black text-white flex items-center gap-2 tracking-tight"><Sparkles className="h-4 w-4 text-white" /> Strategic Recommendations</h2>
+                    <p className="text-xs text-white/60 mt-0.5">Sector-specific action items for {sectorInfo?.label} operations</p>
                   </div>
                   <div className="p-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                     {PILLARS.filter((pillar) => getWeightedPillarScore(pillar, active.scores) < 60).map((pillar) => {
@@ -1708,7 +2120,7 @@ export default function AIReadinessScorecardApp() {
                       return (
                         <div key={pillar.id} className="rounded-2xl p-5 hover:shadow-md transition" style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderTop: `3px solid ${color.from}` }}>
                           <div className="flex items-center justify-between gap-2 mb-3">
-                            <p className="font-black text-slate-900 text-sm">{pillar.icon} {pillar.title}</p>
+                            <p className="font-black text-slate-900 text-sm flex items-center gap-2"><pillar.Icon className="h-4 w-4" style={{ color: color.from }} strokeWidth={2.2} /> {pillar.title}</p>
                             <span className="text-xs px-2 py-0.5 rounded-full font-black" style={{ background: `${color.from}15`, color: color.from }}>{score}%</span>
                           </div>
                           <p className="text-sm text-slate-600 leading-relaxed">{pillar.strategicRecommendations[active.sector]}</p>
@@ -1728,22 +2140,41 @@ export default function AIReadinessScorecardApp() {
                 </div>
 
                 {risk.factors.length > 0 && (
-                  <div className="rounded-2xl overflow-hidden" style={{ background: "#fff1f2", border: "1px solid #fecdd3" }}>
-                    <div className="px-6 py-4" style={{ borderBottom: "1px solid #fecdd3" }}>
-                      <h3 className="font-black text-red-900 flex items-center gap-2"><AlertTriangle className="h-4 w-4" /> Risk Mitigation Priorities</h3>
-                      <p className="text-xs text-red-600 mt-0.5">Critical factors requiring immediate attention</p>
+                  <div className="rounded-2xl overflow-hidden bg-white shadow-sm" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #9f1239" }}>
+                    <div className="px-6 py-4" style={{ borderBottom: "1px solid #f1f5f9" }}>
+                      <h3 className="font-black text-slate-900 flex items-center gap-2 tracking-tight"><AlertTriangle className="h-4 w-4 text-rose-800" strokeWidth={2.2} /> Risk Mitigation Priorities</h3>
+                      <p className="text-xs text-slate-500 mt-0.5">Critical factors requiring immediate attention</p>
                     </div>
                     <div className="p-5 grid gap-3 md:grid-cols-2">
                       {risk.factors.map((factor, idx) => (
-                        <div key={idx} className="rounded-xl bg-white p-3" style={{ border: "1px solid #fecdd3" }}>
-                          <p className="text-sm font-bold text-red-800">{factor}</p>
-                          <p className="text-xs text-red-400 mt-1 font-semibold">Priority: Immediate action required</p>
+                        <div key={idx} className="rounded-xl p-3 hover-lift" style={{ background: "#fafafa", border: "1px solid #f1f5f9" }}>
+                          <p className="text-sm font-bold text-slate-900">{factor}</p>
+                          <p className="text-[10px] text-rose-800 mt-1 font-bold uppercase tracking-widest">Priority: Immediate action required</p>
                         </div>
                       ))}
                     </div>
                   </div>
                 )}
               </TabsContent>
+
+              {/* Sticky bottom tab bar — so users don't scroll back to the top */}
+              <div className="sticky bottom-4 z-40 mt-8 mx-auto w-full max-w-2xl animate-fade-in">
+                <TabsList className="grid w-full grid-cols-6 rounded-full p-1 h-auto shadow-[0_12px_40px_rgba(0,0,0,0.35)]" style={{ background: "rgba(10,10,10,0.92)", border: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(14px)" }}>
+                  {[
+                    { value: "assess", label: "Assess", icon: <Target className="h-3.5 w-3.5" /> },
+                    { value: "results", label: "Results", icon: <Activity className="h-3.5 w-3.5" /> },
+                    { value: "roadmap", label: "Roadmap", icon: <TrendingUp className="h-3.5 w-3.5" /> },
+                    { value: "report", label: "Report", icon: <FileText className="h-3.5 w-3.5" /> },
+                    { value: "compare", label: "Compare", icon: <Building2 className="h-3.5 w-3.5" /> },
+                    { value: "recommendations", label: "Actions", icon: <Sparkles className="h-3.5 w-3.5" /> },
+                  ].map((t) => (
+                    <TabsTrigger key={t.value} value={t.value} className="flex items-center justify-center gap-1.5 rounded-full text-xs font-semibold py-2.5 transition text-white/60 hover:text-white/90 data-[state=active]:text-black data-[state=active]:bg-white data-[state=active]:shadow-[0_0_16px_rgba(255,255,255,0.25)]" style={{ ["--tw-ring-color" as string]: "transparent" }}>
+                      {t.icon}
+                      <span className="hidden sm:inline">{t.label}</span>
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </div>
             </Tabs>
           </div>
         </div>
