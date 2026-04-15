@@ -7,8 +7,8 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'AI Readiness Assessment',
-  description: 'Assess your organisation\'s readiness for AI adoption',
+  title: 'AI Readiness Assessment · 8-Dimension Enterprise Framework',
+  description: 'Professional AI readiness assessment with industry benchmarks, weighted scoring across 8 dimensions, and an actionable 12-month maturity roadmap.',
   generator: 'AI Readiness App',
   icons: {
     icon: [
