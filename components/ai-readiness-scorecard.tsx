@@ -97,6 +97,16 @@ const SCALE: Record<ScoreValue, string> = {
   5: "Optimised",
 };
 
+// Short labels that fit inside the narrow score buttons (full text is still
+// shown in the "Selected: X - Label" line below the buttons).
+const SHORT_SCALE: Record<ScoreValue, string> = {
+  1: "None",
+  2: "Early",
+  3: "Dev",
+  4: "Est",
+  5: "Opt",
+};
+
 const PILLARS: Pillar[] = [
   {
     id: "strategy",
@@ -1749,7 +1759,7 @@ export default function AIReadinessScorecardApp() {
                                       }}
                                     >
                                       <div className="text-base leading-none">{value}</div>
-                                      <div className="mt-1 text-[10px] hidden md:block leading-tight opacity-80">{SCALE[value].split(" ")[0]}</div>
+                                      <div className="mt-1 text-[10px] hidden md:block leading-tight opacity-80 truncate px-0.5">{SHORT_SCALE[value]}</div>
                                     </button>
                                   );
                                 })}
