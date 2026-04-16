@@ -1336,6 +1336,10 @@ export default function AIReadinessScorecardApp() {
     if (activeId === id) setActiveId(filtered[0].id);
   };
 
+  // Hooks must run on every render — read plan-aware flags BEFORE the
+  // early return below to avoid React error #310 (hook-count mismatch).
+  const canSeeBenchmarks = useCanUse("benchmarks");
+
   if (!mounted || !active) return null;
 
   const overall = getWeightedOverallScore(active);
@@ -1349,8 +1353,7 @@ export default function AIReadinessScorecardApp() {
   const riskExposure = getRiskExposureScore(active);
   const topOpportunities = getTopOpportunities(active);
   const topRisks = getTopRisks(active);
-  
-  const canSeeBenchmarks = useCanUse("benchmarks");
+
   const pillarData = PILLARS.map((pillar) => ({
     name: pillar.title.replace(" & ", "\n"),
     score: getWeightedPillarScore(pillar, active.scores),
