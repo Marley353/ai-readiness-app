@@ -25,7 +25,7 @@ export const PRO_FEATURES = [
 
 export const PRICING = {
   monthly: {
-    amount: 19,
+    amount: 15,
     currency: "GBP" as const,
     interval: "month" as const,
     label: "Monthly",
@@ -33,11 +33,11 @@ export const PRICING = {
     priceId: process.env.STRIPE_PRICE_ID_MONTHLY ?? "",
   },
   annual: {
-    amount: 149,
+    amount: 129.99,
     currency: "GBP" as const,
     interval: "year" as const,
     label: "Annual",
-    strapline: "Save 35% — 2 months free",
+    strapline: "Best value — save 28% vs. monthly",
     priceId: process.env.STRIPE_PRICE_ID_ANNUAL ?? "",
   },
 };
