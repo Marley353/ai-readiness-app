@@ -65,7 +65,7 @@ export default async function AccountPage() {
             AI Readiness
           </Link>
           <div className="flex items-center gap-2">
-            <Link href="/" className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold text-white/70 hover:text-white hover:bg-white/5 transition">
+            <Link href="/app" className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold text-white/70 hover:text-white hover:bg-white/5 transition">
               ← Back to app
             </Link>
           </div>
@@ -206,7 +206,7 @@ export default async function AccountPage() {
                 <h3 className="mt-2 text-xl font-black text-white tracking-tight">The 8 dimensions of AI readiness</h3>
               </div>
               <Link
-                href="/"
+                href="/app"
                 className="group inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold text-white/80 hover:text-white hover:bg-white/5 transition"
                 style={{ border: "1px solid rgba(255,255,255,0.12)" }}
               >

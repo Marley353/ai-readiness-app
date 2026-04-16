@@ -52,6 +52,10 @@ export async function POST(req: NextRequest) {
       metadata: { clerkUserId: userId, plan: "pro", interval },
       subscription_data: {
         metadata: { clerkUserId: userId, plan: "pro", interval },
+        // 7-day free trial — customer enters card, not charged until day 8.
+        // Webhook already treats `trialing` status the same as `active`,
+        // so Pro features unlock immediately on trial start.
+        trial_period_days: 7,
       },
       allow_promotion_codes: true,
       success_url: `${appUrl}/account?checkout=success`,

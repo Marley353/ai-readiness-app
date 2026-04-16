@@ -84,7 +84,7 @@ export default function PricingPage() {
             <span className="w-7 h-7 rounded-md flex items-center justify-center text-[11px] font-black" style={{ background: "linear-gradient(135deg, #0066ff, #ec4899)" }}>AI</span>
             AI Readiness
           </Link>
-          <Link href="/" className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold text-white/80 hover:text-white hover:bg-white/5 transition">
+          <Link href="/app" className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold text-white/80 hover:text-white hover:bg-white/5 transition">
             ← Back to app
           </Link>
         </div>
@@ -139,7 +139,7 @@ export default function PricingPage() {
             </div>
 
             <Link
-              href="/"
+              href="/app"
               className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-bold transition hover:scale-[1.01]"
               style={{ background: "#0a0a0a", color: "#fff" }}
             >
