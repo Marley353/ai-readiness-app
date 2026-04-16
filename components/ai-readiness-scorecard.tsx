@@ -12,6 +12,9 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Cell, PieChart, Pie, Legend } from "recharts";
 import { Download, Mail, Plus, Printer, Trash2, Copy, Sparkles, AlertTriangle, TrendingUp, Shield, Building2, FileText, Zap, Target, Activity, ArrowRight, Clock, CheckCircle2, Compass, Users, Workflow, Database, Cpu, Scale, Heart, Rocket, Beaker, type LucideIcon } from "lucide-react";
+import { AuthHeader } from "@/components/auth-header";
+import { ProGate } from "@/components/pro-gate";
+import { useCanUse } from "@/lib/use-plan";
 import jsPDF from "jspdf";
 
 const STORAGE_KEY = "ai-readiness-assessments-v3";
@@ -774,6 +777,49 @@ function exportPdf(assessment: Assessment) {
   const pillarScores = PILLARS.map((p) => ({ title: p.title, score: getWeightedPillarScore(p, assessment.scores), rec: p.strategicRecommendations[assessment.sector], impact: p.businessImpact }));
   const dateStr = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 
+  // ── Text-sizing helpers (prevent overrun inside fixed-width boxes/pills) ─────
+
+  // Truncate text with an ellipsis so it fits within maxW at the current font
+  const fitText = (text: string, maxW: number): string => {
+    if (doc.getTextWidth(text) <= maxW) return text;
+    let t = text;
+    while (t.length > 1 && doc.getTextWidth(t + "…") > maxW) {
+      t = t.slice(0, -1);
+    }
+    return t.trim() + "…";
+  };
+
+  // Draw a pill that auto-sizes to its text. Returns the pill width so callers
+  // can chain layout. `anchorX` is treated as the LEFT edge; pass alignRight=true
+  // to have `anchorX` mean the RIGHT edge instead.
+  const drawPill = (
+    text: string,
+    anchorX: number,
+    y: number,
+    opts: {
+      h?: number;
+      padX?: number;
+      fontSize?: number;
+      fill: [number, number, number];
+      color: [number, number, number];
+      alignRight?: boolean;
+      maxW?: number;
+    },
+  ): number => {
+    const h = opts.h ?? 7;
+    const padX = opts.padX ?? 3;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(opts.fontSize ?? 7);
+    const textW = Math.min(doc.getTextWidth(text), opts.maxW ?? 60);
+    const pillW = textW + padX * 2;
+    const pillX = opts.alignRight ? anchorX - pillW : anchorX;
+    doc.setFillColor(...opts.fill);
+    doc.roundedRect(pillX, y, pillW, h, 2, 2, "F");
+    doc.setTextColor(...opts.color);
+    doc.text(fitText(text, opts.maxW ?? textW), pillX + pillW / 2, y + h / 2 + 1.6, { align: "center" });
+    return pillW;
+  };
+
   const addPageFooter = (pageNum: number) => {
     doc.setFillColor(30, 27, 75);
     doc.rect(0, 285, W, 12, "F");
@@ -884,30 +930,52 @@ function exportPdf(assessment: Assessment) {
   // Score overview boxes (4-up)
   const kpis = [
     { label: "AI Readiness Score", value: `${overall}%`, sub: band.label, c: scoreColor(overall) },
-    { label: "Risk Level", value: risk.level.charAt(0).toUpperCase() + risk.level.slice(1), sub: `Score: ${risk.score}/100`, c: risk.level === "high" ? [239, 68, 68] as [number,number,number] : risk.level === "medium" ? [217, 119, 6] as [number,number,number] : [5, 150, 105] as [number,number,number] },
+    { label: "Risk Level", value: risk.level.charAt(0).toUpperCase() + risk.level.slice(1), sub: `Score ${risk.score}/100`, c: risk.level === "high" ? [239, 68, 68] as [number,number,number] : risk.level === "medium" ? [217, 119, 6] as [number,number,number] : [5, 150, 105] as [number,number,number] },
     { label: "Business Impact", value: impact.category.split(" ")[0], sub: impact.category, c: [8, 145, 178] as [number,number,number] },
-    { label: "ROI Opportunity", value: roi.range.split("–")[0].trim(), sub: `${roi.confidence} confidence`, c: [13, 148, 136] as [number,number,number] },
+    { label: "ROI Opportunity", value: roi.range, sub: `${roi.confidence} confidence`, c: [13, 148, 136] as [number,number,number] },
   ];
   const boxW = (CONTENT_W - 9) / 4;
+  const KPI_BOX_H = 26; // taller box so sub-text fits on 2 lines if needed
   kpis.forEach((kpi, i) => {
     const bx = MARGIN + i * (boxW + 3);
     doc.setFillColor(248, 250, 252);
     doc.setDrawColor(226, 232, 240);
     doc.setLineWidth(0.3);
-    doc.roundedRect(bx, y, boxW, 22, 2, 2, "FD");
+    doc.roundedRect(bx, y, boxW, KPI_BOX_H, 2, 2, "FD");
     doc.setFillColor(...kpi.c);
     doc.rect(bx, y, boxW, 1.5, "F");
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(14);
-    doc.setTextColor(...kpi.c);
-    doc.text(kpi.value, bx + boxW / 2, y + 11, { align: "center" });
+
+    // Label (small, top)
     doc.setFont("helvetica", "normal");
     doc.setFontSize(6.5);
     doc.setTextColor(100, 116, 139);
     doc.text(kpi.label, bx + boxW / 2, y + 6, { align: "center" });
-    doc.text(kpi.sub, bx + boxW / 2, y + 17, { align: "center" });
+
+    // Value (big, middle). Shrink-to-fit so long values like the ROI range
+    // "15-25%" always fit the ~45mm box without clipping.
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(...kpi.c);
+    let valueSize = 14;
+    doc.setFontSize(valueSize);
+    while (doc.getTextWidth(kpi.value) > boxW - 4 && valueSize > 8) {
+      valueSize -= 1;
+      doc.setFontSize(valueSize);
+    }
+    doc.text(kpi.value, bx + boxW / 2, y + 13, { align: "center" });
+
+    // Sub (wrapped to up to 2 lines, ellipsised if still too long)
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(6.5);
+    doc.setTextColor(100, 116, 139);
+    const subLines = (doc.splitTextToSize(kpi.sub, boxW - 4) as string[]).slice(0, 2);
+    if (subLines.length === 2 && doc.splitTextToSize(kpi.sub, boxW - 4).length > 2) {
+      subLines[1] = fitText(subLines[1], boxW - 4);
+    }
+    subLines.forEach((line, li) => {
+      doc.text(line, bx + boxW / 2, y + 19 + li * 3.5, { align: "center" });
+    });
   });
-  y += 28;
+  y += KPI_BOX_H + 6;
 
   // Summary narrative
   doc.setFont("helvetica", "normal");
@@ -918,15 +986,21 @@ function exportPdf(assessment: Assessment) {
   y += narrative.length * 4.5 + 6;
 
   // ─── PILLAR SCORES ───────────────────────────────────────────────────────────
+  y += 6;
+  if (y + 40 > 275) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
   y = sectionHeader("PILLAR SCORES (WEIGHTED)", y);
 
   pillarScores.forEach((pillar) => {
-    if (y > 255) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
     const [pr, pg, pb] = scoreColor(pillar.score);
+
+    // Title (truncated to leave room for score on the right)
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9);
     doc.setTextColor(15, 23, 42);
-    doc.text(pillar.title, MARGIN, y + 4);
+    const titleMaxW = CONTENT_W - 22; // reserve ~22mm on the right for the score
+    doc.text(fitText(pillar.title, titleMaxW), MARGIN, y + 4);
+
+    // Score (right-aligned)
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     doc.setTextColor(pr, pg, pb);
@@ -934,19 +1008,29 @@ function exportPdf(assessment: Assessment) {
 
     // Bar track
     const barX = MARGIN;
-    const barW = CONTENT_W - 14;
-    const barH = 4;
+    const barW = CONTENT_W;
+    const barH = 3;
     doc.setFillColor(226, 232, 240);
     doc.roundedRect(barX, y + 6, barW, barH, 1, 1, "F");
     doc.setFillColor(pr, pg, pb);
     const filled = Math.max(2, (pillar.score / 100) * barW);
     doc.roundedRect(barX, y + 6, filled, barH, 1, 1, "F");
 
-    // Impact line
+    // Impact line (wrapped to up to 2 lines)
     doc.setTextColor(100, 116, 139);
     doc.setFontSize(7);
-    doc.text(pillar.impact, MARGIN, y + 14);
-    y += 18;
+    const impactLines = (doc.splitTextToSize(pillar.impact, CONTENT_W) as string[]).slice(0, 2);
+    impactLines.forEach((line, li) => doc.text(line, MARGIN, y + 13 + li * 3));
+    const rowH = 13 + impactLines.length * 3 + 3;
+
+    // Page break if needed (check BEFORE drawing)
+    if (y + rowH > 275) {
+      doc.addPage();
+      addPageFooter(doc.getNumberOfPages());
+      y = 18;
+    } else {
+      y += rowH;
+    }
   });
 
   addPageFooter(2);
@@ -999,58 +1083,131 @@ function exportPdf(assessment: Assessment) {
   }
 
   // Opportunities
+  y += 6;
+  if (y + 40 > 275) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
   y = sectionHeader("TOP AI OPPORTUNITIES", y);
   topOpps.forEach((opp, i) => {
-    if (y > 255) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
+    // Measure the impact pill first so we know how much horizontal space the title has
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7);
+    const impactPillW = Math.min(doc.getTextWidth(opp.impact) + 6, 50);
+    const impactPillGap = 4;
+
+    // Title available width: card width, minus left bar + left padding + pill + gap + right padding
+    const titleMaxW = CONTENT_W - 8 - 4 - impactPillW - impactPillGap - 4;
+
+    // Title (wrap to up to 2 lines — retains full title if possible)
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8.5);
+    const titleLines = (doc.splitTextToSize(`${i + 1}. ${opp.title}`, titleMaxW) as string[]).slice(0, 2);
+
+    // Description (wrap to full card width now that pill is above the copy)
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    const oppLines = doc.splitTextToSize(opp.description, CONTENT_W - 12) as string[];
+
+    // Dynamic box height
+    const boxH = titleLines.length * 4.5 + oppLines.length * 4 + 10;
+
+    if (y + boxH > 275) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
+
+    // Card background
     doc.setFillColor(240, 253, 250);
     doc.setDrawColor(153, 246, 228);
     doc.setLineWidth(0.3);
-    const oppLines = doc.splitTextToSize(opp.description, CONTENT_W - 55);
-    doc.roundedRect(MARGIN, y, CONTENT_W, oppLines.length * 4.5 + 14, 2, 2, "FD");
+    doc.roundedRect(MARGIN, y, CONTENT_W, boxH, 2, 2, "FD");
+
+    // Left accent bar
     doc.setFillColor(5, 150, 105);
-    doc.roundedRect(MARGIN, y, 4, oppLines.length * 4.5 + 14, 1, 1, "F");
+    doc.roundedRect(MARGIN, y, 4, boxH, 1, 1, "F");
+
+    // Impact pill (auto-sized, top-right of the card)
+    drawPill(opp.impact, W - MARGIN - 2, y + 3, {
+      fill: [209, 250, 229],
+      color: [6, 95, 70],
+      alignRight: true,
+      maxW: 46,
+      padX: 3,
+      h: 6,
+      fontSize: 6.5,
+    });
+
+    // Title
     doc.setFont("helvetica", "bold");
     doc.setFontSize(8.5);
     doc.setTextColor(6, 95, 70);
-    doc.text(`${i + 1}. ${opp.title}`, MARGIN + 8, y + 7);
+    titleLines.forEach((line, li) => doc.text(line, MARGIN + 8, y + 6 + li * 4.5));
+
+    // Description
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     doc.setTextColor(15, 79, 58);
-    doc.text(oppLines, MARGIN + 8, y + 13);
-    doc.setFillColor(209, 250, 229);
-    doc.roundedRect(W - MARGIN - 28, y + 4, 26, 8, 2, 2, "F");
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(7);
-    doc.setTextColor(6, 95, 70);
-    doc.text(opp.impact, W - MARGIN - 15, y + 9.5, { align: "center" });
-    y += oppLines.length * 4.5 + 18;
+    doc.text(oppLines, MARGIN + 8, y + 6 + titleLines.length * 4.5 + 4);
+
+    y += boxH + 4;
   });
 
   // Risks
+  y += 6;
+  if (y + 40 > 275) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
   y = sectionHeader("KEY RISKS IF NO ACTION TAKEN", y);
   topRisks.forEach((r, i) => {
-    if (y > 255) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
     const isHigh = r.severity === "High";
+    const severityFill: [number, number, number] = isHigh ? [254, 226, 226] : [254, 243, 199];
+    const severityColor: [number, number, number] = isHigh ? [153, 27, 27] : [146, 64, 10];
+
+    // Measure severity pill
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(6.5);
+    const sevPillW = Math.min(doc.getTextWidth(r.severity) + 6, 26);
+    const titleMaxW = CONTENT_W - 8 - 4 - sevPillW - 4 - 4;
+
+    // Title + description lines
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8.5);
+    const rTitleLines = (doc.splitTextToSize(`${i + 1}. ${r.title}`, titleMaxW) as string[]).slice(0, 2);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    const rLines = doc.splitTextToSize(r.description, CONTENT_W - 12) as string[];
+
+    const boxH = rTitleLines.length * 4.5 + rLines.length * 4 + 10;
+
+    if (y + boxH > 275) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
+
+    // Card background
     doc.setFillColor(isHigh ? 255 : 255, isHigh ? 241 : 251, isHigh ? 242 : 235);
     doc.setDrawColor(isHigh ? 254 : 253, isHigh ? 205 : 211, isHigh ? 211 : 153);
     doc.setLineWidth(0.3);
-    const rLines = doc.splitTextToSize(r.description, CONTENT_W - 55);
-    doc.roundedRect(MARGIN, y, CONTENT_W, rLines.length * 4.5 + 14, 2, 2, "FD");
+    doc.roundedRect(MARGIN, y, CONTENT_W, boxH, 2, 2, "FD");
+
+    // Left accent bar
     doc.setFillColor(isHigh ? 239 : 217, isHigh ? 68 : 119, isHigh ? 68 : 6);
-    doc.roundedRect(MARGIN, y, 4, rLines.length * 4.5 + 14, 1, 1, "F");
+    doc.roundedRect(MARGIN, y, 4, boxH, 1, 1, "F");
+
+    // Severity pill (auto-sized)
+    drawPill(r.severity, W - MARGIN - 2, y + 3, {
+      fill: severityFill,
+      color: severityColor,
+      alignRight: true,
+      maxW: 22,
+      padX: 3,
+      h: 6,
+      fontSize: 6.5,
+    });
+
+    // Title
     doc.setFont("helvetica", "bold");
     doc.setFontSize(8.5);
-    doc.setTextColor(isHigh ? 153 : 146, isHigh ? 27 : 64, isHigh ? 27 : 10);
-    doc.text(`${i + 1}. ${r.title}`, MARGIN + 8, y + 7);
+    doc.setTextColor(...severityColor);
+    rTitleLines.forEach((line, li) => doc.text(line, MARGIN + 8, y + 6 + li * 4.5));
+
+    // Description
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
-    doc.text(rLines, MARGIN + 8, y + 13);
-    doc.setFillColor(isHigh ? 254 : 254, isHigh ? 226 : 243, isHigh ? 226 : 199);
-    doc.roundedRect(W - MARGIN - 28, y + 4, 26, 8, 2, 2, "F");
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(7);
-    doc.text(r.severity, W - MARGIN - 15, y + 9.5, { align: "center" });
-    y += rLines.length * 4.5 + 18;
+    doc.text(rLines, MARGIN + 8, y + 6 + rTitleLines.length * 4.5 + 4);
+
+    y += boxH + 4;
   });
 
   addPageFooter(3);
@@ -1061,38 +1218,68 @@ function exportPdf(assessment: Assessment) {
   y = sectionHeader("STRATEGIC RECOMMENDATIONS BY PILLAR", y);
 
   const actionPillars = pillarScores.filter(p => p.score < 70);
-  actionPillars.forEach((pillar, idx) => {
-    if (y > 248) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
+  actionPillars.forEach((pillar) => {
     const [pr, pg, pb] = scoreColor(pillar.score);
+
+    // Measure score badge
+    const scoreText = `${pillar.score}%`;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8);
+    const scoreBadgeW = Math.min(doc.getTextWidth(scoreText) + 6, 28);
+
+    // Title available width reserves space for score badge + padding
+    const titleMaxW = CONTENT_W - 10 - scoreBadgeW - 4;
+
+    // Truncate title to a single line; recommendation + impact wrap normally
+    const titleText = fitText(pillar.title, titleMaxW);
+    const recLines = doc.splitTextToSize(pillar.rec, CONTENT_W - 10) as string[];
+    const impactLines = doc.splitTextToSize(pillar.impact, CONTENT_W - 10) as string[];
+
+    const boxH = 12 + recLines.length * 4.5 + impactLines.length * 3.5 + 8;
+
+    if (y + boxH > 272) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
+
+    // Card body
     doc.setFillColor(248, 250, 252);
     doc.setDrawColor(226, 232, 240);
     doc.setLineWidth(0.3);
-    const recLines = doc.splitTextToSize(pillar.rec, CONTENT_W - 14);
-    const boxH = recLines.length * 4.5 + 22;
     doc.roundedRect(MARGIN, y, CONTENT_W, boxH, 2, 2, "FD");
+
+    // Top accent stripe
     doc.setFillColor(pr, pg, pb);
     doc.rect(MARGIN, y, CONTENT_W, 1.5, "F");
 
+    // Title
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9.5);
     doc.setTextColor(15, 23, 42);
-    doc.text(pillar.title, MARGIN + 5, y + 9);
+    doc.text(titleText, MARGIN + 5, y + 9);
 
-    doc.setFillColor(pr, pg, pb);
-    doc.roundedRect(W - MARGIN - 25, y + 3, 23, 8, 2, 2, "F");
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(8);
-    doc.text(`${pillar.score}%`, W - MARGIN - 13.5, y + 8.5, { align: "center" });
+    // Score badge — right-aligned, auto-sized
+    drawPill(scoreText, W - MARGIN - 3, y + 3.5, {
+      fill: [pr, pg, pb],
+      color: [255, 255, 255],
+      alignRight: true,
+      maxW: 24,
+      padX: 3,
+      h: 7,
+      fontSize: 7.5,
+    });
 
+    // Recommendation (wraps as many lines as needed)
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8.5);
     doc.setTextColor(51, 65, 85);
     doc.text(recLines, MARGIN + 5, y + 16);
 
+    // Impact italic at bottom
     doc.setFont("helvetica", "italic");
     doc.setFontSize(7.5);
     doc.setTextColor(100, 116, 139);
-    doc.text(pillar.impact, MARGIN + 5, y + boxH - 5);
+    impactLines.forEach((line, li) =>
+      doc.text(line, MARGIN + 5, y + 16 + recLines.length * 4.5 + 4 + li * 3.5),
+    );
+
     y += boxH + 5;
   });
 
@@ -1107,7 +1294,17 @@ function exportPdf(assessment: Assessment) {
     y += 26;
   }
 
-  // ROI Scenarios
+  // ROI Scenarios — guarantee clean separation from the last recommendation
+  // card. sectionHeader draws 6mm ABOVE y, so ensure at least 10mm clearance.
+  // If the header + 3 ROI tiles (header 16mm + tiles 32mm + footer buffer
+  // ~12mm = ~60mm total) don't fit on the current page, start a new one.
+  y += 10;
+  if (y + 60 > 275) {
+    doc.addPage();
+    addPageFooter(doc.getNumberOfPages());
+    y = 18;
+  }
+
   y = sectionHeader("ROI SCENARIOS", y);
   const roiScenarios = [
     { label: "Conservative", value: roi.scenarios.low, desc: "Baseline efficiency gains with minimal change management", color: [100, 116, 139] as [number,number,number] },
@@ -1333,6 +1530,10 @@ export default function AIReadinessScorecardApp() {
     if (activeId === id) setActiveId(filtered[0].id);
   };
 
+  // Hooks must run on every render — read plan-aware flags BEFORE the
+  // early return below to avoid React error #310 (hook-count mismatch).
+  const canSeeBenchmarks = useCanUse("benchmarks");
+
   if (!mounted || !active) return null;
 
   const overall = getWeightedOverallScore(active);
@@ -1346,7 +1547,7 @@ export default function AIReadinessScorecardApp() {
   const riskExposure = getRiskExposureScore(active);
   const topOpportunities = getTopOpportunities(active);
   const topRisks = getTopRisks(active);
-  
+
   const pillarData = PILLARS.map((pillar) => ({
     name: pillar.title.replace(" & ", "\n"),
     score: getWeightedPillarScore(pillar, active.scores),
@@ -1419,7 +1620,13 @@ export default function AIReadinessScorecardApp() {
 
       {/* HERO HEADER */}
       <div className="aurora-bg" style={{ background: "radial-gradient(ellipse at 20% 0%, rgba(0,102,255,0.35) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(236,72,153,0.25) 0%, transparent 50%), radial-gradient(ellipse at 50% 50%, rgba(168,85,247,0.2) 0%, transparent 60%), #0a0a0a" }}>
-        <div className="relative mx-auto max-w-7xl px-4 pt-6 pb-0 md:px-8">
+        {/* Top account bar */}
+        <div className="relative z-10 mx-auto max-w-7xl px-4 pt-4 md:px-8">
+          <div className="flex items-center justify-end gap-2">
+            <AuthHeader />
+          </div>
+        </div>
+        <div className="relative mx-auto max-w-7xl px-4 pt-4 pb-0 md:px-8">
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div className="flex-1 min-w-0">
               <div className="mb-3 flex flex-wrap items-center gap-2">
@@ -1699,38 +1906,82 @@ export default function AIReadinessScorecardApp() {
                   const pillarScore = getWeightedPillarScore(pillar, active.scores);
                   const color = PILLAR_COLORS[pillarIdx];
                   return (
-                    <div key={pillar.id} className="rounded-2xl bg-white shadow-sm overflow-hidden hover-lift animate-slide-up" style={{ border: "1px solid #e2e8f0", borderLeft: `4px solid ${color.from}`, animationDelay: `${pillarIdx * 60}ms` }}>
-                      <div className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
-                        <div className="flex items-start gap-4">
-                          <div className="flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg" style={{ background: `linear-gradient(135deg, ${color.from}, ${color.to})`, boxShadow: `0 8px 20px -4px ${color.from}66` }}>
+                    <div
+                      key={pillar.id}
+                      className="rounded-2xl bg-white shadow-sm overflow-hidden hover-lift animate-slide-up flex flex-col"
+                      style={{ border: "1px solid #e2e8f0", animationDelay: `${pillarIdx * 60}ms` }}
+                    >
+                      {/* Header row — fixed min-height so all pillar cards align their factor grids consistently */}
+                      <div className="flex flex-col gap-4 p-6 md:flex-row md:items-start md:justify-between" style={{ minHeight: 160 }}>
+                        <div className="flex items-start gap-4 flex-1 min-w-0">
+                          <div
+                            className="flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center"
+                            style={{
+                              background: `linear-gradient(135deg, ${color.from}, ${color.to})`,
+                              boxShadow: `0 4px 14px -4px ${color.from}55`,
+                            }}
+                          >
                             <pillar.Icon className="h-5 w-5 text-white" strokeWidth={2.2} />
                           </div>
-                          <div>
-                            <h3 className="text-lg font-black text-slate-900">{pillar.title}</h3>
-                            <p className="text-sm text-slate-500 mt-0.5">{pillar.description}</p>
-                            <p className="text-xs text-slate-400 mt-1 italic">{pillar.businessImpact}</p>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-base font-black text-slate-900 tracking-tight leading-snug">{pillar.title}</h3>
+                            <p className="text-[13px] text-slate-500 mt-1 leading-relaxed line-clamp-2" title={pillar.description}>
+                              {pillar.description}
+                            </p>
                           </div>
                         </div>
-                        <div className="min-w-[220px]">
-                          <div className="flex justify-between text-sm mb-2">
-                            <span className="text-xs text-slate-400 font-semibold uppercase tracking-wide">Weighted Score</span>
-                            <span className="text-sm font-black" style={{ color: color.from }}>{pillarScore}%</span>
+                        <div className="md:min-w-[200px] md:flex-shrink-0">
+                          <div className="flex justify-between items-baseline mb-1.5">
+                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Weighted Score</span>
+                            <span className="text-sm font-black tabular-nums" style={{ color: color.from }}>{pillarScore}%</span>
                           </div>
-                          <div className="relative h-2.5 rounded-full bg-slate-100 overflow-hidden">
-                            <div className="h-full rounded-full progress-fill" style={{ width: `${pillarScore}%`, background: `linear-gradient(90deg, ${color.from}, ${color.to})` }} />
-                            {/* Benchmark marker */}
-                            <div className="absolute top-0 h-full w-0.5 bg-slate-700/60" style={{ left: `${INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45}%` }} title={`Industry benchmark: ${INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45}%`} />
+                          <div className="relative h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                            <div
+                              className="h-full rounded-full progress-fill"
+                              style={{
+                                width: `${pillarScore}%`,
+                                background: `linear-gradient(90deg, ${color.from}, ${color.to})`,
+                              }}
+                            />
+                            {canSeeBenchmarks && (
+                              <div
+                                className="absolute top-0 h-full w-0.5 bg-slate-700/70"
+                                style={{ left: `${INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45}%` }}
+                                title={`Industry benchmark: ${INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45}%`}
+                              />
+                            )}
                           </div>
-                          <div className="flex items-center justify-between mt-1.5 text-[10px] text-slate-400">
-                            <span>vs. {sectorInfo?.label} avg <span className="font-bold text-slate-600">{INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45}%</span></span>
-                            <span className={`font-bold ${pillarScore > (INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45) ? "text-emerald-600" : "text-amber-600"}`}>
-                              {pillarScore > (INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45) ? "↑ Above" : "↓ Below"}
-                            </span>
-                          </div>
+                          {canSeeBenchmarks ? (
+                            <div className="flex items-center justify-between mt-1.5 text-[10px] text-slate-400 tabular-nums">
+                              <span>
+                                vs. {sectorInfo?.label} avg{" "}
+                                <span className="font-bold text-slate-600">{INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45}%</span>
+                              </span>
+                              <span
+                                className={`font-bold ${
+                                  pillarScore > (INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45)
+                                    ? "text-emerald-600"
+                                    : "text-amber-600"
+                                }`}
+                              >
+                                {pillarScore > (INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45) ? "↑ Above" : "↓ Below"}
+                              </span>
+                            </div>
+                          ) : (
+                            <a
+                              href="/pricing"
+                              className="block mt-1.5 text-[10px] text-slate-400 hover:text-indigo-600 transition"
+                            >
+                              <Sparkles className="inline h-3 w-3 mr-1" /> Upgrade for {sectorInfo?.label} benchmark
+                            </a>
+                          )}
                         </div>
                       </div>
 
-                      <div className="grid gap-3 px-6 pb-6 md:grid-cols-2">
+                      {/* Thin divider between header and factor grid — feels IONOS-clean */}
+                      <div className="mx-6" style={{ borderTop: "1px solid #f1f5f9" }} />
+
+                      <div className="grid gap-3 p-6 md:grid-cols-2 flex-1">
                         {pillar.factors.map((factor) => {
                           const weightInfo = getWeightLabel(factor.weight);
                           const currentScore = active.scores[factor.id];
@@ -1824,8 +2075,9 @@ export default function AIReadinessScorecardApp() {
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-3">
-                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0", borderTop: `3px solid ${risk.level === "high" ? "#9f1239" : risk.level === "medium" ? "#854d0e" : "#065f46"}` }}>
+                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0" }}>
                     <div className="flex items-center gap-2 mb-3">
+                      <div className="w-1.5 h-1.5 rounded-full" style={{ background: risk.level === "high" ? "#9f1239" : risk.level === "medium" ? "#854d0e" : "#065f46" }} />
                       <AlertTriangle className="h-4 w-4 text-slate-800" strokeWidth={2.2} />
                       <span className="font-black text-slate-900 tracking-tight">Risk Assessment</span>
                     </div>
@@ -1850,7 +2102,7 @@ export default function AIReadinessScorecardApp() {
                     )}
                   </div>
 
-                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #0a0a0a" }}>
+                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0" }}>
                     <div className="flex items-center gap-2 mb-3">
                       <Building2 className="h-4 w-4 text-slate-800" strokeWidth={2.2} />
                       <span className="font-black text-slate-900 tracking-tight">Business Impact</span>
@@ -1859,7 +2111,7 @@ export default function AIReadinessScorecardApp() {
                     <p className="mt-2 text-sm text-slate-600 leading-relaxed">{impact.description}</p>
                   </div>
 
-                  <div className="rounded-2xl bg-white p-5 shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #0066ff" }}>
+                  <div className="rounded-2xl bg-white p-5 shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0" }}>
                     <div className="flex items-center gap-2 mb-3">
                       <TrendingUp className="h-4 w-4 text-slate-800" strokeWidth={2.2} />
                       <span className="font-black text-slate-900 tracking-tight">ROI Opportunity</span>
@@ -1885,7 +2137,7 @@ export default function AIReadinessScorecardApp() {
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2">
-                  <div className="rounded-2xl overflow-hidden bg-white shadow-sm" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #059669" }}>
+                  <div className="rounded-2xl overflow-hidden bg-white shadow-sm" style={{ border: "1px solid #e2e8f0" }}>
                     <div className="px-5 py-4" style={{ borderBottom: "1px solid #f1f5f9" }}>
                       <div className="flex items-center gap-2"><Target className="h-4 w-4 text-emerald-700" strokeWidth={2.2} /><h3 className="font-black text-slate-900 tracking-tight">Top 3 AI Opportunities</h3></div>
                       <p className="text-xs text-slate-500 mt-0.5">Highest-impact opportunities for {sectorInfo?.label}</p>
@@ -1905,7 +2157,7 @@ export default function AIReadinessScorecardApp() {
                     </div>
                   </div>
 
-                  <div className="rounded-2xl overflow-hidden bg-white shadow-sm" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #9f1239" }}>
+                  <div className="rounded-2xl overflow-hidden bg-white shadow-sm" style={{ border: "1px solid #e2e8f0" }}>
                     <div className="px-5 py-4" style={{ borderBottom: "1px solid #f1f5f9" }}>
                       <div className="flex items-center gap-2"><AlertTriangle className="h-4 w-4 text-rose-800" strokeWidth={2.2} /><h3 className="font-black text-slate-900 tracking-tight">Top 3 Risks if No Action</h3></div>
                       <p className="text-xs text-slate-500 mt-0.5">Consequences of delaying AI transformation</p>
@@ -1931,18 +2183,27 @@ export default function AIReadinessScorecardApp() {
                     <h3 className="font-black text-slate-900">Interpretation</h3>
                   </div>
                   <div className="p-5 grid gap-3 md:grid-cols-3">
-                    <div className="rounded-2xl p-5 hover-lift" style={{ background: "#fafafa", border: "1px solid #e2e8f0", borderTop: `3px solid ${overall >= 80 ? "#065f46" : overall >= 60 ? "#0066ff" : overall >= 40 ? "#854d0e" : "#9f1239"}` }}>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Current Maturity</p>
+                    <div className="rounded-2xl p-5 hover-lift" style={{ background: "#fafafa", border: "1px solid #e2e8f0" }}>
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full" style={{ background: overall >= 80 ? "#065f46" : overall >= 60 ? "#0066ff" : overall >= 40 ? "#854d0e" : "#9f1239" }} />
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Current Maturity</p>
+                      </div>
                       <p className="mt-2 text-3xl font-black text-slate-900 tracking-tight">{band.label}</p>
                       <p className="mt-2 text-sm text-slate-600 leading-relaxed">{band.advice}</p>
                     </div>
-                    <div className="rounded-2xl p-5 hover-lift" style={{ background: "#fafafa", border: "1px solid #e2e8f0", borderTop: "3px solid #065f46" }}>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Strongest Pillar</p>
+                    <div className="rounded-2xl p-5 hover-lift" style={{ background: "#fafafa", border: "1px solid #e2e8f0" }}>
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#065f46" }} />
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Strongest Pillar</p>
+                      </div>
                       <p className="mt-2 text-xl font-black text-slate-900 tracking-tight">{[...pillarData].sort((a, b) => b.score - a.score)[0].fullName}</p>
                       <p className="mt-1 text-sm font-bold text-emerald-800">{[...pillarData].sort((a, b) => b.score - a.score)[0].score}%</p>
                     </div>
-                    <div className="rounded-2xl p-5 hover-lift" style={{ background: "#fafafa", border: "1px solid #e2e8f0", borderTop: "3px solid #854d0e" }}>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Priority Development</p>
+                    <div className="rounded-2xl p-5 hover-lift" style={{ background: "#fafafa", border: "1px solid #e2e8f0" }}>
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#854d0e" }} />
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Priority Development</p>
+                      </div>
                       <p className="mt-2 text-xl font-black text-slate-900 tracking-tight">{lowestPillars[0].fullName}</p>
                       <p className="mt-1 text-sm font-bold text-amber-800">{lowestPillars[0].score}%</p>
                     </div>
@@ -1952,6 +2213,12 @@ export default function AIReadinessScorecardApp() {
 
               {/* ─── ROADMAP TAB ─── */}
               <TabsContent value="roadmap" className="space-y-5">
+                <ProGate
+                  feature="roadmap"
+                  variant="replace"
+                  title="12-Month Maturity Roadmap"
+                  description="Upgrade to Pro to unlock the auto-generated phased 0–90 day / 3–6 month / 6–12 month plan tailored to your scores and sector."
+                >
                 <div className="rounded-2xl bg-white shadow-sm overflow-hidden animate-fade-in" style={{ border: "1px solid #e2e8f0" }}>
                   <div className="relative px-6 py-5 overflow-hidden" style={{ background: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
                     <div className="absolute -top-20 -right-10 w-60 h-60 rounded-full opacity-50 blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, #0066ff, transparent 60%)" }} />
@@ -1969,7 +2236,7 @@ export default function AIReadinessScorecardApp() {
                   <div className="p-5">
                     <div className="grid gap-4 md:grid-cols-3 stagger-children">
                       {generateRoadmap(active).map((phase, idx) => (
-                        <div key={phase.phase} className="rounded-2xl overflow-hidden hover-lift shadow-sm" style={{ background: phase.bgColor, border: `1px solid ${phase.borderColor}`, borderTop: `3px solid ${phase.color}` }}>
+                        <div key={phase.phase} className="rounded-2xl overflow-hidden hover-lift shadow-sm" style={{ background: phase.bgColor, border: `1px solid ${phase.borderColor}` }}>
                           <div className="px-5 py-4" style={{ borderBottom: `1px solid ${phase.borderColor}` }}>
                             <div className="flex items-center justify-between mb-2">
                               <span className="inline-flex items-center justify-center w-8 h-8 rounded-xl text-xs font-black text-white" style={{ background: phase.color }}>
@@ -2016,21 +2283,21 @@ export default function AIReadinessScorecardApp() {
 
                 {/* Roadmap meta info */}
                 <div className="grid gap-4 md:grid-cols-3">
-                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #0066ff" }}>
+                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0" }}>
                     <div className="flex items-center gap-2 mb-2">
                       <Target className="h-4 w-4 text-slate-800" strokeWidth={2.2} />
                       <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Tailored to You</p>
                     </div>
                     <p className="text-sm text-slate-700 leading-relaxed">Roadmap actions are derived from your weighted pillar scores and {sectorInfo?.label} sector best practices.</p>
                   </div>
-                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #065f46" }}>
+                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0" }}>
                     <div className="flex items-center gap-2 mb-2">
                       <Activity className="h-4 w-4 text-slate-800" strokeWidth={2.2} />
                       <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Review Quarterly</p>
                     </div>
                     <p className="text-sm text-slate-700 leading-relaxed">Re-run the assessment every 90 days to track progress and reprioritise as capabilities mature.</p>
                   </div>
-                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #a855f7" }}>
+                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0" }}>
                     <div className="flex items-center gap-2 mb-2">
                       <Sparkles className="h-4 w-4 text-slate-800" strokeWidth={2.2} />
                       <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Phased ROI</p>
@@ -2038,6 +2305,7 @@ export default function AIReadinessScorecardApp() {
                     <p className="text-sm text-slate-700 leading-relaxed">Expect early efficiency gains in Phase 1, transformational impact emerging in Phase 2, and enterprise-wide value in Phase 3.</p>
                   </div>
                 </div>
+                </ProGate>
               </TabsContent>
 
               {/* ─── REPORT TAB ─── */}
@@ -2103,11 +2371,24 @@ export default function AIReadinessScorecardApp() {
 
               {/* ─── COMPARE TAB ─── */}
               <TabsContent value="compare" className="space-y-4">
-                <CompareView assessments={assessments} />
+                <ProGate
+                  feature="compare"
+                  variant="replace"
+                  title="Side-by-side Comparison"
+                  description="Upgrade to Pro to benchmark two saved assessments against each other — perfect for tracking progress quarter over quarter or comparing business units."
+                >
+                  <CompareView assessments={assessments} />
+                </ProGate>
               </TabsContent>
 
               {/* ─── RECOMMENDATIONS TAB ─── */}
               <TabsContent value="recommendations" className="space-y-5">
+                <ProGate
+                  feature="sectorRecommendations"
+                  variant="replace"
+                  title="Strategic Recommendations"
+                  description="Upgrade to Pro for sector-specific strategic recommendations tailored to each of your weakest pillars, plus prioritised risk mitigation actions."
+                >
                 <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
                   <div className="px-6 py-4" style={{ background: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
                     <h2 className="font-black text-white flex items-center gap-2 tracking-tight"><Sparkles className="h-4 w-4 text-white" /> Strategic Recommendations</h2>
@@ -2118,7 +2399,7 @@ export default function AIReadinessScorecardApp() {
                       const score = getWeightedPillarScore(pillar, active.scores);
                       const color = PILLAR_COLORS[PILLARS.indexOf(pillar)];
                       return (
-                        <div key={pillar.id} className="rounded-2xl p-5 hover:shadow-md transition" style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderTop: `3px solid ${color.from}` }}>
+                        <div key={pillar.id} className="rounded-2xl p-5 hover-lift transition bg-white" style={{ border: "1px solid #e2e8f0" }}>
                           <div className="flex items-center justify-between gap-2 mb-3">
                             <p className="font-black text-slate-900 text-sm flex items-center gap-2"><pillar.Icon className="h-4 w-4" style={{ color: color.from }} strokeWidth={2.2} /> {pillar.title}</p>
                             <span className="text-xs px-2 py-0.5 rounded-full font-black" style={{ background: `${color.from}15`, color: color.from }}>{score}%</span>
@@ -2140,7 +2421,7 @@ export default function AIReadinessScorecardApp() {
                 </div>
 
                 {risk.factors.length > 0 && (
-                  <div className="rounded-2xl overflow-hidden bg-white shadow-sm" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #9f1239" }}>
+                  <div className="rounded-2xl overflow-hidden bg-white shadow-sm" style={{ border: "1px solid #e2e8f0" }}>
                     <div className="px-6 py-4" style={{ borderBottom: "1px solid #f1f5f9" }}>
                       <h3 className="font-black text-slate-900 flex items-center gap-2 tracking-tight"><AlertTriangle className="h-4 w-4 text-rose-800" strokeWidth={2.2} /> Risk Mitigation Priorities</h3>
                       <p className="text-xs text-slate-500 mt-0.5">Critical factors requiring immediate attention</p>
@@ -2155,6 +2436,7 @@ export default function AIReadinessScorecardApp() {
                     </div>
                   </div>
                 )}
+                </ProGate>
               </TabsContent>
 
               {/* Sticky bottom tab bar — so users don't scroll back to the top */}
