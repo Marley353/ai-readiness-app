@@ -2075,8 +2075,9 @@ export default function AIReadinessScorecardApp() {
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-3">
-                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0", borderTop: `3px solid ${risk.level === "high" ? "#9f1239" : risk.level === "medium" ? "#854d0e" : "#065f46"}` }}>
+                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0" }}>
                     <div className="flex items-center gap-2 mb-3">
+                      <div className="w-1.5 h-1.5 rounded-full" style={{ background: risk.level === "high" ? "#9f1239" : risk.level === "medium" ? "#854d0e" : "#065f46" }} />
                       <AlertTriangle className="h-4 w-4 text-slate-800" strokeWidth={2.2} />
                       <span className="font-black text-slate-900 tracking-tight">Risk Assessment</span>
                     </div>
@@ -2101,7 +2102,7 @@ export default function AIReadinessScorecardApp() {
                     )}
                   </div>
 
-                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #0a0a0a" }}>
+                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0" }}>
                     <div className="flex items-center gap-2 mb-3">
                       <Building2 className="h-4 w-4 text-slate-800" strokeWidth={2.2} />
                       <span className="font-black text-slate-900 tracking-tight">Business Impact</span>
@@ -2110,7 +2111,7 @@ export default function AIReadinessScorecardApp() {
                     <p className="mt-2 text-sm text-slate-600 leading-relaxed">{impact.description}</p>
                   </div>
 
-                  <div className="rounded-2xl bg-white p-5 shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #0066ff" }}>
+                  <div className="rounded-2xl bg-white p-5 shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0" }}>
                     <div className="flex items-center gap-2 mb-3">
                       <TrendingUp className="h-4 w-4 text-slate-800" strokeWidth={2.2} />
                       <span className="font-black text-slate-900 tracking-tight">ROI Opportunity</span>
@@ -2136,7 +2137,7 @@ export default function AIReadinessScorecardApp() {
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2">
-                  <div className="rounded-2xl overflow-hidden bg-white shadow-sm" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #059669" }}>
+                  <div className="rounded-2xl overflow-hidden bg-white shadow-sm" style={{ border: "1px solid #e2e8f0" }}>
                     <div className="px-5 py-4" style={{ borderBottom: "1px solid #f1f5f9" }}>
                       <div className="flex items-center gap-2"><Target className="h-4 w-4 text-emerald-700" strokeWidth={2.2} /><h3 className="font-black text-slate-900 tracking-tight">Top 3 AI Opportunities</h3></div>
                       <p className="text-xs text-slate-500 mt-0.5">Highest-impact opportunities for {sectorInfo?.label}</p>
@@ -2156,7 +2157,7 @@ export default function AIReadinessScorecardApp() {
                     </div>
                   </div>
 
-                  <div className="rounded-2xl overflow-hidden bg-white shadow-sm" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #9f1239" }}>
+                  <div className="rounded-2xl overflow-hidden bg-white shadow-sm" style={{ border: "1px solid #e2e8f0" }}>
                     <div className="px-5 py-4" style={{ borderBottom: "1px solid #f1f5f9" }}>
                       <div className="flex items-center gap-2"><AlertTriangle className="h-4 w-4 text-rose-800" strokeWidth={2.2} /><h3 className="font-black text-slate-900 tracking-tight">Top 3 Risks if No Action</h3></div>
                       <p className="text-xs text-slate-500 mt-0.5">Consequences of delaying AI transformation</p>
@@ -2182,18 +2183,27 @@ export default function AIReadinessScorecardApp() {
                     <h3 className="font-black text-slate-900">Interpretation</h3>
                   </div>
                   <div className="p-5 grid gap-3 md:grid-cols-3">
-                    <div className="rounded-2xl p-5 hover-lift" style={{ background: "#fafafa", border: "1px solid #e2e8f0", borderTop: `3px solid ${overall >= 80 ? "#065f46" : overall >= 60 ? "#0066ff" : overall >= 40 ? "#854d0e" : "#9f1239"}` }}>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Current Maturity</p>
+                    <div className="rounded-2xl p-5 hover-lift" style={{ background: "#fafafa", border: "1px solid #e2e8f0" }}>
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full" style={{ background: overall >= 80 ? "#065f46" : overall >= 60 ? "#0066ff" : overall >= 40 ? "#854d0e" : "#9f1239" }} />
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Current Maturity</p>
+                      </div>
                       <p className="mt-2 text-3xl font-black text-slate-900 tracking-tight">{band.label}</p>
                       <p className="mt-2 text-sm text-slate-600 leading-relaxed">{band.advice}</p>
                     </div>
-                    <div className="rounded-2xl p-5 hover-lift" style={{ background: "#fafafa", border: "1px solid #e2e8f0", borderTop: "3px solid #065f46" }}>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Strongest Pillar</p>
+                    <div className="rounded-2xl p-5 hover-lift" style={{ background: "#fafafa", border: "1px solid #e2e8f0" }}>
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#065f46" }} />
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Strongest Pillar</p>
+                      </div>
                       <p className="mt-2 text-xl font-black text-slate-900 tracking-tight">{[...pillarData].sort((a, b) => b.score - a.score)[0].fullName}</p>
                       <p className="mt-1 text-sm font-bold text-emerald-800">{[...pillarData].sort((a, b) => b.score - a.score)[0].score}%</p>
                     </div>
-                    <div className="rounded-2xl p-5 hover-lift" style={{ background: "#fafafa", border: "1px solid #e2e8f0", borderTop: "3px solid #854d0e" }}>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Priority Development</p>
+                    <div className="rounded-2xl p-5 hover-lift" style={{ background: "#fafafa", border: "1px solid #e2e8f0" }}>
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#854d0e" }} />
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Priority Development</p>
+                      </div>
                       <p className="mt-2 text-xl font-black text-slate-900 tracking-tight">{lowestPillars[0].fullName}</p>
                       <p className="mt-1 text-sm font-bold text-amber-800">{lowestPillars[0].score}%</p>
                     </div>
@@ -2226,7 +2236,7 @@ export default function AIReadinessScorecardApp() {
                   <div className="p-5">
                     <div className="grid gap-4 md:grid-cols-3 stagger-children">
                       {generateRoadmap(active).map((phase, idx) => (
-                        <div key={phase.phase} className="rounded-2xl overflow-hidden hover-lift shadow-sm" style={{ background: phase.bgColor, border: `1px solid ${phase.borderColor}`, borderTop: `3px solid ${phase.color}` }}>
+                        <div key={phase.phase} className="rounded-2xl overflow-hidden hover-lift shadow-sm" style={{ background: phase.bgColor, border: `1px solid ${phase.borderColor}` }}>
                           <div className="px-5 py-4" style={{ borderBottom: `1px solid ${phase.borderColor}` }}>
                             <div className="flex items-center justify-between mb-2">
                               <span className="inline-flex items-center justify-center w-8 h-8 rounded-xl text-xs font-black text-white" style={{ background: phase.color }}>
@@ -2273,21 +2283,21 @@ export default function AIReadinessScorecardApp() {
 
                 {/* Roadmap meta info */}
                 <div className="grid gap-4 md:grid-cols-3">
-                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #0066ff" }}>
+                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0" }}>
                     <div className="flex items-center gap-2 mb-2">
                       <Target className="h-4 w-4 text-slate-800" strokeWidth={2.2} />
                       <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Tailored to You</p>
                     </div>
                     <p className="text-sm text-slate-700 leading-relaxed">Roadmap actions are derived from your weighted pillar scores and {sectorInfo?.label} sector best practices.</p>
                   </div>
-                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #065f46" }}>
+                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0" }}>
                     <div className="flex items-center gap-2 mb-2">
                       <Activity className="h-4 w-4 text-slate-800" strokeWidth={2.2} />
                       <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Review Quarterly</p>
                     </div>
                     <p className="text-sm text-slate-700 leading-relaxed">Re-run the assessment every 90 days to track progress and reprioritise as capabilities mature.</p>
                   </div>
-                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #a855f7" }}>
+                  <div className="rounded-2xl p-5 bg-white shadow-sm hover-lift" style={{ border: "1px solid #e2e8f0" }}>
                     <div className="flex items-center gap-2 mb-2">
                       <Sparkles className="h-4 w-4 text-slate-800" strokeWidth={2.2} />
                       <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Phased ROI</p>
@@ -2389,7 +2399,7 @@ export default function AIReadinessScorecardApp() {
                       const score = getWeightedPillarScore(pillar, active.scores);
                       const color = PILLAR_COLORS[PILLARS.indexOf(pillar)];
                       return (
-                        <div key={pillar.id} className="rounded-2xl p-5 hover:shadow-md transition" style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderTop: `3px solid ${color.from}` }}>
+                        <div key={pillar.id} className="rounded-2xl p-5 hover-lift transition bg-white" style={{ border: "1px solid #e2e8f0" }}>
                           <div className="flex items-center justify-between gap-2 mb-3">
                             <p className="font-black text-slate-900 text-sm flex items-center gap-2"><pillar.Icon className="h-4 w-4" style={{ color: color.from }} strokeWidth={2.2} /> {pillar.title}</p>
                             <span className="text-xs px-2 py-0.5 rounded-full font-black" style={{ background: `${color.from}15`, color: color.from }}>{score}%</span>
@@ -2411,7 +2421,7 @@ export default function AIReadinessScorecardApp() {
                 </div>
 
                 {risk.factors.length > 0 && (
-                  <div className="rounded-2xl overflow-hidden bg-white shadow-sm" style={{ border: "1px solid #e2e8f0", borderTop: "3px solid #9f1239" }}>
+                  <div className="rounded-2xl overflow-hidden bg-white shadow-sm" style={{ border: "1px solid #e2e8f0" }}>
                     <div className="px-6 py-4" style={{ borderBottom: "1px solid #f1f5f9" }}>
                       <h3 className="font-black text-slate-900 flex items-center gap-2 tracking-tight"><AlertTriangle className="h-4 w-4 text-rose-800" strokeWidth={2.2} /> Risk Mitigation Priorities</h3>
                       <p className="text-xs text-slate-500 mt-0.5">Critical factors requiring immediate attention</p>
