@@ -1712,45 +1712,82 @@ export default function AIReadinessScorecardApp() {
                   const pillarScore = getWeightedPillarScore(pillar, active.scores);
                   const color = PILLAR_COLORS[pillarIdx];
                   return (
-                    <div key={pillar.id} className="rounded-2xl bg-white shadow-sm overflow-hidden hover-lift animate-slide-up" style={{ border: "1px solid #e2e8f0", borderLeft: `4px solid ${color.from}`, animationDelay: `${pillarIdx * 60}ms` }}>
-                      <div className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
-                        <div className="flex items-start gap-4">
-                          <div className="flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg" style={{ background: `linear-gradient(135deg, ${color.from}, ${color.to})`, boxShadow: `0 8px 20px -4px ${color.from}66` }}>
+                    <div
+                      key={pillar.id}
+                      className="rounded-2xl bg-white shadow-sm overflow-hidden hover-lift animate-slide-up flex flex-col"
+                      style={{ border: "1px solid #e2e8f0", animationDelay: `${pillarIdx * 60}ms` }}
+                    >
+                      {/* Header row — fixed min-height so all pillar cards align their factor grids consistently */}
+                      <div className="flex flex-col gap-4 p-6 md:flex-row md:items-start md:justify-between" style={{ minHeight: 160 }}>
+                        <div className="flex items-start gap-4 flex-1 min-w-0">
+                          <div
+                            className="flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center"
+                            style={{
+                              background: `linear-gradient(135deg, ${color.from}, ${color.to})`,
+                              boxShadow: `0 4px 14px -4px ${color.from}55`,
+                            }}
+                          >
                             <pillar.Icon className="h-5 w-5 text-white" strokeWidth={2.2} />
                           </div>
-                          <div>
-                            <h3 className="text-lg font-black text-slate-900">{pillar.title}</h3>
-                            <p className="text-sm text-slate-500 mt-0.5">{pillar.description}</p>
-                            <p className="text-xs text-slate-400 mt-1 italic">{pillar.businessImpact}</p>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-base font-black text-slate-900 tracking-tight leading-snug">{pillar.title}</h3>
+                            <p className="text-[13px] text-slate-500 mt-1 leading-relaxed line-clamp-2" title={pillar.description}>
+                              {pillar.description}
+                            </p>
                           </div>
                         </div>
-                        <div className="min-w-[220px]">
-                          <div className="flex justify-between text-sm mb-2">
-                            <span className="text-xs text-slate-400 font-semibold uppercase tracking-wide">Weighted Score</span>
-                            <span className="text-sm font-black" style={{ color: color.from }}>{pillarScore}%</span>
+                        <div className="md:min-w-[200px] md:flex-shrink-0">
+                          <div className="flex justify-between items-baseline mb-1.5">
+                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Weighted Score</span>
+                            <span className="text-sm font-black tabular-nums" style={{ color: color.from }}>{pillarScore}%</span>
                           </div>
-                          <div className="relative h-2.5 rounded-full bg-slate-100 overflow-hidden">
-                            <div className="h-full rounded-full progress-fill" style={{ width: `${pillarScore}%`, background: `linear-gradient(90deg, ${color.from}, ${color.to})` }} />
+                          <div className="relative h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                            <div
+                              className="h-full rounded-full progress-fill"
+                              style={{
+                                width: `${pillarScore}%`,
+                                background: `linear-gradient(90deg, ${color.from}, ${color.to})`,
+                              }}
+                            />
                             {canSeeBenchmarks && (
-                              <div className="absolute top-0 h-full w-0.5 bg-slate-700/60" style={{ left: `${INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45}%` }} title={`Industry benchmark: ${INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45}%`} />
+                              <div
+                                className="absolute top-0 h-full w-0.5 bg-slate-700/70"
+                                style={{ left: `${INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45}%` }}
+                                title={`Industry benchmark: ${INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45}%`}
+                              />
                             )}
                           </div>
                           {canSeeBenchmarks ? (
-                            <div className="flex items-center justify-between mt-1.5 text-[10px] text-slate-400">
-                              <span>vs. {sectorInfo?.label} avg <span className="font-bold text-slate-600">{INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45}%</span></span>
-                              <span className={`font-bold ${pillarScore > (INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45) ? "text-emerald-600" : "text-amber-600"}`}>
+                            <div className="flex items-center justify-between mt-1.5 text-[10px] text-slate-400 tabular-nums">
+                              <span>
+                                vs. {sectorInfo?.label} avg{" "}
+                                <span className="font-bold text-slate-600">{INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45}%</span>
+                              </span>
+                              <span
+                                className={`font-bold ${
+                                  pillarScore > (INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45)
+                                    ? "text-emerald-600"
+                                    : "text-amber-600"
+                                }`}
+                              >
                                 {pillarScore > (INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45) ? "↑ Above" : "↓ Below"}
                               </span>
                             </div>
                           ) : (
-                            <a href="/pricing" className="block mt-1.5 text-[10px] text-slate-400 hover:text-indigo-600 transition">
-                              <Sparkles className="inline h-3 w-3 mr-1" /> Upgrade for {sectorInfo?.label} industry benchmark
+                            <a
+                              href="/pricing"
+                              className="block mt-1.5 text-[10px] text-slate-400 hover:text-indigo-600 transition"
+                            >
+                              <Sparkles className="inline h-3 w-3 mr-1" /> Upgrade for {sectorInfo?.label} benchmark
                             </a>
                           )}
                         </div>
                       </div>
 
-                      <div className="grid gap-3 px-6 pb-6 md:grid-cols-2">
+                      {/* Thin divider between header and factor grid — feels IONOS-clean */}
+                      <div className="mx-6" style={{ borderTop: "1px solid #f1f5f9" }} />
+
+                      <div className="grid gap-3 p-6 md:grid-cols-2 flex-1">
                         {pillar.factors.map((factor) => {
                           const weightInfo = getWeightLabel(factor.weight);
                           const currentScore = active.scores[factor.id];
