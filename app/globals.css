@@ -482,8 +482,27 @@ html { scroll-behavior: smooth; }
 .cl-brandContainer {
   background-color: #0a0a0a !important;
   background: #0a0a0a !important;
-  color: rgba(255, 255, 255, 0.55) !important;
+  color: rgba(255, 255, 255, 0.75) !important;
   border-top-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* "Secured by Clerk" wordmark — bump brightness so it's legible */
+.cl-internal-brandLogoLink,
+.cl-internal-brandLogo,
+.cl-internal-logoLink,
+.cl-internal-logoBox,
+.cl-internal-poweredBy,
+.cl-internal-poweredByClerk,
+.cl-footer a[href*="clerk.com"],
+.cl-footer a[href*="clerk.dev"],
+[class*="cl-"] a[href*="clerk.com"] {
+  color: rgba(255, 255, 255, 0.85) !important;
+  opacity: 1 !important;
+}
+.cl-internal-brandLogoLink svg,
+.cl-internal-logoLink svg,
+[class*="cl-"] a[href*="clerk.com"] svg {
+  opacity: 0.9 !important;
 }
 
 .cl-footerActionText {
