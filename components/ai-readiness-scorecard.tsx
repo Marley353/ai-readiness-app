@@ -777,6 +777,49 @@ function exportPdf(assessment: Assessment) {
   const pillarScores = PILLARS.map((p) => ({ title: p.title, score: getWeightedPillarScore(p, assessment.scores), rec: p.strategicRecommendations[assessment.sector], impact: p.businessImpact }));
   const dateStr = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 
+  // ── Text-sizing helpers (prevent overrun inside fixed-width boxes/pills) ─────
+
+  // Truncate text with an ellipsis so it fits within maxW at the current font
+  const fitText = (text: string, maxW: number): string => {
+    if (doc.getTextWidth(text) <= maxW) return text;
+    let t = text;
+    while (t.length > 1 && doc.getTextWidth(t + "…") > maxW) {
+      t = t.slice(0, -1);
+    }
+    return t.trim() + "…";
+  };
+
+  // Draw a pill that auto-sizes to its text. Returns the pill width so callers
+  // can chain layout. `anchorX` is treated as the LEFT edge; pass alignRight=true
+  // to have `anchorX` mean the RIGHT edge instead.
+  const drawPill = (
+    text: string,
+    anchorX: number,
+    y: number,
+    opts: {
+      h?: number;
+      padX?: number;
+      fontSize?: number;
+      fill: [number, number, number];
+      color: [number, number, number];
+      alignRight?: boolean;
+      maxW?: number;
+    },
+  ): number => {
+    const h = opts.h ?? 7;
+    const padX = opts.padX ?? 3;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(opts.fontSize ?? 7);
+    const textW = Math.min(doc.getTextWidth(text), opts.maxW ?? 60);
+    const pillW = textW + padX * 2;
+    const pillX = opts.alignRight ? anchorX - pillW : anchorX;
+    doc.setFillColor(...opts.fill);
+    doc.roundedRect(pillX, y, pillW, h, 2, 2, "F");
+    doc.setTextColor(...opts.color);
+    doc.text(fitText(text, opts.maxW ?? textW), pillX + pillW / 2, y + h / 2 + 1.6, { align: "center" });
+    return pillW;
+  };
+
   const addPageFooter = (pageNum: number) => {
     doc.setFillColor(30, 27, 75);
     doc.rect(0, 285, W, 12, "F");
@@ -887,30 +930,52 @@ function exportPdf(assessment: Assessment) {
   // Score overview boxes (4-up)
   const kpis = [
     { label: "AI Readiness Score", value: `${overall}%`, sub: band.label, c: scoreColor(overall) },
-    { label: "Risk Level", value: risk.level.charAt(0).toUpperCase() + risk.level.slice(1), sub: `Score: ${risk.score}/100`, c: risk.level === "high" ? [239, 68, 68] as [number,number,number] : risk.level === "medium" ? [217, 119, 6] as [number,number,number] : [5, 150, 105] as [number,number,number] },
+    { label: "Risk Level", value: risk.level.charAt(0).toUpperCase() + risk.level.slice(1), sub: `Score ${risk.score}/100`, c: risk.level === "high" ? [239, 68, 68] as [number,number,number] : risk.level === "medium" ? [217, 119, 6] as [number,number,number] : [5, 150, 105] as [number,number,number] },
     { label: "Business Impact", value: impact.category.split(" ")[0], sub: impact.category, c: [8, 145, 178] as [number,number,number] },
-    { label: "ROI Opportunity", value: roi.range.split("–")[0].trim(), sub: `${roi.confidence} confidence`, c: [13, 148, 136] as [number,number,number] },
+    { label: "ROI Opportunity", value: roi.range, sub: `${roi.confidence} confidence`, c: [13, 148, 136] as [number,number,number] },
   ];
   const boxW = (CONTENT_W - 9) / 4;
+  const KPI_BOX_H = 26; // taller box so sub-text fits on 2 lines if needed
   kpis.forEach((kpi, i) => {
     const bx = MARGIN + i * (boxW + 3);
     doc.setFillColor(248, 250, 252);
     doc.setDrawColor(226, 232, 240);
     doc.setLineWidth(0.3);
-    doc.roundedRect(bx, y, boxW, 22, 2, 2, "FD");
+    doc.roundedRect(bx, y, boxW, KPI_BOX_H, 2, 2, "FD");
     doc.setFillColor(...kpi.c);
     doc.rect(bx, y, boxW, 1.5, "F");
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(14);
-    doc.setTextColor(...kpi.c);
-    doc.text(kpi.value, bx + boxW / 2, y + 11, { align: "center" });
+
+    // Label (small, top)
     doc.setFont("helvetica", "normal");
     doc.setFontSize(6.5);
     doc.setTextColor(100, 116, 139);
     doc.text(kpi.label, bx + boxW / 2, y + 6, { align: "center" });
-    doc.text(kpi.sub, bx + boxW / 2, y + 17, { align: "center" });
+
+    // Value (big, middle). Shrink-to-fit so long values like the ROI range
+    // "15-25%" always fit the ~45mm box without clipping.
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(...kpi.c);
+    let valueSize = 14;
+    doc.setFontSize(valueSize);
+    while (doc.getTextWidth(kpi.value) > boxW - 4 && valueSize > 8) {
+      valueSize -= 1;
+      doc.setFontSize(valueSize);
+    }
+    doc.text(kpi.value, bx + boxW / 2, y + 13, { align: "center" });
+
+    // Sub (wrapped to up to 2 lines, ellipsised if still too long)
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(6.5);
+    doc.setTextColor(100, 116, 139);
+    const subLines = (doc.splitTextToSize(kpi.sub, boxW - 4) as string[]).slice(0, 2);
+    if (subLines.length === 2 && doc.splitTextToSize(kpi.sub, boxW - 4).length > 2) {
+      subLines[1] = fitText(subLines[1], boxW - 4);
+    }
+    subLines.forEach((line, li) => {
+      doc.text(line, bx + boxW / 2, y + 19 + li * 3.5, { align: "center" });
+    });
   });
-  y += 28;
+  y += KPI_BOX_H + 6;
 
   // Summary narrative
   doc.setFont("helvetica", "normal");
@@ -924,12 +989,16 @@ function exportPdf(assessment: Assessment) {
   y = sectionHeader("PILLAR SCORES (WEIGHTED)", y);
 
   pillarScores.forEach((pillar) => {
-    if (y > 255) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
     const [pr, pg, pb] = scoreColor(pillar.score);
+
+    // Title (truncated to leave room for score on the right)
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9);
     doc.setTextColor(15, 23, 42);
-    doc.text(pillar.title, MARGIN, y + 4);
+    const titleMaxW = CONTENT_W - 22; // reserve ~22mm on the right for the score
+    doc.text(fitText(pillar.title, titleMaxW), MARGIN, y + 4);
+
+    // Score (right-aligned)
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     doc.setTextColor(pr, pg, pb);
@@ -937,19 +1006,29 @@ function exportPdf(assessment: Assessment) {
 
     // Bar track
     const barX = MARGIN;
-    const barW = CONTENT_W - 14;
-    const barH = 4;
+    const barW = CONTENT_W;
+    const barH = 3;
     doc.setFillColor(226, 232, 240);
     doc.roundedRect(barX, y + 6, barW, barH, 1, 1, "F");
     doc.setFillColor(pr, pg, pb);
     const filled = Math.max(2, (pillar.score / 100) * barW);
     doc.roundedRect(barX, y + 6, filled, barH, 1, 1, "F");
 
-    // Impact line
+    // Impact line (wrapped to up to 2 lines)
     doc.setTextColor(100, 116, 139);
     doc.setFontSize(7);
-    doc.text(pillar.impact, MARGIN, y + 14);
-    y += 18;
+    const impactLines = (doc.splitTextToSize(pillar.impact, CONTENT_W) as string[]).slice(0, 2);
+    impactLines.forEach((line, li) => doc.text(line, MARGIN, y + 13 + li * 3));
+    const rowH = 13 + impactLines.length * 3 + 3;
+
+    // Page break if needed (check BEFORE drawing)
+    if (y + rowH > 275) {
+      doc.addPage();
+      addPageFooter(doc.getNumberOfPages());
+      y = 18;
+    } else {
+      y += rowH;
+    }
   });
 
   addPageFooter(2);
@@ -1004,56 +1083,125 @@ function exportPdf(assessment: Assessment) {
   // Opportunities
   y = sectionHeader("TOP AI OPPORTUNITIES", y);
   topOpps.forEach((opp, i) => {
-    if (y > 255) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
+    // Measure the impact pill first so we know how much horizontal space the title has
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7);
+    const impactPillW = Math.min(doc.getTextWidth(opp.impact) + 6, 50);
+    const impactPillGap = 4;
+
+    // Title available width: card width, minus left bar + left padding + pill + gap + right padding
+    const titleMaxW = CONTENT_W - 8 - 4 - impactPillW - impactPillGap - 4;
+
+    // Title (wrap to up to 2 lines — retains full title if possible)
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8.5);
+    const titleLines = (doc.splitTextToSize(`${i + 1}. ${opp.title}`, titleMaxW) as string[]).slice(0, 2);
+
+    // Description (wrap to full card width now that pill is above the copy)
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    const oppLines = doc.splitTextToSize(opp.description, CONTENT_W - 12) as string[];
+
+    // Dynamic box height
+    const boxH = titleLines.length * 4.5 + oppLines.length * 4 + 10;
+
+    if (y + boxH > 275) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
+
+    // Card background
     doc.setFillColor(240, 253, 250);
     doc.setDrawColor(153, 246, 228);
     doc.setLineWidth(0.3);
-    const oppLines = doc.splitTextToSize(opp.description, CONTENT_W - 55);
-    doc.roundedRect(MARGIN, y, CONTENT_W, oppLines.length * 4.5 + 14, 2, 2, "FD");
+    doc.roundedRect(MARGIN, y, CONTENT_W, boxH, 2, 2, "FD");
+
+    // Left accent bar
     doc.setFillColor(5, 150, 105);
-    doc.roundedRect(MARGIN, y, 4, oppLines.length * 4.5 + 14, 1, 1, "F");
+    doc.roundedRect(MARGIN, y, 4, boxH, 1, 1, "F");
+
+    // Impact pill (auto-sized, top-right of the card)
+    drawPill(opp.impact, W - MARGIN - 2, y + 3, {
+      fill: [209, 250, 229],
+      color: [6, 95, 70],
+      alignRight: true,
+      maxW: 46,
+      padX: 3,
+      h: 6,
+      fontSize: 6.5,
+    });
+
+    // Title
     doc.setFont("helvetica", "bold");
     doc.setFontSize(8.5);
     doc.setTextColor(6, 95, 70);
-    doc.text(`${i + 1}. ${opp.title}`, MARGIN + 8, y + 7);
+    titleLines.forEach((line, li) => doc.text(line, MARGIN + 8, y + 6 + li * 4.5));
+
+    // Description
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     doc.setTextColor(15, 79, 58);
-    doc.text(oppLines, MARGIN + 8, y + 13);
-    doc.setFillColor(209, 250, 229);
-    doc.roundedRect(W - MARGIN - 28, y + 4, 26, 8, 2, 2, "F");
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(7);
-    doc.setTextColor(6, 95, 70);
-    doc.text(opp.impact, W - MARGIN - 15, y + 9.5, { align: "center" });
-    y += oppLines.length * 4.5 + 18;
+    doc.text(oppLines, MARGIN + 8, y + 6 + titleLines.length * 4.5 + 4);
+
+    y += boxH + 4;
   });
 
   // Risks
   y = sectionHeader("KEY RISKS IF NO ACTION TAKEN", y);
   topRisks.forEach((r, i) => {
-    if (y > 255) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
     const isHigh = r.severity === "High";
+    const severityFill: [number, number, number] = isHigh ? [254, 226, 226] : [254, 243, 199];
+    const severityColor: [number, number, number] = isHigh ? [153, 27, 27] : [146, 64, 10];
+
+    // Measure severity pill
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(6.5);
+    const sevPillW = Math.min(doc.getTextWidth(r.severity) + 6, 26);
+    const titleMaxW = CONTENT_W - 8 - 4 - sevPillW - 4 - 4;
+
+    // Title + description lines
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8.5);
+    const rTitleLines = (doc.splitTextToSize(`${i + 1}. ${r.title}`, titleMaxW) as string[]).slice(0, 2);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    const rLines = doc.splitTextToSize(r.description, CONTENT_W - 12) as string[];
+
+    const boxH = rTitleLines.length * 4.5 + rLines.length * 4 + 10;
+
+    if (y + boxH > 275) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
+
+    // Card background
     doc.setFillColor(isHigh ? 255 : 255, isHigh ? 241 : 251, isHigh ? 242 : 235);
     doc.setDrawColor(isHigh ? 254 : 253, isHigh ? 205 : 211, isHigh ? 211 : 153);
     doc.setLineWidth(0.3);
-    const rLines = doc.splitTextToSize(r.description, CONTENT_W - 55);
-    doc.roundedRect(MARGIN, y, CONTENT_W, rLines.length * 4.5 + 14, 2, 2, "FD");
+    doc.roundedRect(MARGIN, y, CONTENT_W, boxH, 2, 2, "FD");
+
+    // Left accent bar
     doc.setFillColor(isHigh ? 239 : 217, isHigh ? 68 : 119, isHigh ? 68 : 6);
-    doc.roundedRect(MARGIN, y, 4, rLines.length * 4.5 + 14, 1, 1, "F");
+    doc.roundedRect(MARGIN, y, 4, boxH, 1, 1, "F");
+
+    // Severity pill (auto-sized)
+    drawPill(r.severity, W - MARGIN - 2, y + 3, {
+      fill: severityFill,
+      color: severityColor,
+      alignRight: true,
+      maxW: 22,
+      padX: 3,
+      h: 6,
+      fontSize: 6.5,
+    });
+
+    // Title
     doc.setFont("helvetica", "bold");
     doc.setFontSize(8.5);
-    doc.setTextColor(isHigh ? 153 : 146, isHigh ? 27 : 64, isHigh ? 27 : 10);
-    doc.text(`${i + 1}. ${r.title}`, MARGIN + 8, y + 7);
+    doc.setTextColor(...severityColor);
+    rTitleLines.forEach((line, li) => doc.text(line, MARGIN + 8, y + 6 + li * 4.5));
+
+    // Description
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
-    doc.text(rLines, MARGIN + 8, y + 13);
-    doc.setFillColor(isHigh ? 254 : 254, isHigh ? 226 : 243, isHigh ? 226 : 199);
-    doc.roundedRect(W - MARGIN - 28, y + 4, 26, 8, 2, 2, "F");
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(7);
-    doc.text(r.severity, W - MARGIN - 15, y + 9.5, { align: "center" });
-    y += rLines.length * 4.5 + 18;
+    doc.text(rLines, MARGIN + 8, y + 6 + rTitleLines.length * 4.5 + 4);
+
+    y += boxH + 4;
   });
 
   addPageFooter(3);
@@ -1064,38 +1212,68 @@ function exportPdf(assessment: Assessment) {
   y = sectionHeader("STRATEGIC RECOMMENDATIONS BY PILLAR", y);
 
   const actionPillars = pillarScores.filter(p => p.score < 70);
-  actionPillars.forEach((pillar, idx) => {
-    if (y > 248) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
+  actionPillars.forEach((pillar) => {
     const [pr, pg, pb] = scoreColor(pillar.score);
+
+    // Measure score badge
+    const scoreText = `${pillar.score}%`;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8);
+    const scoreBadgeW = Math.min(doc.getTextWidth(scoreText) + 6, 28);
+
+    // Title available width reserves space for score badge + padding
+    const titleMaxW = CONTENT_W - 10 - scoreBadgeW - 4;
+
+    // Truncate title to a single line; recommendation + impact wrap normally
+    const titleText = fitText(pillar.title, titleMaxW);
+    const recLines = doc.splitTextToSize(pillar.rec, CONTENT_W - 10) as string[];
+    const impactLines = doc.splitTextToSize(pillar.impact, CONTENT_W - 10) as string[];
+
+    const boxH = 12 + recLines.length * 4.5 + impactLines.length * 3.5 + 8;
+
+    if (y + boxH > 272) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
+
+    // Card body
     doc.setFillColor(248, 250, 252);
     doc.setDrawColor(226, 232, 240);
     doc.setLineWidth(0.3);
-    const recLines = doc.splitTextToSize(pillar.rec, CONTENT_W - 14);
-    const boxH = recLines.length * 4.5 + 22;
     doc.roundedRect(MARGIN, y, CONTENT_W, boxH, 2, 2, "FD");
+
+    // Top accent stripe
     doc.setFillColor(pr, pg, pb);
     doc.rect(MARGIN, y, CONTENT_W, 1.5, "F");
 
+    // Title
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9.5);
     doc.setTextColor(15, 23, 42);
-    doc.text(pillar.title, MARGIN + 5, y + 9);
+    doc.text(titleText, MARGIN + 5, y + 9);
 
-    doc.setFillColor(pr, pg, pb);
-    doc.roundedRect(W - MARGIN - 25, y + 3, 23, 8, 2, 2, "F");
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(8);
-    doc.text(`${pillar.score}%`, W - MARGIN - 13.5, y + 8.5, { align: "center" });
+    // Score badge — right-aligned, auto-sized
+    drawPill(scoreText, W - MARGIN - 3, y + 3.5, {
+      fill: [pr, pg, pb],
+      color: [255, 255, 255],
+      alignRight: true,
+      maxW: 24,
+      padX: 3,
+      h: 7,
+      fontSize: 7.5,
+    });
 
+    // Recommendation (wraps as many lines as needed)
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8.5);
     doc.setTextColor(51, 65, 85);
     doc.text(recLines, MARGIN + 5, y + 16);
 
+    // Impact italic at bottom
     doc.setFont("helvetica", "italic");
     doc.setFontSize(7.5);
     doc.setTextColor(100, 116, 139);
-    doc.text(pillar.impact, MARGIN + 5, y + boxH - 5);
+    impactLines.forEach((line, li) =>
+      doc.text(line, MARGIN + 5, y + 16 + recLines.length * 4.5 + 4 + li * 3.5),
+    );
+
     y += boxH + 5;
   });
 
