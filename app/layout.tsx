@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { ClerkProvider } from '@clerk/nextjs'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -55,11 +56,29 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className="font-sans antialiased">
-        {children}
-        <Analytics />
-      </body>
-    </html>
+    <ClerkProvider
+      appearance={{
+        variables: {
+          colorPrimary: '#0066ff',
+          colorBackground: '#0a0a0a',
+          colorText: '#fafafa',
+          colorInputBackground: 'rgba(255,255,255,0.04)',
+          colorInputText: '#fafafa',
+          borderRadius: '0.75rem',
+        },
+        elements: {
+          formButtonPrimary:
+            'bg-white text-black hover:bg-white/90 hover:scale-[1.02] transition rounded-full font-semibold',
+          card: 'bg-[#0a0a0a] border border-white/10',
+        },
+      }}
+    >
+      <html lang="en">
+        <body className="font-sans antialiased">
+          {children}
+          <Analytics />
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }

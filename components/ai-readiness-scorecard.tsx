@@ -12,6 +12,9 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Cell, PieChart, Pie, Legend } from "recharts";
 import { Download, Mail, Plus, Printer, Trash2, Copy, Sparkles, AlertTriangle, TrendingUp, Shield, Building2, FileText, Zap, Target, Activity, ArrowRight, Clock, CheckCircle2, Compass, Users, Workflow, Database, Cpu, Scale, Heart, Rocket, Beaker, type LucideIcon } from "lucide-react";
+import { AuthHeader } from "@/components/auth-header";
+import { ProGate } from "@/components/pro-gate";
+import { useCanUse } from "@/lib/use-plan";
 import jsPDF from "jspdf";
 
 const STORAGE_KEY = "ai-readiness-assessments-v3";
@@ -1347,6 +1350,7 @@ export default function AIReadinessScorecardApp() {
   const topOpportunities = getTopOpportunities(active);
   const topRisks = getTopRisks(active);
   
+  const canSeeBenchmarks = useCanUse("benchmarks");
   const pillarData = PILLARS.map((pillar) => ({
     name: pillar.title.replace(" & ", "\n"),
     score: getWeightedPillarScore(pillar, active.scores),
@@ -1419,7 +1423,13 @@ export default function AIReadinessScorecardApp() {
 
       {/* HERO HEADER */}
       <div className="aurora-bg" style={{ background: "radial-gradient(ellipse at 20% 0%, rgba(0,102,255,0.35) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(236,72,153,0.25) 0%, transparent 50%), radial-gradient(ellipse at 50% 50%, rgba(168,85,247,0.2) 0%, transparent 60%), #0a0a0a" }}>
-        <div className="relative mx-auto max-w-7xl px-4 pt-6 pb-0 md:px-8">
+        {/* Top account bar */}
+        <div className="relative z-10 mx-auto max-w-7xl px-4 pt-4 md:px-8">
+          <div className="flex items-center justify-end gap-2">
+            <AuthHeader />
+          </div>
+        </div>
+        <div className="relative mx-auto max-w-7xl px-4 pt-4 pb-0 md:px-8">
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div className="flex-1 min-w-0">
               <div className="mb-3 flex flex-wrap items-center gap-2">
@@ -1718,15 +1728,22 @@ export default function AIReadinessScorecardApp() {
                           </div>
                           <div className="relative h-2.5 rounded-full bg-slate-100 overflow-hidden">
                             <div className="h-full rounded-full progress-fill" style={{ width: `${pillarScore}%`, background: `linear-gradient(90deg, ${color.from}, ${color.to})` }} />
-                            {/* Benchmark marker */}
-                            <div className="absolute top-0 h-full w-0.5 bg-slate-700/60" style={{ left: `${INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45}%` }} title={`Industry benchmark: ${INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45}%`} />
+                            {canSeeBenchmarks && (
+                              <div className="absolute top-0 h-full w-0.5 bg-slate-700/60" style={{ left: `${INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45}%` }} title={`Industry benchmark: ${INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45}%`} />
+                            )}
                           </div>
-                          <div className="flex items-center justify-between mt-1.5 text-[10px] text-slate-400">
-                            <span>vs. {sectorInfo?.label} avg <span className="font-bold text-slate-600">{INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45}%</span></span>
-                            <span className={`font-bold ${pillarScore > (INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45) ? "text-emerald-600" : "text-amber-600"}`}>
-                              {pillarScore > (INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45) ? "↑ Above" : "↓ Below"}
-                            </span>
-                          </div>
+                          {canSeeBenchmarks ? (
+                            <div className="flex items-center justify-between mt-1.5 text-[10px] text-slate-400">
+                              <span>vs. {sectorInfo?.label} avg <span className="font-bold text-slate-600">{INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45}%</span></span>
+                              <span className={`font-bold ${pillarScore > (INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45) ? "text-emerald-600" : "text-amber-600"}`}>
+                                {pillarScore > (INDUSTRY_BENCHMARKS[active.sector]?.[pillar.id] ?? 45) ? "↑ Above" : "↓ Below"}
+                              </span>
+                            </div>
+                          ) : (
+                            <a href="/pricing" className="block mt-1.5 text-[10px] text-slate-400 hover:text-indigo-600 transition">
+                              <Sparkles className="inline h-3 w-3 mr-1" /> Upgrade for {sectorInfo?.label} industry benchmark
+                            </a>
+                          )}
                         </div>
                       </div>
 
@@ -1952,6 +1969,12 @@ export default function AIReadinessScorecardApp() {
 
               {/* ─── ROADMAP TAB ─── */}
               <TabsContent value="roadmap" className="space-y-5">
+                <ProGate
+                  feature="roadmap"
+                  variant="replace"
+                  title="12-Month Maturity Roadmap"
+                  description="Upgrade to Pro to unlock the auto-generated phased 0–90 day / 3–6 month / 6–12 month plan tailored to your scores and sector."
+                >
                 <div className="rounded-2xl bg-white shadow-sm overflow-hidden animate-fade-in" style={{ border: "1px solid #e2e8f0" }}>
                   <div className="relative px-6 py-5 overflow-hidden" style={{ background: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
                     <div className="absolute -top-20 -right-10 w-60 h-60 rounded-full opacity-50 blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, #0066ff, transparent 60%)" }} />
@@ -2038,6 +2061,7 @@ export default function AIReadinessScorecardApp() {
                     <p className="text-sm text-slate-700 leading-relaxed">Expect early efficiency gains in Phase 1, transformational impact emerging in Phase 2, and enterprise-wide value in Phase 3.</p>
                   </div>
                 </div>
+                </ProGate>
               </TabsContent>
 
               {/* ─── REPORT TAB ─── */}
@@ -2103,11 +2127,24 @@ export default function AIReadinessScorecardApp() {
 
               {/* ─── COMPARE TAB ─── */}
               <TabsContent value="compare" className="space-y-4">
-                <CompareView assessments={assessments} />
+                <ProGate
+                  feature="compare"
+                  variant="replace"
+                  title="Side-by-side Comparison"
+                  description="Upgrade to Pro to benchmark two saved assessments against each other — perfect for tracking progress quarter over quarter or comparing business units."
+                >
+                  <CompareView assessments={assessments} />
+                </ProGate>
               </TabsContent>
 
               {/* ─── RECOMMENDATIONS TAB ─── */}
               <TabsContent value="recommendations" className="space-y-5">
+                <ProGate
+                  feature="sectorRecommendations"
+                  variant="replace"
+                  title="Strategic Recommendations"
+                  description="Upgrade to Pro for sector-specific strategic recommendations tailored to each of your weakest pillars, plus prioritised risk mitigation actions."
+                >
                 <div className="rounded-2xl bg-white shadow-sm overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
                   <div className="px-6 py-4" style={{ background: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
                     <h2 className="font-black text-white flex items-center gap-2 tracking-tight"><Sparkles className="h-4 w-4 text-white" /> Strategic Recommendations</h2>
@@ -2155,6 +2192,7 @@ export default function AIReadinessScorecardApp() {
                     </div>
                   </div>
                 )}
+                </ProGate>
               </TabsContent>
 
               {/* Sticky bottom tab bar — so users don't scroll back to the top */}
