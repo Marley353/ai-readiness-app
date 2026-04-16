@@ -986,6 +986,8 @@ function exportPdf(assessment: Assessment) {
   y += narrative.length * 4.5 + 6;
 
   // ─── PILLAR SCORES ───────────────────────────────────────────────────────────
+  y += 6;
+  if (y + 40 > 275) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
   y = sectionHeader("PILLAR SCORES (WEIGHTED)", y);
 
   pillarScores.forEach((pillar) => {
@@ -1081,6 +1083,8 @@ function exportPdf(assessment: Assessment) {
   }
 
   // Opportunities
+  y += 6;
+  if (y + 40 > 275) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
   y = sectionHeader("TOP AI OPPORTUNITIES", y);
   topOpps.forEach((opp, i) => {
     // Measure the impact pill first so we know how much horizontal space the title has
@@ -1144,6 +1148,8 @@ function exportPdf(assessment: Assessment) {
   });
 
   // Risks
+  y += 6;
+  if (y + 40 > 275) { doc.addPage(); addPageFooter(doc.getNumberOfPages()); y = 18; }
   y = sectionHeader("KEY RISKS IF NO ACTION TAKEN", y);
   topRisks.forEach((r, i) => {
     const isHigh = r.severity === "High";
@@ -1288,7 +1294,17 @@ function exportPdf(assessment: Assessment) {
     y += 26;
   }
 
-  // ROI Scenarios
+  // ROI Scenarios — guarantee clean separation from the last recommendation
+  // card. sectionHeader draws 6mm ABOVE y, so ensure at least 10mm clearance.
+  // If the header + 3 ROI tiles (header 16mm + tiles 32mm + footer buffer
+  // ~12mm = ~60mm total) don't fit on the current page, start a new one.
+  y += 10;
+  if (y + 60 > 275) {
+    doc.addPage();
+    addPageFooter(doc.getNumberOfPages());
+    y = 18;
+  }
+
   y = sectionHeader("ROI SCENARIOS", y);
   const roiScenarios = [
     { label: "Conservative", value: roi.scenarios.low, desc: "Baseline efficiency gains with minimal change management", color: [100, 116, 139] as [number,number,number] },
