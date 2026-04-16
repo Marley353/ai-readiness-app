@@ -35,8 +35,8 @@ export function Footer() {
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">Legal</p>
             <ul className="mt-4 space-y-2.5">
-              <li><Link href="#" className="text-sm text-white/70 hover:text-white transition">Privacy</Link></li>
-              <li><Link href="#" className="text-sm text-white/70 hover:text-white transition">Terms</Link></li>
+              <li><Link href="/privacy" className="text-sm text-white/70 hover:text-white transition">Privacy</Link></li>
+              <li><Link href="/terms" className="text-sm text-white/70 hover:text-white transition">Terms</Link></li>
               <li><a href="mailto:support@aireadiness.app" className="text-sm text-white/70 hover:text-white transition">Contact</a></li>
             </ul>
           </div>
