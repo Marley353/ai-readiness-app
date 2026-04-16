@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { ClerkProvider } from '@clerk/nextjs'
+import { dark } from '@clerk/themes'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -58,90 +59,24 @@ export default function RootLayout({
   return (
     <ClerkProvider
       appearance={{
+        // Prebuilt dark theme handles every element's contrast properly —
+        // this is the only way to reliably style Clerk v7 without running
+        // into Tailwind-JIT class purging problems.
+        baseTheme: dark,
         variables: {
           colorPrimary: '#0066ff',
           colorBackground: '#0a0a0a',
-          colorInputBackground: 'rgba(255,255,255,0.05)',
+          colorInputBackground: '#1a1a1a',
           colorInputText: '#fafafa',
           colorText: '#fafafa',
-          colorTextSecondary: 'rgba(255,255,255,0.65)',
+          colorTextSecondary: 'rgba(255,255,255,0.7)',
           colorNeutral: '#fafafa',
           colorDanger: '#f43f5e',
           colorSuccess: '#10b981',
+          colorWarning: '#f59e0b',
           borderRadius: '0.75rem',
           fontFamily: 'inherit',
-        },
-        elements: {
-          // Main sign-in / sign-up card
-          card: 'bg-[#0a0a0a] border border-white/10 shadow-2xl',
-          headerTitle: 'text-white',
-          headerSubtitle: 'text-white/70',
-
-          // Form fields & labels
-          formFieldLabel: 'text-white/80',
-          formFieldInput:
-            'bg-white/5 border border-white/15 text-white placeholder:text-white/40 focus:border-white/40',
-          formFieldAction: 'text-white/70 hover:text-white',
-          formFieldHintText: 'text-white/50',
-          formFieldErrorText: 'text-rose-400',
-
-          // Primary button (Continue / Sign in)
-          formButtonPrimary:
-            'bg-white text-black hover:bg-white/90 hover:scale-[1.01] transition rounded-full font-semibold shadow-[0_0_16px_rgba(255,255,255,0.2)]',
-
-          // Social buttons (Google, etc.)
-          socialButtonsBlockButton:
-            'bg-white/5 border border-white/15 text-white hover:bg-white/10 transition',
-          socialButtonsBlockButtonText: 'text-white font-medium',
-          socialButtonsProviderIcon: 'brightness-0 invert-0',
-
-          // Divider (or)
-          dividerLine: 'bg-white/15',
-          dividerText: 'text-white/50',
-
-          // Footer (Don't have an account? Sign up)
-          footerAction: 'text-white/60',
-          footerActionText: 'text-white/60',
-          footerActionLink: 'text-white hover:text-white/80 font-semibold',
-          footer: 'bg-transparent',
-
-          // Badges (Development mode etc.)
-          badge: 'bg-white/10 text-white/80 border border-white/10',
-
-          // Identity preview (shows email during 2-step flow)
-          identityPreview: 'bg-white/5 border border-white/15',
-          identityPreviewText: 'text-white',
-          identityPreviewEditButton: 'text-white/70 hover:text-white',
-
-          // OTP / verification code
-          otpCodeFieldInput: 'bg-white/5 border border-white/15 text-white',
-
-          // Alerts
-          alert: 'bg-white/5 border border-white/15 text-white',
-          alertText: 'text-white',
-
-          // User button (avatar in hero)
-          userButtonAvatarBox: 'w-8 h-8 ring-2 ring-white/20 hover:ring-white/40 transition',
-          userButtonPopoverCard:
-            'bg-[#0a0a0a] border border-white/15 shadow-2xl',
-          userButtonPopoverMain: 'bg-[#0a0a0a]',
-          userButtonPopoverFooter: 'bg-[#0a0a0a] border-t border-white/10',
-          userButtonPopoverActionButton:
-            'text-white hover:bg-white/5 transition',
-          userButtonPopoverActionButtonText: 'text-white',
-          userButtonPopoverActionButtonIcon: 'text-white/70',
-          userPreview: 'bg-transparent',
-          userPreviewMainIdentifier: 'text-white',
-          userPreviewSecondaryIdentifier: 'text-white/60',
-          userPreviewAvatarContainer: 'bg-white/10',
-
-          // Generic text inside popovers
-          text__primary: 'text-white',
-          text__secondary: 'text-white/70',
-
-          // Profile / Account management pages
-          profileSectionTitleText: 'text-white',
-          profileSectionContent: 'text-white/80',
+          fontSize: '0.9rem',
         },
       }}
     >
