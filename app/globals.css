@@ -433,3 +433,120 @@ html { scroll-behavior: smooth; }
   .no-print { display: none !important; }
   body { background: white !important; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Clerk dark-theme safety net
+   If @clerk/themes dark baseTheme ever leaves a surface on a
+   light computed colour, these class targets force good contrast.
+   Clerk v5+ prefixes all internal elements with .cl-* so these
+   only affect Clerk-rendered UI.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* UserProfile modal container */
+.cl-modalContent,
+.cl-modalBackdrop {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
+.cl-card,
+.cl-cardBox,
+.cl-userProfile-root,
+.cl-profilePage,
+.cl-pageScrollBox,
+.cl-navbar {
+  background-color: #0a0a0a !important;
+  color: #fafafa !important;
+}
+
+/* All Clerk navbar / sidebar items — "Profile", "Security", etc. */
+.cl-navbarButton,
+.cl-navbarButton__text,
+.cl-navbarButtonText {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+.cl-navbarButton[data-active="true"],
+.cl-navbarButton:hover {
+  color: #fafafa !important;
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Section titles + subtitles + row labels */
+.cl-profileSectionTitle,
+.cl-profileSectionTitleText,
+.cl-profileSectionItem__label,
+.cl-profileSectionItemLabel,
+.cl-headerTitle,
+.cl-pageHeading,
+.cl-formFieldLabel,
+.cl-formHeaderTitle {
+  color: #fafafa !important;
+}
+
+.cl-profileSectionSubtitle,
+.cl-profileSectionSubtitleText,
+.cl-profileSectionContent,
+.cl-profileSectionPrimaryButton,
+.cl-headerSubtitle,
+.cl-formHeaderSubtitle,
+.cl-formFieldHintText,
+.cl-footer,
+.cl-footerActionText {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Inputs / forms */
+.cl-formFieldInput,
+.cl-input,
+.cl-internal-select input {
+  background-color: #1a1a1a !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #fafafa !important;
+}
+.cl-formFieldInput::placeholder {
+  color: rgba(255, 255, 255, 0.35) !important;
+}
+
+/* Clerk link styling — "Update profile", "Add email address", "Sign up" */
+.cl-profileSectionPrimaryButton,
+.cl-actionLink,
+.cl-footerActionLink {
+  color: #60a5fa !important;
+}
+
+/* Badges (e.g., "Primary" email pill) */
+.cl-badge {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Dividers */
+.cl-dividerLine {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+}
+.cl-dividerText {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Footer brand lockup + "Development mode" tag */
+.cl-internal-root > div:last-child {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* UserButton popover contents (the dropdown when you click the avatar) */
+.cl-userButtonPopoverCard,
+.cl-userButtonPopoverMain,
+.cl-userButtonPopoverFooter {
+  background-color: #0a0a0a !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+.cl-userButtonPopoverActionButton,
+.cl-userButtonPopoverActionButtonText {
+  color: #fafafa !important;
+}
+.cl-userPreviewMainIdentifier {
+  color: #fafafa !important;
+}
+.cl-userPreviewSecondaryIdentifier {
+  color: rgba(255, 255, 255, 0.6) !important;
+}

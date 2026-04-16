@@ -59,24 +59,16 @@ export default function RootLayout({
   return (
     <ClerkProvider
       appearance={{
-        // Prebuilt dark theme handles every element's contrast properly —
-        // this is the only way to reliably style Clerk v7 without running
-        // into Tailwind-JIT class purging problems.
+        // Prebuilt dark theme handles ALL neutral/text/surface colours.
+        // Over-riding too many variables was breaking its computed
+        // colour hierarchy (text was derived from a light colorNeutral
+        // and ended up invisible on dark backgrounds). Minimal config
+        // only — just the brand primary and radius.
         baseTheme: dark,
         variables: {
           colorPrimary: '#0066ff',
-          colorBackground: '#0a0a0a',
-          colorInputBackground: '#1a1a1a',
-          colorInputText: '#fafafa',
-          colorText: '#fafafa',
-          colorTextSecondary: 'rgba(255,255,255,0.7)',
-          colorNeutral: '#fafafa',
-          colorDanger: '#f43f5e',
-          colorSuccess: '#10b981',
-          colorWarning: '#f59e0b',
           borderRadius: '0.75rem',
           fontFamily: 'inherit',
-          fontSize: '0.9rem',
         },
       }}
     >
