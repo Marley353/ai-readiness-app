@@ -442,6 +442,15 @@ html { scroll-behavior: smooth; }
    only affect Clerk-rendered UI.
    ═══════════════════════════════════════════════════════════════ */
 
+/* Root / outer wrappers — prevent any light background from leaking through */
+.cl-rootBox,
+.cl-signIn-root,
+.cl-signUp-root,
+.cl-userProfile-root,
+.cl-userButton-root {
+  background-color: transparent !important;
+}
+
 /* UserProfile modal container */
 .cl-modalContent,
 .cl-modalBackdrop {
@@ -453,9 +462,35 @@ html { scroll-behavior: smooth; }
 .cl-userProfile-root,
 .cl-profilePage,
 .cl-pageScrollBox,
-.cl-navbar {
+.cl-navbar,
+.cl-page {
   background-color: #0a0a0a !important;
   color: #fafafa !important;
+}
+
+/* Card footer — "Secured by Clerk" + "Don't have an account? Sign up"
+   This is the white strip at the bottom of sign-in/sign-up cards. */
+.cl-footer,
+.cl-cardFooter,
+.cl-cardFooterItem,
+.cl-footerPages,
+.cl-footerPagesLink,
+.cl-footerAction,
+.cl-footerActionRoot,
+.cl-internal-footer,
+.cl-internal-brandLogoLink,
+.cl-brandContainer {
+  background-color: #0a0a0a !important;
+  background: #0a0a0a !important;
+  color: rgba(255, 255, 255, 0.55) !important;
+  border-top-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.cl-footerActionText {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+.cl-footerActionLink {
+  color: #60a5fa !important;
 }
 
 /* All Clerk navbar / sidebar items — "Profile", "Security", etc. */
@@ -485,19 +520,51 @@ html { scroll-behavior: smooth; }
 .cl-profileSectionSubtitle,
 .cl-profileSectionSubtitleText,
 .cl-profileSectionContent,
-.cl-profileSectionPrimaryButton,
 .cl-headerSubtitle,
 .cl-formHeaderSubtitle,
 .cl-formFieldHintText,
-.cl-footer,
-.cl-footerActionText {
+.cl-dividerText {
   color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Profile item row values (the actual email address shown on the row) */
+.cl-profileSectionItem,
+.cl-profileSectionItem__content,
+.cl-profileSectionItem__emailAddresses,
+.cl-profileSectionItem__email,
+.cl-profileSectionItemValue,
+.cl-profileSectionItemText,
+.cl-profileSection__content,
+.cl-accordionTriggerButton,
+.cl-menuButton {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Catch any stubborn descendant <span> or <p> inside profile rows */
+.cl-profileSectionItem p,
+.cl-profileSectionItem span:not(.cl-badge):not(.cl-actionLink):not(.cl-footerActionLink),
+.cl-profilePage p,
+.cl-profilePage span:not(.cl-badge):not(.cl-actionLink):not(.cl-footerActionLink) {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Identity preview (email shown on verification/OTP step) */
+.cl-identityPreview,
+.cl-identityPreviewText,
+.cl-identityPreview__text {
+  color: #fafafa !important;
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+.cl-identityPreviewEditButton {
+  color: #60a5fa !important;
 }
 
 /* Inputs / forms */
 .cl-formFieldInput,
 .cl-input,
-.cl-internal-select input {
+.cl-internal-select input,
+.cl-otpCodeFieldInput {
   background-color: #1a1a1a !important;
   border-color: rgba(255, 255, 255, 0.15) !important;
   color: #fafafa !important;
@@ -506,11 +573,32 @@ html { scroll-behavior: smooth; }
   color: rgba(255, 255, 255, 0.35) !important;
 }
 
-/* Clerk link styling — "Update profile", "Add email address", "Sign up" */
+/* Social / SSO buttons (Continue with Google, Apple, etc.) */
+.cl-socialButtonsBlockButton,
+.cl-socialButtonsIconButton {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #fafafa !important;
+}
+.cl-socialButtonsBlockButton:hover,
+.cl-socialButtonsIconButton:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+.cl-socialButtonsBlockButtonText,
+.cl-socialButtonsProviderInitial,
+.cl-socialButtonsBlockButton span,
+.cl-socialButtonsBlockButton p {
+  color: #fafafa !important;
+}
+
+/* Clerk link styling — "Update profile", "Add email address", "Sign up",
+   "Resend code", "Use another method" */
 .cl-profileSectionPrimaryButton,
 .cl-actionLink,
-.cl-footerActionLink {
+.cl-formResendCodeLink,
+.cl-alternativeMethodsBlockButton {
   color: #60a5fa !important;
+  background-color: transparent !important;
 }
 
 /* Badges (e.g., "Primary" email pill) */
@@ -526,11 +614,18 @@ html { scroll-behavior: smooth; }
 }
 .cl-dividerText {
   color: rgba(255, 255, 255, 0.5) !important;
+  background-color: transparent !important;
 }
 
-/* Footer brand lockup + "Development mode" tag */
-.cl-internal-root > div:last-child {
-  color: rgba(255, 255, 255, 0.5) !important;
+/* Alert banners (e.g., "You're signing in from a new device") */
+.cl-alert,
+.cl-alertDanger,
+.cl-alertWarning {
+  background-color: rgba(245, 158, 11, 0.08) !important;
+  border-color: rgba(245, 158, 11, 0.3) !important;
+}
+.cl-alertText {
+  color: rgba(252, 211, 77, 0.95) !important;
 }
 
 /* UserButton popover contents (the dropdown when you click the avatar) */
