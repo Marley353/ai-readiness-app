@@ -7,7 +7,23 @@ const ITEMS = [
   },
   {
     q: "What is the framework based on?",
-    a: "We synthesise the 8-dimension enterprise framework used by Microsoft, AIMRI and the EU AI Act readiness standards — strategy, people, process, data, technology, ethics, culture and innovation. Weights are calibrated against published AI maturity research.",
+    a: "The 8-dimension framework synthesises research from the Cisco AI Readiness Index (8,000+ organisations surveyed), McKinsey's State of AI reporting, the Oxford Government AI Readiness Index and practitioner research across hundreds of organisations. Weights are calibrated against published AI maturity data, not invented.",
+  },
+  {
+    q: "Why does AI governance matter if we're only experimenting?",
+    a: "Because \"experimenting\" is how most AI risk enters an organisation — uncontrolled tool adoption, unclear data boundaries, no audit trail. Governance at the experimentation stage is cheaper to retrofit than at production scale, and it's what distinguishes pacesetters from laggards. Our framework treats governance as a foundational dimension, not a compliance afterthought.",
+  },
+  {
+    q: "What does \"responsible AI\" actually mean for us?",
+    a: "Responsible AI is the combination of (a) clear accountability for AI-assisted decisions, (b) bias monitoring and fairness checks appropriate to your use case, (c) transparency with users about when AI is involved, and (d) regulatory alignment (UK AI White Paper, EU AI Act). The assessment scores your current state against each of these and tells you where to focus first.",
+  },
+  {
+    q: "How should we think about data privacy with generative AI tools?",
+    a: "Treat any prompt sent to a third-party LLM as potentially exposed. Before employees use public generative AI, you need: clear policy on what data can and can't be shared, vetted enterprise-tier alternatives (Azure OpenAI, AWS Bedrock, or self-hosted) for sensitive data, and a way to audit usage. The Governance, Risk & Ethics dimension of the assessment captures exactly these controls.",
+  },
+  {
+    q: "How often should we reassess?",
+    a: "Quarterly is the sweet spot. AI readiness moves faster than most organisational capabilities — a dimension can shift a full tier in 90 days if leadership invests behind a specific gap. Pro users get a visible delta view between assessments so you can track what actually moved.",
   },
   {
     q: "Is my data secure? Where is it stored?",

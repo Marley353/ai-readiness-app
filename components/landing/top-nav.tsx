@@ -29,6 +29,12 @@ export function TopNav() {
 
         <div className="flex items-center gap-1 md:gap-2">
           <Link
+            href="/about"
+            className="hidden sm:inline-flex rounded-full px-3 py-1.5 text-xs font-semibold text-white/70 hover:text-white hover:bg-white/5 transition"
+          >
+            About
+          </Link>
+          <Link
             href="/pricing"
             className="rounded-full px-3 py-1.5 text-xs font-semibold text-white/70 hover:text-white hover:bg-white/5 transition"
           >
