@@ -1,4 +1,7 @@
+"use client";
+
 import { Compass, Users, Workflow, Database, Cpu, Scale, Heart, Rocket, type LucideIcon } from "lucide-react";
+import { useScrollReveal } from "@/lib/gsap-hooks";
 
 const DIMENSIONS: { Icon: LucideIcon; title: string; description: string }[] = [
   {
@@ -44,24 +47,31 @@ const DIMENSIONS: { Icon: LucideIcon; title: string; description: string }[] = [
 ];
 
 export function DimensionsGrid() {
+  const sectionRef = useScrollReveal<HTMLDivElement>({ y: 30, stagger: 0.08 });
+
   return (
     <section className="bg-white py-20 md:py-28">
-      <div className="mx-auto max-w-6xl px-6 md:px-10">
-        <div className="text-center max-w-2xl mx-auto">
-          <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-slate-400">The framework</p>
-          <h2 className="mt-3 text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+      <div ref={sectionRef} className="mx-auto max-w-6xl px-6 md:px-10">
+        <div className="text-center max-w-2xl mx-auto gsap-reveal">
+          <p
+            className="text-[11px] uppercase tracking-[0.25em]"
+            style={{ fontWeight: 600, color: "var(--fg-3)" }}
+          >
+            The framework
+          </p>
+          <h2
+            className="mt-3 text-3xl md:text-5xl tracking-tight leading-tight"
+            style={{ fontWeight: 700, color: "var(--fg-1)" }}
+          >
             Eight dimensions.{" "}
-            <span
-              style={{
-                background: "linear-gradient(90deg, #0066ff, #a855f7 50%, #ec4899)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
+            <em style={{ color: "var(--amethyst-link)", fontStyle: "normal" }}>
               One unified view.
-            </span>
+            </em>
           </h2>
-          <p className="mt-5 text-base md:text-lg text-slate-600 leading-relaxed">
+          <p
+            className="mt-5 text-base md:text-lg leading-relaxed"
+            style={{ fontWeight: 460, color: "var(--fg-2)" }}
+          >
             Every dimension is scored against weighted factors and benchmarked against your sector. Aligned with the frameworks enterprise leaders actually use.
           </p>
         </div>
@@ -70,17 +80,34 @@ export function DimensionsGrid() {
           {DIMENSIONS.map((d) => (
             <div
               key={d.title}
-              className="rounded-2xl p-6 transition hover-lift bg-white"
-              style={{ border: "1px solid #e5e7eb" }}
+              className="gsap-reveal transition glow-hover bg-white"
+              style={{
+                borderRadius: "var(--r-lg)",
+                padding: "1.5rem",
+                border: "1px solid var(--parchment-border)",
+              }}
             >
               <div
-                className="w-10 h-10 rounded-lg flex items-center justify-center mb-4"
-                style={{ background: "#0a0a0a" }}
+                className="w-10 h-10 flex items-center justify-center mb-4"
+                style={{
+                  borderRadius: "var(--r-sm)",
+                  background: "var(--mysteria-purple)",
+                }}
               >
                 <d.Icon className="h-5 w-5 text-white" strokeWidth={2.2} />
               </div>
-              <h3 className="text-base font-black text-slate-900 tracking-tight">{d.title}</h3>
-              <p className="mt-1.5 text-sm text-slate-600 leading-relaxed">{d.description}</p>
+              <h3
+                className="text-base tracking-tight"
+                style={{ fontWeight: 700, color: "var(--fg-1)" }}
+              >
+                {d.title}
+              </h3>
+              <p
+                className="mt-1.5 text-sm leading-relaxed"
+                style={{ fontWeight: 460, color: "var(--fg-2)" }}
+              >
+                {d.description}
+              </p>
             </div>
           ))}
         </div>

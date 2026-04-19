@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowRight, TrendingUp, BarChart3, FileText } from "lucide-react";
+import { useScrollReveal } from "@/lib/gsap-hooks";
 
 const SLABS = [
   {
@@ -47,22 +50,26 @@ const SLABS = [
 ];
 
 export function FeatureSlabs() {
+  const sectionRef = useScrollReveal<HTMLDivElement>({ y: 30, stagger: 0.12 });
+
   return (
     <section className="bg-white py-20 md:py-28">
-      <div className="mx-auto max-w-6xl px-6 md:px-10">
-        <div className="text-center max-w-2xl mx-auto mb-20">
-          <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-slate-400">Why Pro</p>
-          <h2 className="mt-3 text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+      <div ref={sectionRef} className="mx-auto max-w-6xl px-6 md:px-10">
+        <div className="text-center max-w-2xl mx-auto mb-20 gsap-reveal">
+          <p
+            className="text-[11px] uppercase tracking-[0.25em]"
+            style={{ fontWeight: 600, color: "var(--fg-3)" }}
+          >
+            Why Pro
+          </p>
+          <h2
+            className="mt-3 text-3xl md:text-5xl tracking-tight leading-tight"
+            style={{ fontWeight: 700, color: "var(--fg-1)" }}
+          >
             Built for leaders who need{" "}
-            <span
-              style={{
-                background: "linear-gradient(90deg, #0066ff, #a855f7 50%, #ec4899)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
+            <em style={{ color: "var(--amethyst-link)", fontStyle: "normal" }}>
               answers, not slides.
-            </span>
+            </em>
           </h2>
         </div>
 
@@ -70,23 +77,43 @@ export function FeatureSlabs() {
           {SLABS.map((slab, i) => (
             <div
               key={slab.eyebrow}
-              className={`grid gap-10 md:gap-16 md:grid-cols-2 md:items-center ${
+              className={`gsap-reveal grid gap-10 md:gap-16 md:grid-cols-2 md:items-center ${
                 i % 2 === 1 ? "md:[&>div:first-child]:order-2" : ""
               }`}
             >
               {/* Copy column */}
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-slate-400">{slab.eyebrow}</p>
-                <h3 className="mt-3 text-2xl md:text-4xl font-black text-slate-900 tracking-tight leading-tight">
+                <p
+                  className="text-[11px] uppercase tracking-[0.25em]"
+                  style={{ fontWeight: 600, color: "var(--fg-3)" }}
+                >
+                  {slab.eyebrow}
+                </p>
+                <h3
+                  className="mt-3 text-2xl md:text-4xl tracking-tight leading-tight"
+                  style={{ fontWeight: 700, color: "var(--fg-1)" }}
+                >
                   {slab.title}
                 </h3>
-                <p className="mt-4 text-base text-slate-600 leading-relaxed">{slab.description}</p>
+                <p
+                  className="mt-4 text-base leading-relaxed"
+                  style={{ fontWeight: 460, color: "var(--fg-2)" }}
+                >
+                  {slab.description}
+                </p>
                 <ul className="mt-6 space-y-2.5">
                   {slab.bullets.map((b) => (
-                    <li key={b} className="flex items-start gap-2.5 text-sm text-slate-700">
+                    <li
+                      key={b}
+                      className="flex items-start gap-2.5 text-sm"
+                      style={{ fontWeight: 460, color: "var(--fg-2)" }}
+                    >
                       <span
-                        className="flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center mt-0.5"
-                        style={{ background: "#0a0a0a" }}
+                        className="flex-shrink-0 w-4 h-4 flex items-center justify-center mt-0.5"
+                        style={{
+                          borderRadius: "var(--r-sm)",
+                          background: "var(--mysteria-purple)",
+                        }}
                       >
                         <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                           <path d="M2 5L4 7L8 3" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -98,7 +125,11 @@ export function FeatureSlabs() {
                 </ul>
                 <Link
                   href={slab.ctaHref}
-                  className="group mt-7 inline-flex items-center gap-1.5 text-sm font-bold text-slate-900 hover:text-indigo-600 transition"
+                  className="group mt-7 inline-flex items-center gap-1.5 text-sm transition"
+                  style={{
+                    fontWeight: 600,
+                    color: "var(--amethyst-link)",
+                  }}
                 >
                   {slab.ctaLabel}
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -108,23 +139,26 @@ export function FeatureSlabs() {
               {/* Visual column — stylised preview using icon + gradient backdrop */}
               <div>
                 <div
-                  className="relative rounded-3xl aspect-[4/3] overflow-hidden flex items-center justify-center"
+                  className="relative overflow-hidden flex items-center justify-center"
                   style={{
+                    borderRadius: "var(--r-lg)",
+                    aspectRatio: "4/3",
                     background:
-                      "linear-gradient(140deg, rgba(0,102,255,0.08), rgba(168,85,247,0.05) 60%, rgba(236,72,153,0.08)), #0a0a0a",
-                    border: "1px solid rgba(255,255,255,0.08)",
+                      "linear-gradient(160deg, var(--mysteria-purple-3), var(--mysteria-purple-2) 50%, var(--mysteria-purple))",
+                    border: "1px solid var(--white-20)",
                   }}
                 >
                   {/* Diffused aurora blob */}
                   <div
                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full opacity-30 blur-[100px] pointer-events-none"
-                    style={{ background: "radial-gradient(circle, #0066ff, transparent 60%)" }}
+                    style={{ background: "radial-gradient(circle, var(--lavender-glow), transparent 60%)" }}
                   />
                   <div
-                    className="relative w-28 h-28 rounded-3xl flex items-center justify-center shadow-2xl"
+                    className="relative w-28 h-28 flex items-center justify-center shadow-2xl"
                     style={{
-                      background: "linear-gradient(135deg, #0066ff, #ec4899)",
-                      boxShadow: "0 20px 60px rgba(0,102,255,0.4)",
+                      borderRadius: "var(--r-lg)",
+                      background: "linear-gradient(135deg, var(--mysteria-purple-3), var(--amethyst-link))",
+                      boxShadow: "var(--shadow-glow)",
                     }}
                   >
                     <slab.Icon className="h-12 w-12 text-white" strokeWidth={1.8} />

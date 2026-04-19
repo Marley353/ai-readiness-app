@@ -1,7 +1,6 @@
-// "The AI Readiness Gap" — stats-forward section immediately after the hero
-// that grounds the product in real research (Cisco Index + McKinsey) and
-// gives visitors a "this is serious, this is evidence-based" anchor before
-// the feature tour.
+"use client";
+
+import { useScrollReveal } from "@/lib/gsap-hooks";
 
 const STATS = [
   {
@@ -22,25 +21,32 @@ const STATS = [
 ];
 
 export function AiGap() {
+  const sectionRef = useScrollReveal<HTMLDivElement>({ y: 30, stagger: 0.1 });
+
   return (
-    <section style={{ background: "#fafafa" }} className="py-20 md:py-28">
-      <div className="mx-auto max-w-6xl px-6 md:px-10">
-        <div className="text-center max-w-2xl mx-auto">
-          <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-slate-400">The AI Readiness Gap</p>
-          <h2 className="mt-3 text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+    <section style={{ background: "var(--bg-subtle)" }} className="py-20 md:py-28">
+      <div ref={sectionRef} className="mx-auto max-w-6xl px-6 md:px-10">
+        <div className="text-center max-w-2xl mx-auto gsap-reveal">
+          <p
+            className="text-[11px] uppercase tracking-[0.25em]"
+            style={{ fontWeight: 600, color: "var(--fg-3)" }}
+          >
+            The AI Readiness Gap
+          </p>
+          <h2
+            className="mt-3 text-3xl md:text-5xl tracking-tight leading-tight"
+            style={{ fontWeight: 700, color: "var(--fg-1)" }}
+          >
             Most organisations are{" "}
-            <span className="text-slate-600">experimenting with AI.</span>{" "}
-            <span
-              style={{
-                background: "linear-gradient(90deg, #0066ff, #a855f7 50%, #ec4899)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
+            <span style={{ color: "var(--fg-2)" }}>experimenting with AI.</span>{" "}
+            <em style={{ color: "var(--amethyst-link)", fontStyle: "normal" }}>
               Very few are ready for it.
-            </span>
+            </em>
           </h2>
-          <p className="mt-5 text-base md:text-lg text-slate-600 leading-relaxed">
+          <p
+            className="mt-5 text-base md:text-lg leading-relaxed"
+            style={{ fontWeight: 460, color: "var(--fg-2)" }}
+          >
             The research tells a consistent story — the difference between AI pacesetters and everyone else isn't budget or ambition. It's foundational readiness.
           </p>
         </div>
@@ -49,26 +55,39 @@ export function AiGap() {
           {STATS.map((s) => (
             <div
               key={s.value}
-              className="rounded-2xl p-7 bg-white hover-lift"
-              style={{ border: "1px solid #e5e7eb" }}
+              className="gsap-reveal glow-hover bg-white"
+              style={{
+                borderRadius: "var(--r-lg)",
+                padding: "1.75rem",
+                border: "1px solid var(--parchment-border)",
+              }}
             >
               <p
-                className="text-5xl md:text-6xl font-black tracking-tighter leading-none"
-                style={{
-                  background: "linear-gradient(135deg, #0066ff, #a855f7)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                }}
+                className="text-5xl md:text-6xl tracking-tighter leading-none"
+                style={{ fontWeight: 700, color: "var(--amethyst-link)" }}
               >
                 {s.value}
               </p>
-              <p className="mt-4 text-sm text-slate-700 leading-relaxed font-medium">{s.headline}</p>
-              <p className="mt-4 text-[11px] font-bold uppercase tracking-widest text-slate-400">{s.source}</p>
+              <p
+                className="mt-4 text-sm leading-relaxed"
+                style={{ fontWeight: 540, color: "var(--fg-1)" }}
+              >
+                {s.headline}
+              </p>
+              <p
+                className="mt-4 text-[11px] uppercase tracking-widest"
+                style={{ fontWeight: 600, color: "var(--fg-3)" }}
+              >
+                {s.source}
+              </p>
             </div>
           ))}
         </div>
 
-        <p className="mt-10 mx-auto max-w-2xl text-center text-sm text-slate-500 italic leading-relaxed">
+        <p
+          className="gsap-reveal mt-10 mx-auto max-w-2xl text-center text-sm italic leading-relaxed"
+          style={{ fontWeight: 460, color: "var(--fg-2)" }}
+        >
           "AI is no longer a future consideration. It's a present-day performance gap — and the organisations that are winning have already built the foundations most are still debating."
         </p>
       </div>

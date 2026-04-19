@@ -1,4 +1,7 @@
+"use client";
+
 import { ClipboardList, TrendingUp, FileDown } from "lucide-react";
+import { useScrollReveal } from "@/lib/gsap-hooks";
 
 const STEPS = [
   {
@@ -25,54 +28,76 @@ const STEPS = [
 ];
 
 export function HowItWorks() {
+  const sectionRef = useScrollReveal<HTMLDivElement>({ y: 30, stagger: 0.12 });
+
   return (
-    <section id="how-it-works" style={{ background: "#fafafa" }} className="py-20 md:py-28">
-      <div className="mx-auto max-w-6xl px-6 md:px-10">
-        <div className="text-center max-w-2xl mx-auto">
-          <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-slate-400">How it works</p>
-          <h2 className="mt-3 text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+    <section id="how-it-works" style={{ background: "var(--bg-subtle)" }} className="py-20 md:py-28">
+      <div ref={sectionRef} className="mx-auto max-w-6xl px-6 md:px-10">
+        <div className="text-center max-w-2xl mx-auto gsap-reveal">
+          <p
+            className="text-[11px] uppercase tracking-[0.25em]"
+            style={{ fontWeight: 600, color: "var(--fg-3)" }}
+          >
+            How it works
+          </p>
+          <h2
+            className="mt-3 text-3xl md:text-5xl tracking-tight leading-tight"
+            style={{ fontWeight: 700, color: "var(--fg-1)" }}
+          >
             From first click to board deck in{" "}
-            <span
-              style={{
-                background: "linear-gradient(90deg, #0066ff, #a855f7 50%, #ec4899)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
+            <em style={{ color: "var(--amethyst-link)", fontStyle: "normal" }}>
               under 10 minutes.
-            </span>
+            </em>
           </h2>
         </div>
 
         <div className="mt-16 grid gap-8 md:grid-cols-3">
           {STEPS.map((s, i) => (
-            <div key={s.n} className="relative">
-              {/* Connecting line (only between cards, not after the last one) */}
+            <div key={s.n} className="relative gsap-reveal">
               {i < STEPS.length - 1 && (
-                <div className="hidden md:block absolute top-8 left-[calc(100%-1rem)] w-8 h-px bg-slate-300" />
+                <div
+                  className="hidden md:block absolute top-8 left-[calc(100%-1rem)] w-8 h-px"
+                  style={{ background: "var(--parchment-border)" }}
+                />
               )}
 
-              <div className="rounded-2xl p-8 bg-white h-full hover-lift" style={{ border: "1px solid #e5e7eb" }}>
+              <div
+                className="h-full bg-white glow-hover"
+                style={{
+                  borderRadius: "var(--r-lg)",
+                  padding: "2rem",
+                  border: "1px solid var(--parchment-border)",
+                }}
+              >
                 <div className="flex items-center gap-4 mb-5">
                   <span
-                    className="text-4xl font-black tracking-tighter"
-                    style={{
-                      background: "linear-gradient(135deg, #0066ff, #ec4899)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                    }}
+                    className="text-4xl tracking-tighter"
+                    style={{ fontWeight: 700, color: "var(--amethyst-link)" }}
                   >
                     {s.n}
                   </span>
                   <div
-                    className="w-10 h-10 rounded-lg flex items-center justify-center"
-                    style={{ background: "#0a0a0a" }}
+                    className="w-10 h-10 flex items-center justify-center"
+                    style={{
+                      borderRadius: "var(--r-sm)",
+                      background: "var(--mysteria-purple)",
+                    }}
                   >
                     <s.Icon className="h-5 w-5 text-white" strokeWidth={2.2} />
                   </div>
                 </div>
-                <h3 className="text-xl font-black text-slate-900 tracking-tight leading-tight">{s.title}</h3>
-                <p className="mt-3 text-sm text-slate-600 leading-relaxed">{s.description}</p>
+                <h3
+                  className="text-xl tracking-tight leading-tight"
+                  style={{ fontWeight: 700, color: "var(--fg-1)" }}
+                >
+                  {s.title}
+                </h3>
+                <p
+                  className="mt-3 text-sm leading-relaxed"
+                  style={{ fontWeight: 460, color: "var(--fg-2)" }}
+                >
+                  {s.description}
+                </p>
               </div>
             </div>
           ))}

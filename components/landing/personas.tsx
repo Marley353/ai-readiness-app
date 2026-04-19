@@ -1,4 +1,7 @@
+"use client";
+
 import { Briefcase, LayoutGrid, Building2 } from "lucide-react";
+import { useScrollReveal } from "@/lib/gsap-hooks";
 
 const PERSONAS = [
   {
@@ -25,22 +28,26 @@ const PERSONAS = [
 ];
 
 export function Personas() {
+  const sectionRef = useScrollReveal<HTMLDivElement>({ y: 30, stagger: 0.1 });
+
   return (
-    <section style={{ background: "#fafafa" }} className="py-20 md:py-28">
-      <div className="mx-auto max-w-6xl px-6 md:px-10">
-        <div className="text-center max-w-2xl mx-auto">
-          <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-slate-400">Who it's for</p>
-          <h2 className="mt-3 text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+    <section style={{ background: "var(--bg-subtle)" }} className="py-20 md:py-28">
+      <div ref={sectionRef} className="mx-auto max-w-6xl px-6 md:px-10">
+        <div className="text-center max-w-2xl mx-auto gsap-reveal">
+          <p
+            className="text-[11px] uppercase tracking-[0.25em]"
+            style={{ fontWeight: 600, color: "var(--fg-3)" }}
+          >
+            Who it&apos;s for
+          </p>
+          <h2
+            className="mt-3 text-3xl md:text-5xl tracking-tight leading-tight"
+            style={{ fontWeight: 700, color: "var(--fg-1)" }}
+          >
             Built for the people{" "}
-            <span
-              style={{
-                background: "linear-gradient(90deg, #0066ff, #a855f7 50%, #ec4899)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
+            <em style={{ color: "var(--amethyst-link)", fontStyle: "normal" }}>
               driving AI decisions.
-            </span>
+            </em>
           </h2>
         </div>
 
@@ -48,18 +55,40 @@ export function Personas() {
           {PERSONAS.map((p) => (
             <div
               key={p.title}
-              className="rounded-2xl p-8 bg-white hover-lift"
-              style={{ border: "1px solid #e5e7eb" }}
+              className="gsap-reveal glow-hover bg-white"
+              style={{
+                borderRadius: "var(--r-lg)",
+                padding: "2rem",
+                border: "1px solid var(--parchment-border)",
+              }}
             >
               <div
-                className="w-10 h-10 rounded-lg flex items-center justify-center mb-5"
-                style={{ background: "#0a0a0a" }}
+                className="w-10 h-10 flex items-center justify-center mb-5"
+                style={{
+                  borderRadius: "var(--r-sm)",
+                  background: "var(--mysteria-purple)",
+                }}
               >
                 <p.Icon className="h-5 w-5 text-white" strokeWidth={2.2} />
               </div>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">{p.title}</p>
-              <h3 className="mt-2 text-xl font-black text-slate-900 tracking-tight leading-snug">{p.headline}</h3>
-              <p className="mt-3 text-sm text-slate-600 leading-relaxed">{p.description}</p>
+              <p
+                className="text-[11px] uppercase tracking-widest"
+                style={{ fontWeight: 600, color: "var(--fg-3)" }}
+              >
+                {p.title}
+              </p>
+              <h3
+                className="mt-2 text-xl tracking-tight leading-snug"
+                style={{ fontWeight: 700, color: "var(--fg-1)" }}
+              >
+                {p.headline}
+              </h3>
+              <p
+                className="mt-3 text-sm leading-relaxed"
+                style={{ fontWeight: 460, color: "var(--fg-2)" }}
+              >
+                {p.description}
+              </p>
             </div>
           ))}
         </div>
