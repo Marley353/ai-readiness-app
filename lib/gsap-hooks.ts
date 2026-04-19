@@ -20,6 +20,12 @@ type RevealOptions = {
   once?: boolean;
 };
 
+// Respects prefers-reduced-motion: skips transform/fade and just shows.
+function prefersReducedMotion(): boolean {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+}
+
 export function useScrollReveal<T extends HTMLElement>(
   options: RevealOptions = {},
 ): RefObject<T | null> {
@@ -29,28 +35,64 @@ export function useScrollReveal<T extends HTMLElement>(
     const el = ref.current;
     if (!el) return;
 
-    const children = el.querySelectorAll(".gsap-reveal");
-    const targets = children.length > 0 ? children : [el];
+    const children = el.querySelectorAll<HTMLElement>(".gsap-reveal");
+    const targets: HTMLElement[] = children.length > 0 ? Array.from(children) : [el];
+
+    // Fallback path: honour reduced-motion by just showing everything.
+    if (prefersReducedMotion()) {
+      targets.forEach((t) => {
+        t.style.opacity = "1";
+        t.style.transform = "none";
+      });
+      return;
+    }
+
+    // Safety net: if the animation never fires for any reason (e.g. stale
+    // ScrollTrigger, layout thrash), reveal everything after 1.2s so content
+    // is never stuck invisible.
+    const safetyTimer = window.setTimeout(() => {
+      targets.forEach((t) => {
+        if (t.style.opacity === "0" || getComputedStyle(t).opacity === "0") {
+          t.style.opacity = "1";
+          t.style.transform = "none";
+        }
+      });
+    }, 1200);
 
     const ctx = gsap.context(() => {
-      gsap.from(targets, {
-        y: options.y ?? 30,
-        x: options.x ?? 0,
-        scale: options.scale ?? 1,
-        opacity: 0,
-        duration: options.duration ?? 0.7,
-        delay: options.delay ?? 0,
-        stagger: options.stagger ?? 0.1,
-        ease: options.ease ?? "power3.out",
-        scrollTrigger: {
-          trigger: el,
-          start: options.start ?? "top 85%",
-          once: options.once ?? true,
+      // Use fromTo — explicit start AND end — so the animation can't be
+      // clamped at opacity 0 by a conflicting CSS rule.
+      gsap.fromTo(
+        targets,
+        {
+          y: options.y ?? 30,
+          x: options.x ?? 0,
+          scale: options.scale ?? 1,
+          opacity: 0,
         },
-      });
+        {
+          y: 0,
+          x: 0,
+          scale: 1,
+          opacity: 1,
+          duration: options.duration ?? 0.7,
+          delay: options.delay ?? 0,
+          stagger: options.stagger ?? 0.1,
+          ease: options.ease ?? "power3.out",
+          scrollTrigger: {
+            trigger: el,
+            start: options.start ?? "top 85%",
+            once: options.once ?? true,
+          },
+        },
+      );
     });
 
-    return () => ctx.revert();
+    return () => {
+      window.clearTimeout(safetyTimer);
+      ctx.revert();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [options.y, options.x, options.scale, options.duration, options.delay, options.stagger, options.ease, options.start, options.once]);
 
   return ref;
@@ -65,6 +107,11 @@ export function useCountUp(
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
+    if (prefersReducedMotion()) {
+      el.textContent = `${targetValue}${options.suffix ?? ""}`;
+      return;
+    }
 
     const obj = { val: 0 };
     const ctx = gsap.context(() => {
@@ -96,7 +143,7 @@ export function useParallax<T extends HTMLElement>(
 
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
+    if (!el || prefersReducedMotion()) return;
 
     const ctx = gsap.context(() => {
       gsap.to(el, {

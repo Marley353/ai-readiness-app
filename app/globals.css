@@ -382,9 +382,22 @@ html { scroll-behavior: smooth; }
 
 /* ═══════════════════════════════════════════════════════════════
    GSAP scroll-trigger visibility helper
-   Elements start invisible, GSAP reveals them.
+   Elements start invisible (so GSAP can fade them in without FOUC).
+   Safety net: after 1.5s of page load, any element still at opacity
+   0 is auto-revealed — prevents content being stuck invisible if JS
+   fails or ScrollTrigger misses.
    ═══════════════════════════════════════════════════════════════ */
 .gsap-reveal {
   opacity: 0;
   will-change: transform, opacity;
+  animation: gsap-safety-reveal 0s ease 1.5s forwards;
+}
+@keyframes gsap-safety-reveal {
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gsap-reveal {
+    opacity: 1 !important;
+    animation: none;
+  }
 }
