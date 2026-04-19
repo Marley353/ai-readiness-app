@@ -1,23 +1,19 @@
 import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { ClerkProvider } from '@clerk/nextjs'
 import { dark } from '@clerk/themes'
 import './globals.css'
 
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
-
 export const metadata: Metadata = {
-  title: 'AI Readiness Assessment · 8-Dimension Enterprise Framework',
+  title: 'Digital Readiness AI · 8-Dimension Enterprise Framework',
   description: 'Professional AI readiness assessment with industry benchmarks, weighted scoring across 8 dimensions, and an actionable 12-month maturity roadmap.',
-  generator: 'AI Readiness App',
-  applicationName: 'AI Readiness',
+  generator: 'Digital Readiness AI',
+  applicationName: 'Digital Readiness AI',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'AI Readiness',
+    title: 'Digital Readiness AI',
   },
   formatDetection: {
     telephone: false,
@@ -35,7 +31,7 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: 'AI Readiness Assessment',
+    title: 'Digital Readiness AI',
     description: 'Assess your organisation across 8 dimensions with industry benchmarks and a phased 12-month roadmap.',
     type: 'website',
   },
@@ -43,8 +39,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#0a0a0a' },
-    { media: '(prefers-color-scheme: dark)', color: '#0a0a0a' },
+    { media: '(prefers-color-scheme: light)', color: '#1b1938' },
+    { media: '(prefers-color-scheme: dark)', color: '#1b1938' },
   ],
   width: 'device-width',
   initialScale: 1,
@@ -59,16 +55,11 @@ export default function RootLayout({
   return (
     <ClerkProvider
       appearance={{
-        // Prebuilt dark theme handles ALL neutral/text/surface colours.
-        // Over-riding too many variables was breaking its computed
-        // colour hierarchy (text was derived from a light colorNeutral
-        // and ended up invisible on dark backgrounds). Minimal config
-        // only — just the brand primary and radius.
         baseTheme: dark,
         variables: {
-          colorPrimary: '#0066ff',
-          borderRadius: '0.75rem',
-          fontFamily: 'inherit',
+          colorPrimary: '#714cb6',
+          borderRadius: '0.5rem',
+          fontFamily: "'Inter', system-ui, sans-serif",
         },
       }}
     >
