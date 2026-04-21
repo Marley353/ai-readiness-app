@@ -440,9 +440,35 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Right — scorecard frame */}
+          {/* Right — video demo in scorecard frame */}
           <div>
-            <HeroMeter />
+            <div
+              style={{
+                position: "relative",
+                maxWidth: 520,
+                marginLeft: "auto",
+                borderRadius: 22,
+                overflow: "hidden",
+                background: "linear-gradient(160deg, #14131f 0%, #0b0a14 100%)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                boxShadow: "0 30px 80px rgba(41,40,39,0.22), 0 0 0 1px rgba(255,255,255,0.02) inset",
+              }}
+            >
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                poster="/hero-demo-poster.jpg"
+                style={{
+                  width: "100%",
+                  height: "auto",
+                  display: "block",
+                }}
+              >
+                <source src="/hero-demo.mp4" type="video/mp4" />
+              </video>
+            </div>
           </div>
         </div>
       </div>
