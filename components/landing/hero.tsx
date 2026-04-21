@@ -366,10 +366,10 @@ export function Hero() {
           <div>
             <h1
               style={{
-                fontSize: "clamp(48px, 6.6vw, 84px)",
+                fontSize: "clamp(38px, 4.5vw, 64px)",
                 fontWeight: 540,
-                lineHeight: 0.96,
-                letterSpacing: "-2.2px",
+                lineHeight: 1.0,
+                letterSpacing: "-1.8px",
                 color: "var(--fg-1)",
                 margin: 0,
                 maxWidth: 720,
