@@ -823,7 +823,7 @@ function exportPdf(assessment: Assessment) {
   const addPageFooter = (pageNum: number) => {
     doc.setFillColor(30, 27, 75);
     doc.rect(0, 285, W, 12, "F");
-    doc.setTextColor(165, 180, 252);
+    doc.setTextColor(203, 183, 251);
     doc.setFont("helvetica", "normal");
     doc.setFontSize(7);
     doc.text("AI Transformation Readiness Report — Confidential", MARGIN, 292);
@@ -838,11 +838,11 @@ function exportPdf(assessment: Assessment) {
   doc.rect(0, 0, W, 297, "F");
 
   // Accent bar - indigo gradient effect (solid color simulation)
-  doc.setFillColor(99, 102, 241);
+  doc.setFillColor(113, 76, 182);
   doc.rect(0, 0, 6, 297, "F");
 
   // Logo / brand strip
-  doc.setTextColor(165, 180, 252);
+  doc.setTextColor(203, 183, 251);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8);
   doc.text("AI READINESS · 8-DIMENSION ENTERPRISE FRAMEWORK", MARGIN + 6, 22);
@@ -854,7 +854,7 @@ function exportPdf(assessment: Assessment) {
   doc.text("Readiness Report", MARGIN + 6, 94);
 
   // Divider
-  doc.setFillColor(99, 102, 241);
+  doc.setFillColor(113, 76, 182);
   doc.rect(MARGIN + 6, 100, 80, 1.5, "F");
 
   // Org name
@@ -900,7 +900,7 @@ function exportPdf(assessment: Assessment) {
 
   // Bottom strip
   doc.setFillColor(20, 184, 166, 0.15);
-  doc.setFillColor(49, 46, 129);
+  doc.setFillColor(27, 25, 56);
   doc.rect(0, 265, W, 32, "F");
   doc.setFont("helvetica", "normal");
   doc.setFontSize(7.5);
@@ -915,7 +915,7 @@ function exportPdf(assessment: Assessment) {
   const sectionHeader = (title: string, y: number): number => {
     doc.setFillColor(30, 27, 75);
     doc.rect(0, y - 6, W, 14, "F");
-    doc.setFillColor(99, 102, 241);
+    doc.setFillColor(113, 76, 182);
     doc.rect(0, y - 6, 4, 14, "F");
     doc.setTextColor(255, 255, 255);
     doc.setFont("helvetica", "bold");
