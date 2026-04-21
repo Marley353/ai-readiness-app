@@ -376,19 +376,7 @@ export function Hero() {
               }}
             >
               Know where your organisation stands on{" "}
-              <em
-                style={{
-                  fontStyle: "normal",
-                  background: "linear-gradient(90deg, var(--amethyst-link), var(--lavender-glow), var(--amethyst-link))",
-                  backgroundSize: "200% auto",
-                  WebkitBackgroundClip: "text",
-                  backgroundClip: "text",
-                  color: "transparent",
-                  animation: "shimmer 6s linear infinite",
-                }}
-              >
-                AI readiness
-              </em>
+              <em style={{ fontStyle: "italic" }}>AI readiness</em>
               .
             </h1>
             <p
