@@ -258,20 +258,43 @@ export function Hero() {
         overflow: "hidden",
       }}
     >
-      {/* Ambient grid */}
-      <div
-        className="bg-grid"
+      {/* Topographic contour background */}
+      <svg
         aria-hidden="true"
         style={{
           position: "absolute",
           inset: 0,
+          width: "100%",
+          height: "100%",
           pointerEvents: "none",
-          backgroundImage: "linear-gradient(to right, rgba(41,40,39,0.055) 1px, transparent 1px), linear-gradient(to bottom, rgba(41,40,39,0.055) 1px, transparent 1px)",
-          backgroundSize: "64px 64px",
-          maskImage: "radial-gradient(ellipse 70% 60% at 50% 40%, #000 0%, transparent 75%)",
-          WebkitMaskImage: "radial-gradient(ellipse 70% 60% at 50% 40%, #000 0%, transparent 75%)",
+          opacity: 0.07,
         }}
-      />
+        viewBox="0 0 1200 800"
+        preserveAspectRatio="xMidYMid slice"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {/* Organic contour lines — generated to feel like a readiness terrain map */}
+        <path d="M0 400 Q150 320 300 380 T600 340 T900 400 T1200 360" stroke="var(--charcoal-ink)" strokeWidth="1.2" />
+        <path d="M0 440 Q180 380 360 420 T720 370 T1080 430 T1200 400" stroke="var(--charcoal-ink)" strokeWidth="1" />
+        <path d="M0 480 Q200 420 400 460 T800 400 T1200 440" stroke="var(--charcoal-ink)" strokeWidth="0.8" />
+        <path d="M0 360 Q120 300 240 340 T480 290 T720 350 T960 310 T1200 340" stroke="var(--charcoal-ink)" strokeWidth="1.4" />
+        <path d="M0 320 Q160 260 320 300 T640 250 T960 300 T1200 280" stroke="var(--charcoal-ink)" strokeWidth="1" />
+        <path d="M0 520 Q220 470 440 510 T880 450 T1200 490" stroke="var(--charcoal-ink)" strokeWidth="0.8" />
+        <path d="M0 280 Q100 240 200 260 T400 220 T600 270 T800 230 T1000 260 T1200 240" stroke="var(--charcoal-ink)" strokeWidth="0.6" />
+        <path d="M0 560 Q250 510 500 550 T1000 490 T1200 530" stroke="var(--charcoal-ink)" strokeWidth="0.6" />
+        <path d="M0 240 Q140 200 280 230 T560 190 T840 240 T1120 210 T1200 220" stroke="var(--charcoal-ink)" strokeWidth="0.5" />
+        <path d="M0 600 Q280 560 560 590 T1120 540 T1200 570" stroke="var(--charcoal-ink)" strokeWidth="0.5" />
+        {/* Inner contours — tighter rings suggesting a "peak" at centre-left */}
+        <path d="M200 350 Q300 300 400 340 T600 310 T700 350" stroke="var(--charcoal-ink)" strokeWidth="1.6" />
+        <path d="M250 380 Q330 340 420 370 T580 340 T660 380" stroke="var(--charcoal-ink)" strokeWidth="1.3" />
+        <path d="M300 370 Q360 350 430 365 T550 350 T620 370" stroke="var(--charcoal-ink)" strokeWidth="1" />
+        {/* Faint outer contours for depth */}
+        <path d="M0 200 Q100 170 200 190 T400 160 T600 200 T800 170 T1000 200 T1200 180" stroke="var(--charcoal-ink)" strokeWidth="0.3" />
+        <path d="M0 640 Q300 600 600 630 T1200 600" stroke="var(--charcoal-ink)" strokeWidth="0.3" />
+        <path d="M0 160 Q150 130 300 155 T600 130 T900 160 T1200 140" stroke="var(--charcoal-ink)" strokeWidth="0.25" />
+        <path d="M0 680 Q350 650 700 670 T1200 640" stroke="var(--charcoal-ink)" strokeWidth="0.25" />
+      </svg>
 
       {/* Floating orbs */}
       <div aria-hidden="true" style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
