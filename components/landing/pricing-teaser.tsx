@@ -1,12 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Check, Sparkles, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { PRICING } from "@/lib/plans";
 import { useScrollReveal } from "@/lib/gsap-hooks";
 
-// Compact pricing strip on the landing page — three condensed columns
-// that funnel into the full /pricing page.
 export function PricingTeaser() {
   const sectionRef = useScrollReveal<HTMLDivElement>({ y: 30, stagger: 0.1 });
 
@@ -14,212 +12,138 @@ export function PricingTeaser() {
     ((PRICING.monthly.amount - PRICING.annual.amount / 12) / PRICING.monthly.amount) * 100,
   );
 
+  const plans = [
+    {
+      tier: "Scorecard",
+      price: "Free",
+      sub: "",
+      desc: "The 8-dimension assessment and a benchmark against your sector.",
+      features: ["32-question scorecard", "Sector benchmark", "Basic PDF report"],
+      cta: "Start scorecard",
+      href: "/app",
+      highlight: false,
+    },
+    {
+      tier: "Pro",
+      price: `£${PRICING.monthly.amount}`,
+      sub: "/month",
+      desc: "Full roadmap, benchmarks on every chart, clean exports and unlimited assessments.",
+      features: ["Everything in Free", "12-month roadmap", "Industry benchmarks", "Clean PDF export", "Compare assessments"],
+      cta: "Start 7-day trial",
+      href: "/pricing",
+      highlight: true,
+    },
+    {
+      tier: "Annual",
+      price: `£${PRICING.annual.amount}`,
+      sub: "/year",
+      desc: `Save ${savings}% — everything in Pro, billed annually.`,
+      features: ["Everything in Pro", `≈ £${(PRICING.annual.amount / 12).toFixed(0)}/month`, "Priority support", "First access to new features"],
+      cta: "Start 7-day trial",
+      href: "/pricing",
+      highlight: false,
+    },
+  ];
+
   return (
-    <section className="bg-white py-20 md:py-28">
-      <div ref={sectionRef} className="mx-auto max-w-5xl px-6 md:px-10">
-        <div className="text-center max-w-2xl mx-auto mb-12 gsap-reveal">
-          <p
-            className="text-[11px] uppercase tracking-[0.25em]"
-            style={{ fontWeight: 600, color: "var(--fg-3)" }}
-          >
+    <section
+      id="pricing"
+      style={{
+        position: "relative",
+        padding: "120px 24px",
+        background: "var(--bg-page-2, #f2ede4)",
+      }}
+    >
+      <div ref={sectionRef} style={{ maxWidth: 1240, margin: "0 auto", position: "relative" }}>
+        <div className="gsap-reveal" style={{ textAlign: "center", maxWidth: 640, marginLeft: "auto", marginRight: "auto" }}>
+          <span style={{ fontSize: 12, fontWeight: 700, color: "var(--amethyst-link)", textTransform: "uppercase" as const, letterSpacing: "0.6px", display: "inline-block", marginBottom: 16 }}>
             Pricing
-          </p>
-          <h2
-            className="mt-3 text-3xl md:text-5xl tracking-tight leading-tight"
-            style={{ fontWeight: 700, color: "var(--fg-1)" }}
-          >
-            Start free.{" "}
-            <em style={{ color: "var(--amethyst-link)", fontStyle: "normal" }}>
-              Upgrade when you need more.
-            </em>
+          </span>
+          <h2 style={{ fontSize: "clamp(34px, 4.4vw, 56px)", fontWeight: 460, lineHeight: 0.98, letterSpacing: "-1.4px", color: "var(--fg-1)", margin: 0 }}>
+            Three ways in. <em style={{ fontStyle: "italic" }}>One outcome.</em>
           </h2>
-          <p
-            className="mt-4 text-base"
-            style={{ fontWeight: 460, color: "var(--fg-2)" }}
-          >
-            All Pro plans include a{" "}
-            <strong style={{ fontWeight: 700, color: "var(--fg-1)" }}>7-day free trial</strong>.
-            No charge until day 8. Cancel anytime.
+          <p style={{ fontSize: 19, lineHeight: 1.55, color: "var(--fg-2)", marginTop: 20, marginLeft: "auto", marginRight: "auto" }}>
+            Start free with a scorecard. Upgrade to Pro when you need the roadmap and benchmarks.
           </p>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-3">
-          {/* Free */}
-          <article
-            className="gsap-reveal glow-hover bg-white"
-            style={{
-              borderRadius: "var(--r-lg)",
-              padding: "1.75rem",
-              border: "1px solid var(--parchment-border)",
-            }}
-          >
-            <p
-              className="text-[11px] uppercase tracking-[0.2em]"
-              style={{ fontWeight: 600, color: "var(--fg-3)" }}
-            >
-              Free
-            </p>
-            <div className="mt-3 flex items-baseline gap-1">
-              <span
-                className="text-5xl tracking-tighter"
-                style={{ fontWeight: 700, color: "var(--fg-1)" }}
-              >
-                £0
-              </span>
-            </div>
-            <p
-              className="mt-2 text-xs"
-              style={{ fontWeight: 460, color: "var(--fg-3)" }}
-            >
-              No extra costs · forever
-            </p>
-            <Link
-              href="/app"
-              className="mt-5 inline-flex w-full items-center justify-center gap-2 text-sm transition"
-              style={{
-                borderRadius: "var(--r-sm)",
-                padding: "0.625rem 1rem",
-                fontWeight: 600,
-                color: "var(--fg-1)",
-                border: "1px solid var(--parchment-border)",
-              }}
-            >
-              Try for free
-            </Link>
-          </article>
-
-          {/* Monthly */}
-          <article
-            className="gsap-reveal glow-hover bg-white"
-            style={{
-              borderRadius: "var(--r-lg)",
-              padding: "1.75rem",
-              border: "1px solid var(--parchment-border)",
-            }}
-          >
-            <p
-              className="text-[11px] uppercase tracking-[0.2em]"
-              style={{ fontWeight: 600, color: "var(--fg-3)" }}
-            >
-              Pro Monthly
-            </p>
-            <div className="mt-3 flex items-baseline gap-1">
-              <span
-                className="text-5xl tracking-tighter"
-                style={{ fontWeight: 700, color: "var(--fg-1)" }}
-              >
-                £{PRICING.monthly.amount}
-              </span>
-              <span
-                className="text-sm"
-                style={{ fontWeight: 600, color: "var(--fg-3)" }}
-              >
-                /month
-              </span>
-            </div>
-            <p
-              className="mt-2 text-xs"
-              style={{ fontWeight: 460, color: "var(--fg-3)" }}
-            >
-              7-day free trial · cancel anytime
-            </p>
-            <Link
-              href="/pricing"
-              className="mt-5 inline-flex w-full items-center justify-center gap-2 text-sm transition hover:scale-[1.02]"
-              style={{
-                borderRadius: "var(--r-sm)",
-                padding: "0.625rem 1rem",
-                fontWeight: 600,
-                color: "var(--charcoal-ink)",
-                background: "var(--warm-cream)",
-                boxShadow: "var(--shadow-2)",
-              }}
-            >
-              Start free trial
-            </Link>
-          </article>
-
-          {/* Annual — bestseller */}
-          <article
-            className="gsap-reveal relative overflow-hidden"
-            style={{
-              borderRadius: "var(--r-lg)",
-              padding: "1.75rem",
-              background:
-                "linear-gradient(160deg, var(--mysteria-purple-3), var(--mysteria-purple-2) 50%, var(--mysteria-purple))",
-              border: "1px solid var(--white-20)",
-            }}
-          >
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20, marginTop: 56 }} className="pricing-grid">
+          {plans.map((p) => (
             <div
-              className="absolute top-0 left-0 right-0 py-1 text-center text-[10px] tracking-[0.3em]"
+              key={p.tier}
+              className="gsap-reveal"
               style={{
-                fontWeight: 700,
-                color: "var(--mysteria-purple)",
-                background: "var(--lavender-glow)",
+                background: p.highlight ? "var(--charcoal-ink)" : "var(--pure-white)",
+                color: p.highlight ? "var(--white-95)" : "var(--fg-1)",
+                border: `1px solid ${p.highlight ? "transparent" : "var(--parchment-border)"}`,
+                borderRadius: 16,
+                padding: 32,
+                display: "flex",
+                flexDirection: "column",
+                gap: 20,
+                position: "relative",
+                overflow: "hidden",
               }}
             >
-              <Sparkles className="inline h-3 w-3 mr-1" /> BESTSELLER
-            </div>
-            <div className="pt-5">
-              <p
-                className="text-[11px] uppercase tracking-[0.2em]"
-                style={{ fontWeight: 600, color: "var(--white-60)" }}
-              >
-                Pro Annual
-              </p>
-              <div className="mt-3 flex items-baseline gap-1">
-                <span
-                  className="text-5xl tracking-tighter"
-                  style={{ fontWeight: 700, color: "var(--white-95)" }}
-                >
-                  £{PRICING.annual.amount}
-                </span>
-                <span
-                  className="text-sm"
-                  style={{ fontWeight: 600, color: "var(--white-60)" }}
-                >
-                  /year
-                </span>
+              {p.highlight && (
+                <div style={{ position: "absolute", width: 260, height: 260, borderRadius: "50%", background: "var(--amethyst-link)", filter: "blur(100px)", opacity: 0.4, bottom: -120, right: -80 }} />
+              )}
+              <div style={{ position: "relative" }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: p.highlight ? "var(--lavender-glow)" : "var(--amethyst-link)", letterSpacing: "1px", textTransform: "uppercase" as const }}>{p.tier}</div>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 12 }}>
+                  <span style={{ fontSize: 48, fontWeight: 540, letterSpacing: "-1.2px", lineHeight: 1 }}>{p.price}</span>
+                  {p.sub && <span style={{ fontSize: 14, color: p.highlight ? "rgba(255,255,255,0.6)" : "var(--fg-3)" }}>{p.sub}</span>}
+                </div>
+                <p style={{ fontSize: 15, fontWeight: 460, lineHeight: 1.5, color: p.highlight ? "rgba(255,255,255,0.75)" : "var(--fg-2)", margin: "12px 0 0" }}>{p.desc}</p>
               </div>
-              <p
-                className="mt-2 text-xs"
-                style={{ fontWeight: 460, color: "var(--white-60)" }}
-              >
-                Save {savings}% · ≈ £{(PRICING.annual.amount / 12).toFixed(2)}/month
-              </p>
+              <div style={{ height: 1, background: p.highlight ? "rgba(255,255,255,0.12)" : "var(--parchment-border)", position: "relative" }} />
+              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10, position: "relative" }}>
+                {p.features.map((f) => (
+                  <li key={f} style={{ fontSize: 14, fontWeight: 460, color: p.highlight ? "rgba(255,255,255,0.85)" : "var(--fg-2)", display: "flex", gap: 10, alignItems: "flex-start" }}>
+                    <span style={{ color: p.highlight ? "var(--lavender-glow)" : "var(--amethyst-link)", marginTop: 1 }}>—</span>
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
               <Link
-                href="/pricing"
-                className="group mt-5 inline-flex w-full items-center justify-center gap-2 text-sm transition hover:scale-[1.02]"
+                href={p.href}
                 style={{
+                  marginTop: "auto",
+                  position: "relative",
+                  textAlign: "center",
+                  padding: "14px 20px",
                   borderRadius: "var(--r-sm)",
-                  padding: "0.625rem 1rem",
+                  fontSize: 15,
                   fontWeight: 600,
+                  textDecoration: "none",
+                  background: p.highlight ? "var(--lavender-glow)" : "var(--warm-cream)",
                   color: "var(--charcoal-ink)",
-                  background: "var(--warm-cream)",
-                  boxShadow: "var(--shadow-2)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
                 }}
               >
-                Start free trial
-                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                {p.cta}
+                {p.highlight && <ArrowRight size={14} />}
               </Link>
             </div>
-          </article>
+          ))}
         </div>
 
-        <div className="gsap-reveal mt-10 text-center">
+        <div className="gsap-reveal" style={{ marginTop: 32, textAlign: "center" }}>
           <Link
             href="/pricing"
-            className="group inline-flex items-center gap-1.5 text-sm transition"
-            style={{
-              fontWeight: 600,
-              color: "var(--amethyst-link)",
-            }}
+            style={{ fontSize: 15, fontWeight: 540, color: "var(--amethyst-link)", textDecoration: "underline", textUnderlineOffset: "3px" }}
           >
-            See the full feature comparison
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            See full feature comparison →
           </Link>
         </div>
       </div>
+
+      <style jsx global>{`
+        @media (max-width: 980px) { .pricing-grid { grid-template-columns: 1fr !important; max-width: 480px; margin-left: auto; margin-right: auto; } }
+      `}</style>
     </section>
   );
 }

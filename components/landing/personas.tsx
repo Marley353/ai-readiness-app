@@ -4,95 +4,65 @@ import { Briefcase, LayoutGrid, Building2 } from "lucide-react";
 import { useScrollReveal } from "@/lib/gsap-hooks";
 
 const PERSONAS = [
-  {
-    Icon: Briefcase,
-    title: "Consultants",
-    headline: "Deliver faster, defensible readiness reports.",
-    description:
-      "Ship boardroom-ready assessments to clients in hours, not weeks. The 8-dimension framework gives you a consistent, credible baseline across every engagement.",
-  },
-  {
-    Icon: LayoutGrid,
-    title: "Transformation leaders",
-    headline: "See the full map before you commit investment.",
-    description:
-      "Stop making AI roadmap decisions in the dark. Benchmark against your sector, identify genuine priority gaps and build a 12-month plan the exec team will actually back.",
-  },
-  {
-    Icon: Building2,
-    title: "Boards & Execs",
-    headline: "A single score the whole C-suite can rally behind.",
-    description:
-      "Cut through the AI noise with a weighted, sector-aware maturity score. Get the strategic narrative your chair needs and the risk view your CFO will trust.",
-  },
+  { Icon: Briefcase, tag: "CONSULTANTS", title: "Deliver faster, defensible readiness reports.", description: "Ship boardroom-ready assessments to clients in hours, not weeks. The 8-dimension framework gives you a consistent, credible baseline across every engagement." },
+  { Icon: LayoutGrid, tag: "TRANSFORMATION LEADS", title: "See the full map before you commit investment.", description: "Stop making AI roadmap decisions in the dark. Benchmark against your sector, identify genuine priority gaps and build a 12-month plan the exec team will actually back." },
+  { Icon: Building2, tag: "BOARDS & EXECS", title: "A single score the whole C-suite can rally behind.", description: "Cut through the AI noise with a weighted, sector-aware maturity score. Get the strategic narrative your chair needs and the risk view your CFO will trust." },
 ];
 
 export function Personas() {
   const sectionRef = useScrollReveal<HTMLDivElement>({ y: 30, stagger: 0.1 });
 
   return (
-    <section style={{ background: "var(--bg-subtle)" }} className="py-20 md:py-28">
-      <div ref={sectionRef} className="mx-auto max-w-6xl px-6 md:px-10">
-        <div className="text-center max-w-2xl mx-auto gsap-reveal">
-          <p
-            className="text-[11px] uppercase tracking-[0.25em]"
-            style={{ fontWeight: 600, color: "var(--fg-3)" }}
-          >
+    <section style={{ position: "relative", padding: "120px 24px" }}>
+      <div ref={sectionRef} style={{ maxWidth: 1240, margin: "0 auto", position: "relative" }}>
+        <div className="gsap-reveal" style={{ maxWidth: 760 }}>
+          <span style={{ fontSize: 12, fontWeight: 700, color: "var(--amethyst-link)", textTransform: "uppercase" as const, letterSpacing: "0.6px", display: "inline-block", marginBottom: 16 }}>
             Who it&apos;s for
-          </p>
-          <h2
-            className="mt-3 text-3xl md:text-5xl tracking-tight leading-tight"
-            style={{ fontWeight: 700, color: "var(--fg-1)" }}
-          >
-            Built for the people{" "}
-            <em style={{ color: "var(--amethyst-link)", fontStyle: "normal" }}>
-              driving AI decisions.
-            </em>
+          </span>
+          <h2 style={{ fontSize: "clamp(34px, 4.4vw, 56px)", fontWeight: 460, lineHeight: 0.98, letterSpacing: "-1.4px", color: "var(--fg-1)", margin: 0 }}>
+            Built for operators who are{" "}
+            <em style={{ fontStyle: "italic" }}>done experimenting</em>.
           </h2>
         </div>
 
-        <div className="mt-14 grid gap-5 md:grid-cols-3">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginTop: 56 }} className="personas-grid">
           {PERSONAS.map((p) => (
             <div
-              key={p.title}
-              className="gsap-reveal glow-hover bg-white"
+              key={p.tag}
+              className="gsap-reveal"
               style={{
-                borderRadius: "var(--r-lg)",
-                padding: "2rem",
+                background: "var(--pure-white)",
                 border: "1px solid var(--parchment-border)",
+                borderRadius: 16,
+                padding: 32,
+                display: "flex",
+                flexDirection: "column",
+                gap: 12,
+                transition: "transform 240ms ease, border-color 240ms ease, box-shadow 240ms ease",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLDivElement).style.transform = "translateY(-2px)";
+                (e.currentTarget as HTMLDivElement).style.borderColor = "var(--border-2)";
+                (e.currentTarget as HTMLDivElement).style.boxShadow = "0 8px 24px rgba(41,40,39,0.06)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)";
+                (e.currentTarget as HTMLDivElement).style.borderColor = "var(--parchment-border)";
+                (e.currentTarget as HTMLDivElement).style.boxShadow = "none";
               }}
             >
-              <div
-                className="w-10 h-10 flex items-center justify-center mb-5"
-                style={{
-                  borderRadius: "var(--r-sm)",
-                  background: "var(--mysteria-purple)",
-                }}
-              >
-                <p.Icon className="h-5 w-5 text-white" strokeWidth={2.2} />
-              </div>
-              <p
-                className="text-[11px] uppercase tracking-widest"
-                style={{ fontWeight: 600, color: "var(--fg-3)" }}
-              >
-                {p.title}
-              </p>
-              <h3
-                className="mt-2 text-xl tracking-tight leading-snug"
-                style={{ fontWeight: 700, color: "var(--fg-1)" }}
-              >
-                {p.headline}
-              </h3>
-              <p
-                className="mt-3 text-sm leading-relaxed"
-                style={{ fontWeight: 460, color: "var(--fg-2)" }}
-              >
-                {p.description}
-              </p>
+              <span style={{ fontSize: 11, fontWeight: 700, color: "var(--amethyst-link)", letterSpacing: "1px" }}>{p.tag}</span>
+              <h3 style={{ fontSize: 22, fontWeight: 540, letterSpacing: "-0.4px", color: "var(--fg-1)", margin: 0, lineHeight: 1.1 }}>{p.title}</h3>
+              <p style={{ fontSize: 14, fontWeight: 460, lineHeight: 1.55, color: "var(--fg-2)", margin: 0 }}>{p.description}</p>
             </div>
           ))}
         </div>
       </div>
+
+      <style jsx global>{`
+        @media (max-width: 980px) { .personas-grid { grid-template-columns: repeat(2, 1fr) !important; } }
+        @media (max-width: 560px) { .personas-grid { grid-template-columns: 1fr !important; } }
+      `}</style>
     </section>
   );
 }
