@@ -320,37 +320,6 @@ export function Hero() {
       </div>
 
       <div style={{ maxWidth: 1240, margin: "0 auto", position: "relative" }}>
-        {/* Eyebrow */}
-        <div style={{ textAlign: "left" }}>
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 10,
-              padding: "6px 12px 6px 8px",
-              border: "1px solid var(--parchment-border)",
-              borderRadius: 999,
-              background: "rgba(255,183,112,0.12)",
-              fontSize: 13,
-              fontWeight: 600,
-              color: "var(--fg-1)",
-              letterSpacing: "-0.1px",
-            }}
-          >
-            <span
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: "50%",
-                background: "var(--lavender-glow)",
-                boxShadow: "0 0 0 0 rgba(255,183,112,0.6)",
-                animation: "pulseRing 2s ease-out infinite",
-              }}
-            />
-            New — Readiness Scorecard v2 now live
-          </span>
-        </div>
-
         {/* Two-column grid */}
         <div
           style={{
