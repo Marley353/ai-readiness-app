@@ -76,12 +76,12 @@ export default function PricingPage() {
     <div className="min-h-screen" style={{ background: "#fafafa" }}>
       {/* Dark navy hero — matches IONOS' pattern of dark top + light content */}
       <header className="relative overflow-hidden" style={{ background: "#0a0a0a" }}>
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[40rem] h-[24rem] rounded-full opacity-30 blur-[120px] pointer-events-none" style={{ background: "radial-gradient(circle, #cbb7fb, transparent 60%)" }} />
-        <div className="absolute bottom-0 right-0 w-[24rem] h-[20rem] rounded-full opacity-20 blur-[120px] pointer-events-none" style={{ background: "radial-gradient(circle, #714cb6, transparent 60%)" }} />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[40rem] h-[24rem] rounded-full opacity-30 blur-[120px] pointer-events-none" style={{ background: "radial-gradient(circle, #ffb770, transparent 60%)" }} />
+        <div className="absolute bottom-0 right-0 w-[24rem] h-[20rem] rounded-full opacity-20 blur-[120px] pointer-events-none" style={{ background: "radial-gradient(circle, #c4661a, transparent 60%)" }} />
 
         <div className="relative mx-auto max-w-6xl px-6 md:px-10 py-5 flex items-center justify-between">
           <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold text-white">
-            <span className="w-7 h-7 rounded-md flex items-center justify-center text-[11px] font-black" style={{ background: "#714cb6" }}>AI</span>
+            <span className="w-7 h-7 rounded-md flex items-center justify-center text-[11px] font-black" style={{ background: "#c4661a" }}>AI</span>
             AI Readiness
           </Link>
           <Link href="/app" className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold text-white/80 hover:text-white hover:bg-white/5 transition">
@@ -95,7 +95,7 @@ export default function PricingPage() {
           </div>
           <h1 className="text-4xl md:text-6xl font-black text-white tracking-tight leading-[1.05]">
             Simple pricing for{" "}
-            <span style={{ color: "#714cb6",  }}>every stage</span>.
+            <span style={{ color: "#c4661a",  }}>every stage</span>.
           </h1>
           <p className="mt-5 text-base md:text-lg text-white/60 max-w-xl mx-auto leading-relaxed">
             Start free. Upgrade to Pro when you need industry benchmarks, the roadmap, comparison mode and clean exports.
@@ -198,7 +198,7 @@ export default function PricingPage() {
           <article className="relative rounded-2xl p-8 flex flex-col shadow-[0_12px_48px_rgba(15,23,42,0.2)] hover-lift overflow-hidden" style={{ background: "#0a0a0a", border: "1px solid #222" }}>
             {/* Bestseller banner */}
             <div className="absolute top-0 left-0 right-0 py-2 text-center">
-              <div className="inline-flex items-center justify-center gap-1 w-full py-1.5 text-[10px] font-bold tracking-[0.3em] text-white" style={{ background: "#cbb7fb" }}>
+              <div className="inline-flex items-center justify-center gap-1 w-full py-1.5 text-[10px] font-bold tracking-[0.3em] text-white" style={{ background: "#ffb770" }}>
                 <Sparkles className="h-3 w-3" /> BESTSELLER
               </div>
             </div>

@@ -67,7 +67,7 @@ export default function AboutPage() {
         className="relative overflow-hidden aurora-bg"
         style={{
           background:
-            "radial-gradient(ellipse at 20% 0%, rgba(203,183,251,0.35) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(113,76,182,0.25) 0%, transparent 50%), #0a0a0a",
+            "radial-gradient(ellipse at 20% 0%, rgba(255,183,112,0.35) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(196,102,26,0.25) 0%, transparent 50%), #0a0a0a",
         }}
       >
         <div className="relative z-10 mx-auto max-w-4xl px-6 md:px-10 pt-16 md:pt-24 pb-20 md:pb-24 text-center">
@@ -76,7 +76,7 @@ export default function AboutPage() {
             Rigorous, evidence-based,{" "}
             <span
               style={{
-                color: "#714cb6",
+                color: "#c4661a",
               }}
             >
               auditable.

@@ -23,7 +23,7 @@ export function LegalLayout({
           <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold text-white">
             <span
               className="w-7 h-7 rounded-md flex items-center justify-center text-[11px] font-black"
-              style={{ background: "#714cb6" }}
+              style={{ background: "#c4661a" }}
             >
               AI
             </span>

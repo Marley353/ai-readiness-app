@@ -42,7 +42,7 @@ export function FinalCta() {
             width: 520,
             height: 520,
             borderRadius: "50%",
-            background: "rgba(203,183,251,0.5)",
+            background: "rgba(255,183,112,0.5)",
             filter: "blur(80px)",
             opacity: 0.3,
             top: -140,

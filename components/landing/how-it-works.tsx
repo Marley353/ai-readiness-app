@@ -117,7 +117,7 @@ export function HowItWorks() {
                   height: 14,
                   borderRadius: "50%",
                   background: "var(--amethyst-link)",
-                  boxShadow: "0 0 0 4px rgba(203,183,251,0.25)",
+                  boxShadow: "0 0 0 4px rgba(255,183,112,0.25)",
                 }}
               />
               <div

@@ -83,7 +83,7 @@ export function DimensionsGrid() {
               }}
               onMouseEnter={(e) => {
                 (e.currentTarget as HTMLDivElement).style.transform = "translateY(-4px)";
-                (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(203,183,251,0.6)";
+                (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(255,183,112,0.6)";
               }}
               onMouseLeave={(e) => {
                 (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)";
@@ -95,7 +95,7 @@ export function DimensionsGrid() {
                 style={{
                   position: "absolute",
                   inset: 0,
-                  background: "radial-gradient(420px 180px at var(--mx, 50%) var(--my, 0%), rgba(203,183,251,0.22), transparent 70%)",
+                  background: "radial-gradient(420px 180px at var(--mx, 50%) var(--my, 0%), rgba(255,183,112,0.22), transparent 70%)",
                   opacity: 0,
                   transition: "opacity 260ms ease",
                   pointerEvents: "none",

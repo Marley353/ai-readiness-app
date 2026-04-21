@@ -57,7 +57,7 @@ export default function RootLayout({
       appearance={{
         baseTheme: dark,
         variables: {
-          colorPrimary: '#714cb6',
+          colorPrimary: '#c4661a',
           borderRadius: '0.5rem',
           fontFamily: "'Inter', system-ui, sans-serif",
         },

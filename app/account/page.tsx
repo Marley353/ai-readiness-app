@@ -61,7 +61,7 @@ export default async function AccountPage() {
       <nav className="sticky top-0 z-40 backdrop-blur-xl" style={{ background: "rgba(10,10,10,0.75)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
         <div className="mx-auto max-w-6xl px-6 md:px-10 h-14 flex items-center justify-between">
           <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold text-white">
-            <span className="w-6 h-6 rounded-md flex items-center justify-center text-[10px] font-black" style={{ background: "#714cb6" }}>AI</span>
+            <span className="w-6 h-6 rounded-md flex items-center justify-center text-[10px] font-black" style={{ background: "#c4661a" }}>AI</span>
             AI Readiness
           </Link>
           <div className="flex items-center gap-2">
@@ -84,7 +84,7 @@ export default async function AccountPage() {
             {user.imageUrl ? (
               <Image src={user.imageUrl} alt={firstName} width={80} height={80} className="rounded-full ring-1 ring-white/10 object-cover flex-shrink-0" />
             ) : (
-              <div className="w-20 h-20 rounded-full flex-shrink-0 ring-1 ring-white/10 flex items-center justify-center text-3xl font-black text-white" style={{ background: "#714cb6" }}>
+              <div className="w-20 h-20 rounded-full flex-shrink-0 ring-1 ring-white/10 flex items-center justify-center text-3xl font-black text-white" style={{ background: "#c4661a" }}>
                 {firstName.charAt(0).toUpperCase()}
               </div>
             )}
@@ -92,7 +92,7 @@ export default async function AccountPage() {
               <div className="flex items-center gap-2 flex-wrap">
                 <h2 className="text-2xl font-black text-white tracking-tight truncate">{firstName}</h2>
                 {plan === "pro" ? (
-                  <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wider text-white" style={{ background: "#cbb7fb" }}>
+                  <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wider text-white" style={{ background: "#ffb770" }}>
                     <Sparkles className="h-3 w-3" /> PRO
                   </span>
                 ) : (
@@ -123,7 +123,7 @@ export default async function AccountPage() {
         {/* Two-column grid: Plan + Quick links */}
         <section className="mt-6 grid gap-6 lg:grid-cols-3">
           {/* Plan overview — 2 cols wide on desktop */}
-          <div className="lg:col-span-2 rounded-2xl overflow-hidden" style={{ background: plan === "pro" ? "linear-gradient(140deg, rgba(203,183,251,0.1), rgba(113,76,182,0.05) 60%, rgba(203,183,251,0.1)), #111" : "#111", border: "1px solid rgba(255,255,255,0.08)" }}>
+          <div className="lg:col-span-2 rounded-2xl overflow-hidden" style={{ background: plan === "pro" ? "linear-gradient(140deg, rgba(255,183,112,0.1), rgba(196,102,26,0.05) 60%, rgba(255,183,112,0.1)), #111" : "#111", border: "1px solid rgba(255,255,255,0.08)" }}>
             <div className="p-6 md:p-8">
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div>

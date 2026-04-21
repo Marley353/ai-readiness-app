@@ -823,7 +823,7 @@ function exportPdf(assessment: Assessment) {
   const addPageFooter = (pageNum: number) => {
     doc.setFillColor(30, 27, 75);
     doc.rect(0, 285, W, 12, "F");
-    doc.setTextColor(203, 183, 251);
+    doc.setTextColor(255, 183, 112);
     doc.setFont("helvetica", "normal");
     doc.setFontSize(7);
     doc.text("AI Transformation Readiness Report — Confidential", MARGIN, 292);
@@ -838,11 +838,11 @@ function exportPdf(assessment: Assessment) {
   doc.rect(0, 0, W, 297, "F");
 
   // Accent bar - indigo gradient effect (solid color simulation)
-  doc.setFillColor(113, 76, 182);
+  doc.setFillColor(196, 102, 26);
   doc.rect(0, 0, 6, 297, "F");
 
   // Logo / brand strip
-  doc.setTextColor(203, 183, 251);
+  doc.setTextColor(255, 183, 112);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8);
   doc.text("AI READINESS · 8-DIMENSION ENTERPRISE FRAMEWORK", MARGIN + 6, 22);
@@ -854,7 +854,7 @@ function exportPdf(assessment: Assessment) {
   doc.text("Readiness Report", MARGIN + 6, 94);
 
   // Divider
-  doc.setFillColor(113, 76, 182);
+  doc.setFillColor(196, 102, 26);
   doc.rect(MARGIN + 6, 100, 80, 1.5, "F");
 
   // Org name
@@ -915,7 +915,7 @@ function exportPdf(assessment: Assessment) {
   const sectionHeader = (title: string, y: number): number => {
     doc.setFillColor(30, 27, 75);
     doc.rect(0, y - 6, W, 14, "F");
-    doc.setFillColor(113, 76, 182);
+    doc.setFillColor(196, 102, 26);
     doc.rect(0, y - 6, 4, 14, "F");
     doc.setTextColor(255, 255, 255);
     doc.setFont("helvetica", "bold");
@@ -1386,10 +1386,10 @@ function getWeightLabel(weight: number) {
 // Muted palette aligned with the Mysteria Purple / lavender accent so pillars
 // stay distinguishable without fighting the black-and-white app aesthetic.
 const PILLAR_COLORS = [
-  { from: "#714cb6", to: "#5b3d96" },  // amethyst - Strategy & Leadership
-  { from: "#8a6cc8", to: "#6d53a8" },  // lighter amethyst - People & Capability
-  { from: "#a88ad8", to: "#8a6cc8" },  // lavender mid - Process & Operations
-  { from: "#cbb7fb", to: "#a88ad8" },  // lavender glow - Data & Insight
+  { from: "#c4661a", to: "#8a5a2a" },  // amethyst - Strategy & Leadership
+  { from: "#b87830", to: "#9a6628" },  // lighter amethyst - People & Capability
+  { from: "#cc9a48", to: "#b87830" },  // lavender mid - Process & Operations
+  { from: "#ffb770", to: "#cc9a48" },  // lavender glow - Data & Insight
   { from: "#9da4bd", to: "#7d849e" },  // cool slate - Technology & Integration
   { from: "#b8a88c", to: "#9d8f73" },  // warm stone - Ethics & Governance
   { from: "#c4826f", to: "#a66854" },  // muted terracotta - Culture & Change
@@ -1571,15 +1571,15 @@ export default function AIReadinessScorecardApp() {
       {showWelcome && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in" style={{ background: "rgba(0, 0, 0, 0.75)", backdropFilter: "blur(12px)" }}>
           <div className="relative max-w-2xl w-full rounded-3xl overflow-hidden animate-scale-in shadow-2xl" style={{ background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.08)" }}>
-            <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full opacity-50 blur-[100px] pointer-events-none" style={{ background: "radial-gradient(circle, #cbb7fb, transparent 60%)" }}></div>
-            <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full opacity-45 blur-[100px] pointer-events-none" style={{ background: "radial-gradient(circle, #714cb6, transparent 60%)" }}></div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full opacity-25 blur-[100px] pointer-events-none" style={{ background: "radial-gradient(circle, #cbb7fb, transparent 60%)" }}></div>
+            <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full opacity-50 blur-[100px] pointer-events-none" style={{ background: "radial-gradient(circle, #ffb770, transparent 60%)" }}></div>
+            <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full opacity-45 blur-[100px] pointer-events-none" style={{ background: "radial-gradient(circle, #c4661a, transparent 60%)" }}></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full opacity-25 blur-[100px] pointer-events-none" style={{ background: "radial-gradient(circle, #ffb770, transparent 60%)" }}></div>
             <div className="relative p-8 md:p-12">
               <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold tracking-wide text-white/90 mb-5" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", backdropFilter: "blur(10px)" }}>
                 <Sparkles className="h-3 w-3" /> WELCOME
               </div>
               <h2 className="text-3xl md:text-5xl font-black text-white leading-[1.05] tracking-tight">
-                Assess your <span style={{ color: "#cbb7fb" }}>AI readiness</span> like a Fortune 500 leader.
+                Assess your <span style={{ color: "#ffb770" }}>AI readiness</span> like a Fortune 500 leader.
               </h2>
               <p className="mt-5 text-white/70 text-base leading-relaxed">
                 A professional 8-dimension framework with weighted scoring, sector-specific benchmarks, and an actionable 12-month roadmap — all in one beautifully designed tool.
@@ -1622,7 +1622,7 @@ export default function AIReadinessScorecardApp() {
       )}
 
       {/* HERO HEADER */}
-      <div className="aurora-bg" style={{ background: "radial-gradient(ellipse at 20% 0%, rgba(203,183,251,0.28) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(113,76,182,0.28) 0%, transparent 50%), radial-gradient(ellipse at 50% 50%, rgba(203,183,251,0.18) 0%, transparent 60%), #0a0a0a" }}>
+      <div className="aurora-bg" style={{ background: "radial-gradient(ellipse at 20% 0%, rgba(255,183,112,0.28) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(196,102,26,0.28) 0%, transparent 50%), radial-gradient(ellipse at 50% 50%, rgba(255,183,112,0.18) 0%, transparent 60%), #0a0a0a" }}>
         {/* Top account bar */}
         <div className="relative z-10 mx-auto max-w-7xl px-4 pt-4 md:px-8">
           <div className="flex items-center justify-end gap-2">
@@ -1633,7 +1633,7 @@ export default function AIReadinessScorecardApp() {
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div className="flex-1 min-w-0">
               <div className="mb-3 flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold tracking-wide animate-fade-in" style={{ background: "rgba(203,183,251,0.15)", border: "1px solid rgba(203,183,251,0.3)", color: "#cbb7fb", backdropFilter: "blur(10px)" }}>
+                <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold tracking-wide animate-fade-in" style={{ background: "rgba(255,183,112,0.15)", border: "1px solid rgba(255,183,112,0.3)", color: "#ffb770", backdropFilter: "blur(10px)" }}>
                   <Sparkles className="h-3 w-3" /> AI READINESS · 8-DIMENSION FRAMEWORK
                 </span>
                 {sectorInfo && (
@@ -1644,22 +1644,22 @@ export default function AIReadinessScorecardApp() {
               </div>
               <h1 className="text-2xl font-black tracking-tight text-white md:text-4xl leading-tight animate-slide-up">
                 {active.businessName ? <>{active.businessName}<br /></> : null}
-                <span style={{ color: "#cbb7fb" }}>
+                <span style={{ color: "#ffb770" }}>
                   AI Transformation Readiness
                 </span>
               </h1>
-              <p className="mt-2 text-sm" style={{ color: "rgba(203,183,251,0.7)" }}>8 Dimensions · Industry Benchmarks · Phased Roadmap · Sector-specific Insight</p>
+              <p className="mt-2 text-sm" style={{ color: "rgba(255,183,112,0.7)" }}>8 Dimensions · Industry Benchmarks · Phased Roadmap · Sector-specific Insight</p>
               <div className="mt-5 flex flex-wrap gap-2">
                 <button onClick={createNew} className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition hover:opacity-90" style={{ background: "#ffffff", color: "#0a0a0a" }}>
                   <Plus className="h-4 w-4" /> New Assessment
                 </button>
-                <button onClick={() => exportPdf(active)} className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white/90 transition hover:text-white hover:scale-[1.02]" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(203,183,251,0.2)", backdropFilter: "blur(10px)" }}>
+                <button onClick={() => exportPdf(active)} className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white/90 transition hover:text-white hover:scale-[1.02]" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,183,112,0.2)", backdropFilter: "blur(10px)" }}>
                   <Download className="h-4 w-4" /> PDF
                 </button>
-                <button onClick={() => mailTo(active)} className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white/90 transition hover:text-white hover:scale-[1.02]" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(203,183,251,0.2)", backdropFilter: "blur(10px)" }}>
+                <button onClick={() => mailTo(active)} className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white/90 transition hover:text-white hover:scale-[1.02]" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,183,112,0.2)", backdropFilter: "blur(10px)" }}>
                   <Mail className="h-4 w-4" /> Email
                 </button>
-                <button onClick={duplicate} className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white/90 transition hover:text-white hover:scale-[1.02]" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(203,183,251,0.2)", backdropFilter: "blur(10px)" }}>
+                <button onClick={duplicate} className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white/90 transition hover:text-white hover:scale-[1.02]" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,183,112,0.2)", backdropFilter: "blur(10px)" }}>
                   <Copy className="h-4 w-4" /> Duplicate
                 </button>
               </div>
@@ -1685,9 +1685,9 @@ export default function AIReadinessScorecardApp() {
           <div className="mx-auto max-w-7xl px-4 py-4 md:px-8">
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4 stagger-children">
               {[
-                { label: "AI Maturity", numeric: overall, sub: band.label, icon: <TrendingUp className="h-3.5 w-3.5" />, color: "#cbb7fb" },
-                { label: "Operational Impact", numeric: operationalImpact, sub: "Process & tech", icon: <Activity className="h-3.5 w-3.5" />, color: "#cbb7fb" },
-                { label: "Efficiency Opportunity", numeric: efficiencyOpportunity, sub: "Improvement gap", icon: <Zap className="h-3.5 w-3.5" />, color: "#cbb7fb" },
+                { label: "AI Maturity", numeric: overall, sub: band.label, icon: <TrendingUp className="h-3.5 w-3.5" />, color: "#ffb770" },
+                { label: "Operational Impact", numeric: operationalImpact, sub: "Process & tech", icon: <Activity className="h-3.5 w-3.5" />, color: "#ffb770" },
+                { label: "Efficiency Opportunity", numeric: efficiencyOpportunity, sub: "Improvement gap", icon: <Zap className="h-3.5 w-3.5" />, color: "#ffb770" },
                 { label: "Risk Exposure", numeric: riskExposure, sub: `${risk.level.charAt(0).toUpperCase() + risk.level.slice(1)} risk`, icon: <AlertTriangle className="h-3.5 w-3.5" />, color: riskExposure >= 60 ? "#fda4af" : riskExposure >= 30 ? "#fcd34d" : "#86efac" },
               ].map((kpi) => (
                 <div key={kpi.label} className="glass-strong rounded-2xl p-3 hover-lift">
@@ -1720,7 +1720,7 @@ export default function AIReadinessScorecardApp() {
                   const itemSector = SECTORS.find((s) => s.value === item.sector);
                   const isActive = item.id === active.id;
                   return (
-                    <div key={item.id} className="rounded-xl p-3 transition cursor-pointer hover-lift" style={{ border: isActive ? "1px solid #714cb6" : "1px solid #f1f5f9", background: isActive ? "linear-gradient(135deg, #f3eefd, #ece3fb)" : "white" }}>
+                    <div key={item.id} className="rounded-xl p-3 transition cursor-pointer hover-lift" style={{ border: isActive ? "1px solid #c4661a" : "1px solid #f1f5f9", background: isActive ? "linear-gradient(135deg, #f3eefd, #ece3fb)" : "white" }}>
                       <button className="w-full text-left" onClick={() => setActiveId(item.id)}>
                         <div className="flex items-start justify-between gap-2">
                           <div className="min-w-0">
@@ -1746,8 +1746,8 @@ export default function AIReadinessScorecardApp() {
 
             {/* Framework info card */}
             <div className="relative rounded-2xl overflow-hidden hover-lift" style={{ background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.08)" }}>
-              <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full opacity-40 blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, #cbb7fb, transparent)" }} />
-              <div className="absolute -bottom-20 -left-10 w-40 h-40 rounded-full opacity-30 blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, #714cb6, transparent)" }} />
+              <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full opacity-40 blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, #ffb770, transparent)" }} />
+              <div className="absolute -bottom-20 -left-10 w-40 h-40 rounded-full opacity-30 blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, #c4661a, transparent)" }} />
               <div className="relative p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Sparkles className="h-4 w-4 text-white" />
@@ -1769,14 +1769,14 @@ export default function AIReadinessScorecardApp() {
             <div className="rounded-2xl bg-white shadow-sm overflow-hidden hover-lift" style={{ border: "1px solid #e2e8f0" }}>
               <div className="px-4 py-3" style={{ borderBottom: "1px solid #f1f5f9" }}>
                 <p className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4" style={{ color: "#714cb6" }} />
+                  <CheckCircle2 className="h-4 w-4" style={{ color: "#c4661a" }} />
                   Active Assessment
                 </p>
               </div>
               <div className="p-4 space-y-2.5">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-slate-500">Maturity</span>
-                  <span className="font-bold" style={{ color: overall >= 70 ? "#4d7c63" : overall >= 50 ? "#714cb6" : overall >= 30 ? "#8f7240" : "#9a3b57" }}>{band.label}</span>
+                  <span className="font-bold" style={{ color: overall >= 70 ? "#4d7c63" : overall >= 50 ? "#c4661a" : overall >= 30 ? "#8f7240" : "#9a3b57" }}>{band.label}</span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-slate-500">Risk profile</span>
@@ -1973,7 +1973,7 @@ export default function AIReadinessScorecardApp() {
                           ) : (
                             <a
                               href="/pricing"
-                              className="block mt-1.5 text-[10px] text-slate-400 hover:text-[#714cb6] transition"
+                              className="block mt-1.5 text-[10px] text-slate-400 hover:text-[#c4661a] transition"
                             >
                               <Sparkles className="inline h-3 w-3 mr-1" /> Upgrade for {sectorInfo?.label} benchmark
                             </a>
@@ -2047,7 +2047,7 @@ export default function AIReadinessScorecardApp() {
                           <Legend wrapperStyle={{ fontSize: 11, paddingTop: 8 }} />
                           <Bar dataKey="score" name="Your Score" radius={[8, 8, 0, 0]}>
                             {pillarData.map((_, index) => (
-                              <Cell key={`cell-${index}`} fill={PILLAR_COLORS[index]?.from || "#714cb6"} />
+                              <Cell key={`cell-${index}`} fill={PILLAR_COLORS[index]?.from || "#c4661a"} />
                             ))}
                           </Bar>
                           <Bar dataKey="benchmark" name="Industry Avg" radius={[8, 8, 0, 0]} fill="#c4beb8" fillOpacity={0.5} />
@@ -2067,8 +2067,8 @@ export default function AIReadinessScorecardApp() {
                           <PolarGrid stroke="#e2e8f0" />
                           <PolarAngleAxis dataKey="fullName" tick={{ fontSize: 11, fill: "#64748b" }} />
                           <PolarRadiusAxis domain={[0, 100]} tick={{ fontSize: 10, fill: "#94a3b8" }} />
-                          <Radar name="Your Score" dataKey="score" fill="#714cb6" fillOpacity={0.25} stroke="#714cb6" strokeWidth={2.5} />
-                          <Radar name="Industry Benchmark" dataKey="benchmark" fill="#cbb7fb" fillOpacity={0.1} stroke="#cbb7fb" strokeWidth={2} strokeDasharray="4 4" />
+                          <Radar name="Your Score" dataKey="score" fill="#c4661a" fillOpacity={0.25} stroke="#c4661a" strokeWidth={2.5} />
+                          <Radar name="Industry Benchmark" dataKey="benchmark" fill="#ffb770" fillOpacity={0.1} stroke="#ffb770" strokeWidth={2} strokeDasharray="4 4" />
                           <Legend wrapperStyle={{ fontSize: 11, paddingTop: 8 }} />
                           <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0" }} />
                         </RadarChart>
@@ -2119,7 +2119,7 @@ export default function AIReadinessScorecardApp() {
                       <TrendingUp className="h-4 w-4 text-slate-800" strokeWidth={2.2} />
                       <span className="font-black text-slate-900 tracking-tight">ROI Opportunity</span>
                     </div>
-                    <p className="text-4xl font-black tracking-tight" style={{ color: "#cbb7fb" }}>{roi.range}</p>
+                    <p className="text-4xl font-black tracking-tight" style={{ color: "#ffb770" }}>{roi.range}</p>
                     <p className="text-xs text-slate-400 mt-1 mb-4">Efficiency improvement potential</p>
                     <div className="grid grid-cols-3 gap-2 text-center">
                       <div className="rounded-xl p-2" style={{ background: "#fafafa", border: "1px solid #f1f5f9" }}>
@@ -2188,7 +2188,7 @@ export default function AIReadinessScorecardApp() {
                   <div className="p-5 grid gap-3 md:grid-cols-3">
                     <div className="rounded-2xl p-5 hover-lift" style={{ background: "#fafafa", border: "1px solid #e2e8f0" }}>
                       <div className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full" style={{ background: overall >= 80 ? "#4d7c63" : overall >= 60 ? "#714cb6" : overall >= 40 ? "#8f7240" : "#9a3b57" }} />
+                        <span className="w-1.5 h-1.5 rounded-full" style={{ background: overall >= 80 ? "#4d7c63" : overall >= 60 ? "#c4661a" : overall >= 40 ? "#8f7240" : "#9a3b57" }} />
                         <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Current Maturity</p>
                       </div>
                       <p className="mt-2 text-3xl font-black text-slate-900 tracking-tight">{band.label}</p>
@@ -2224,8 +2224,8 @@ export default function AIReadinessScorecardApp() {
                 >
                 <div className="rounded-2xl bg-white shadow-sm overflow-hidden animate-fade-in" style={{ border: "1px solid #e2e8f0" }}>
                   <div className="relative px-6 py-5 overflow-hidden" style={{ background: "#0a0a0a", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
-                    <div className="absolute -top-20 -right-10 w-60 h-60 rounded-full opacity-50 blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, #cbb7fb, transparent 60%)" }} />
-                    <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full opacity-40 blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, #714cb6, transparent 60%)" }} />
+                    <div className="absolute -top-20 -right-10 w-60 h-60 rounded-full opacity-50 blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, #ffb770, transparent 60%)" }} />
+                    <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full opacity-40 blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, #c4661a, transparent 60%)" }} />
                     <div className="relative flex items-center gap-3">
                       <div className="rounded-xl p-2.5" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)" }}>
                         <TrendingUp className="h-5 w-5 text-white" />

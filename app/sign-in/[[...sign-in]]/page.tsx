@@ -4,8 +4,8 @@ export default function Page() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden" style={{ background: "#0a0a0a" }}>
       {/* Ambient aurora blobs */}
-      <div className="absolute -top-40 -right-40 w-[32rem] h-[32rem] rounded-full opacity-40 blur-[120px] pointer-events-none" style={{ background: "radial-gradient(circle, #cbb7fb, transparent 60%)" }} />
-      <div className="absolute -bottom-40 -left-40 w-[32rem] h-[32rem] rounded-full opacity-30 blur-[120px] pointer-events-none" style={{ background: "radial-gradient(circle, #714cb6, transparent 60%)" }} />
+      <div className="absolute -top-40 -right-40 w-[32rem] h-[32rem] rounded-full opacity-40 blur-[120px] pointer-events-none" style={{ background: "radial-gradient(circle, #ffb770, transparent 60%)" }} />
+      <div className="absolute -bottom-40 -left-40 w-[32rem] h-[32rem] rounded-full opacity-30 blur-[120px] pointer-events-none" style={{ background: "radial-gradient(circle, #c4661a, transparent 60%)" }} />
 
       <div className="relative z-10 w-full max-w-md">
         <div className="mb-6 text-center">

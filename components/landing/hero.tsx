@@ -281,7 +281,7 @@ export function Hero() {
             width: 540,
             height: 540,
             borderRadius: "50%",
-            background: "rgba(203,183,251,0.55)",
+            background: "rgba(255,183,112,0.55)",
             filter: "blur(80px)",
             opacity: 0.35,
             top: -120,
@@ -330,7 +330,7 @@ export function Hero() {
               padding: "6px 12px 6px 8px",
               border: "1px solid var(--parchment-border)",
               borderRadius: 999,
-              background: "rgba(203,183,251,0.12)",
+              background: "rgba(255,183,112,0.12)",
               fontSize: 13,
               fontWeight: 600,
               color: "var(--fg-1)",
@@ -343,7 +343,7 @@ export function Hero() {
                 height: 8,
                 borderRadius: "50%",
                 background: "var(--lavender-glow)",
-                boxShadow: "0 0 0 0 rgba(203,183,251,0.6)",
+                boxShadow: "0 0 0 0 rgba(255,183,112,0.6)",
                 animation: "pulseRing 2s ease-out infinite",
               }}
             />
@@ -468,8 +468,8 @@ export function Hero() {
           100% { transform: translate3d(0, 0, 0); }
         }
         @keyframes pulseRing {
-          0% { box-shadow: 0 0 0 0 rgba(203,183,251,0.6); }
-          100% { box-shadow: 0 0 0 12px rgba(203,183,251,0); }
+          0% { box-shadow: 0 0 0 0 rgba(255,183,112,0.6); }
+          100% { box-shadow: 0 0 0 12px rgba(255,183,112,0); }
         }
         @keyframes fillBar {
           from { transform: scaleX(0); }
