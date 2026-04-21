@@ -2,80 +2,129 @@
 
 import Link from "next/link";
 import { useAuth, UserButton } from "@clerk/nextjs";
+import React, { useEffect, useState } from "react";
 
 export function TopNav() {
   const { isLoaded, isSignedIn } = useAuth();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <nav
-      className="sticky top-0 z-50"
+      className={`nav ${scrolled ? "scrolled" : ""}`}
       style={{
-        background: "#fff",
-        borderBottom: "1px solid var(--parchment-border)",
+        position: "sticky",
+        top: 0,
+        zIndex: 50,
+        padding: "14px 24px",
+        transition: "background 240ms ease, border-color 240ms ease, backdrop-filter 240ms ease",
+        borderBottom: "1px solid transparent",
+        ...(scrolled
+          ? {
+              background: "rgba(250, 248, 245, 0.72)",
+              backdropFilter: "saturate(1.4) blur(14px)",
+              WebkitBackdropFilter: "saturate(1.4) blur(14px)",
+              borderBottomColor: "var(--parchment-border)",
+            }
+          : {}),
       }}
     >
-      <div className="mx-auto flex items-center justify-between" style={{ maxWidth: 1200, padding: "20px 40px" }}>
-        {/* Left — logo + links */}
-        <div className="flex items-center gap-11">
-          <Link href="/" className="flex items-center gap-2.5" style={{ textDecoration: "none" }}>
-            {/* Inline wordmark matching the SVG logo from the design bundle */}
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 40" fill="none" style={{ height: 24 }}>
-              <g>
-                <path d="M6 8 L6 32 L14 32" stroke="#292827" strokeWidth="2" strokeLinecap="square" fill="none" />
-                <path d="M34 8 L34 32 L26 32" stroke="#292827" strokeWidth="2" strokeLinecap="square" fill="none" />
-                <circle cx="20" cy="20" r="5" fill="#cbb7fb" />
-                <circle cx="20" cy="20" r="2" fill="#1b1938" />
-              </g>
-              <text x="52" y="26" fontFamily="Inter, system-ui, sans-serif" fontWeight="540" fontSize="18" letterSpacing="-0.4" fill="#292827">Digital Readiness</text>
-              <text x="228" y="26" fontFamily="Inter, system-ui, sans-serif" fontWeight="700" fontSize="18" letterSpacing="-0.2" fill="#714cb6">AI</text>
-            </svg>
-          </Link>
-          <div className="hidden md:flex items-center gap-7">
-            {[
-              { href: "/about", label: "About" },
-              { href: "/pricing", label: "Pricing" },
-            ].map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                style={{
-                  fontSize: 15,
-                  fontWeight: 460,
-                  color: "var(--charcoal-ink)",
-                  textDecoration: "none",
-                  transition: "color 150ms",
-                }}
-                className="hover:text-[var(--amethyst-link)]"
-              >
-                {l.label}
-              </Link>
-            ))}
-          </div>
+      <div
+        style={{
+          maxWidth: 1240,
+          margin: "0 auto",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 32,
+        }}
+      >
+        {/* Brand */}
+        <Link
+          href="/"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            fontWeight: 540,
+            color: "var(--fg-1)",
+            fontSize: 16,
+            textDecoration: "none",
+            letterSpacing: "-0.3px",
+          }}
+        >
+          <span
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: 7,
+              background: "var(--charcoal-ink)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            <span
+              style={{
+                position: "absolute",
+                inset: 4,
+                borderRadius: 4,
+                background: "conic-gradient(from 0deg, var(--lavender-glow), #fff, var(--lavender-glow))",
+                animation: "spinSlow 8s linear infinite",
+                opacity: 0.9,
+              }}
+            />
+          </span>
+          Digital Readiness AI
+        </Link>
+
+        {/* Centre links */}
+        <div className="hidden md:flex" style={{ alignItems: "center", gap: 32 }}>
+          {[
+            { href: "#scorecard", label: "Scorecard" },
+            { href: "#framework", label: "Framework" },
+            { href: "#how-it-works", label: "How it works" },
+            { href: "/about", label: "About" },
+            { href: "/pricing", label: "Pricing" },
+          ].map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              style={{
+                color: "var(--fg-2)",
+                textDecoration: "none",
+                fontSize: 15,
+                fontWeight: 460,
+                letterSpacing: "-0.1px",
+                transition: "color 150ms ease",
+              }}
+              className="hover:!text-[var(--fg-1)]"
+            >
+              {l.label}
+            </Link>
+          ))}
         </div>
 
-        {/* Right — auth */}
-        <div className="flex items-center gap-5">
+        {/* Right */}
+        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
           {isLoaded && isSignedIn ? (
             <>
               <Link
                 href="/app"
-                style={{
-                  fontSize: 15,
-                  fontWeight: 540,
-                  color: "var(--charcoal-ink)",
-                  textDecoration: "none",
-                }}
+                className="btn btn-secondary"
+                style={{ padding: "10px 16px", fontSize: 14, textDecoration: "none" }}
               >
                 Open app
               </Link>
-              <UserButton
-                afterSignOutUrl="/"
-                appearance={{
-                  elements: {
-                    avatarBox: "w-8 h-8 ring-1 ring-[var(--parchment-border)] hover:ring-[var(--amethyst-link)] transition",
-                  },
-                }}
-              />
+              <UserButton afterSignOutUrl="/" />
             </>
           ) : (
             <>
@@ -84,7 +133,7 @@ export function TopNav() {
                 style={{
                   fontSize: 15,
                   fontWeight: 540,
-                  color: "var(--charcoal-ink)",
+                  color: "var(--fg-1)",
                   textDecoration: "none",
                 }}
               >
@@ -92,24 +141,25 @@ export function TopNav() {
               </Link>
               <Link
                 href="/app"
-                style={{
-                  background: "var(--warm-cream)",
-                  color: "var(--charcoal-ink)",
-                  padding: "10px 18px",
-                  borderRadius: "var(--r-sm)",
-                  fontSize: 14,
-                  fontWeight: 600,
-                  textDecoration: "none",
-                  transition: "background 150ms",
-                }}
-                className="hover:bg-[var(--cream-hover)]"
+                className="btn btn-primary"
+                style={{ padding: "10px 16px", fontSize: 14, textDecoration: "none" }}
               >
-                Start scorecard
+                <span>Start scorecard</span>
               </Link>
             </>
           )}
         </div>
       </div>
+
+      <style jsx global>{`
+        @keyframes spinSlow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @media (min-width: 880px) {
+          .nav .hidden.md\\:flex { display: flex !important; }
+        }
+      `}</style>
     </nav>
   );
 }

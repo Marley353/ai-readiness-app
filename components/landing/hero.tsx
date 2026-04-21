@@ -1,203 +1,500 @@
 "use client";
 
 import Link from "next/link";
-import { Check } from "lucide-react";
-import { useScrollReveal } from "@/lib/gsap-hooks";
+import { ArrowRight, Check } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+
+// Animated gauge displayed on the right side of the hero
+function HeroMeter() {
+  const [metric, setMetric] = useState(0);
+  useEffect(() => {
+    let raf: number;
+    let start: number | null = null;
+    const target = 73;
+    const step = (t: number) => {
+      if (start === null) start = t;
+      const p = Math.min(1, (t - start) / 1800);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setMetric(target * eased);
+      if (p < 1) raf = requestAnimationFrame(step);
+    };
+    const timer = setTimeout(() => { raf = requestAnimationFrame(step); }, 300);
+    return () => { clearTimeout(timer); cancelAnimationFrame(raf); };
+  }, []);
+
+  const R = 90;
+  const C = 2 * Math.PI * R;
+  const frac = Math.max(0, Math.min(1, metric / 100));
+  const visibleLen = C * 0.75;
+  const dashOffset = visibleLen * (1 - frac);
+
+  const bars = [
+    { label: "Strategy & leadership", value: 82 },
+    { label: "Data foundations", value: 64 },
+    { label: "Process maturity", value: 71 },
+    { label: "Ethics & governance", value: 58 },
+  ];
+
+  return (
+    <div
+      style={{
+        position: "relative",
+        aspectRatio: "1 / 1.05",
+        maxWidth: 520,
+        marginLeft: "auto",
+        borderRadius: 22,
+        overflow: "hidden",
+        background: "linear-gradient(160deg, #14131f 0%, #0b0a14 100%)",
+        border: "1px solid rgba(255,255,255,0.1)",
+        boxShadow: "0 30px 80px rgba(41,40,39,0.22), 0 0 0 1px rgba(255,255,255,0.02) inset",
+        color: "#fff",
+      }}
+    >
+      {/* Grid bg */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          inset: 0,
+          backgroundImage:
+            "linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px)",
+          backgroundSize: "32px 32px",
+          maskImage: "radial-gradient(ellipse 80% 80% at 50% 50%, #000 0%, transparent 75%)",
+          WebkitMaskImage: "radial-gradient(ellipse 80% 80% at 50% 50%, #000 0%, transparent 75%)",
+        }}
+      />
+      {/* Orbs */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          width: 280,
+          height: 280,
+          borderRadius: "50%",
+          background: "var(--lavender-glow)",
+          filter: "blur(90px)",
+          opacity: 0.35,
+          top: -40,
+          right: -60,
+          animation: "floatXY 14s ease-in-out infinite",
+        }}
+      />
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          width: 200,
+          height: 200,
+          borderRadius: "50%",
+          background: "var(--amethyst-link)",
+          filter: "blur(80px)",
+          opacity: 0.25,
+          bottom: -20,
+          left: -40,
+          animation: "floatY 12s 1s ease-in-out infinite",
+        }}
+      />
+
+      {/* Top chrome */}
+      <div style={{ position: "absolute", top: 16, left: 16, right: 16, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ display: "flex", gap: 6 }}>
+          <span style={{ width: 10, height: 10, borderRadius: "50%", background: "rgba(255,255,255,0.15)" }} />
+          <span style={{ width: 10, height: 10, borderRadius: "50%", background: "rgba(255,255,255,0.15)" }} />
+          <span style={{ width: 10, height: 10, borderRadius: "50%", background: "rgba(255,255,255,0.15)" }} />
+        </div>
+        <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.45)", letterSpacing: "0.4px", textTransform: "uppercase" as const }}>
+          Readiness Scorecard · v2
+        </div>
+        <div style={{ width: 28, height: 8 }} />
+      </div>
+
+      {/* Gauge */}
+      <div style={{ position: "absolute", top: 60, left: "50%", transform: "translateX(-50%)", width: 240, height: 240 }}>
+        <svg viewBox="0 0 220 220" width="240" height="240" style={{ transform: "rotate(135deg)" }}>
+          <circle cx="110" cy="110" r={R} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="14" strokeDasharray={`${visibleLen} ${C}`} strokeLinecap="round" />
+          <circle cx="110" cy="110" r={R} fill="none" stroke="url(#gaugeGrad)" strokeWidth="14" strokeDasharray={`${visibleLen} ${C}`} strokeDashoffset={dashOffset} strokeLinecap="round" style={{ transition: "stroke-dashoffset 200ms linear" }} />
+          <defs>
+            <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="var(--lavender-glow)" />
+              <stop offset="100%" stopColor="#fff" />
+            </linearGradient>
+          </defs>
+        </svg>
+        <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.55)", letterSpacing: "0.3px", textTransform: "uppercase" as const, marginBottom: 6 }}>AI readiness</div>
+          <div style={{ fontSize: 64, fontWeight: 540, color: "#fff", letterSpacing: "-2px", lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{Math.round(metric)}</div>
+          <div style={{ fontSize: 13, fontWeight: 540, color: "var(--lavender-glow)", marginTop: 6 }}>Implementation-ready</div>
+        </div>
+      </div>
+
+      {/* Glass panel with bars */}
+      <div
+        className="glass glass-strong"
+        style={{ position: "absolute", left: 20, right: 20, bottom: 20, padding: 18, borderRadius: 14, background: "rgba(255,255,255,0.09)", border: "1px solid rgba(255,255,255,0.18)", backdropFilter: "blur(14px) saturate(1.2)" }}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 14, fontSize: 11, fontWeight: 700, letterSpacing: "0.4px", textTransform: "uppercase" as const, color: "rgba(255,255,255,0.6)" }}>
+          <span>Pillar breakdown</span>
+          <span style={{ color: "var(--lavender-glow)" }}>● Live</span>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {bars.map((b, i) => (
+            <div key={b.label}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "rgba(255,255,255,0.85)", marginBottom: 4 }}>
+                <span>{b.label}</span>
+                <span style={{ fontVariantNumeric: "tabular-nums", color: "rgba(255,255,255,0.6)" }}>{b.value}</span>
+              </div>
+              <div style={{ height: 4, borderRadius: 2, background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
+                <div
+                  style={{
+                    height: "100%",
+                    borderRadius: 2,
+                    width: `${b.value}%`,
+                    background: "linear-gradient(90deg, var(--lavender-glow), #fff)",
+                    transformOrigin: "left",
+                    animation: `fillBar 1.4s ${0.4 + i * 0.15}s cubic-bezier(0.22,0.61,0.36,1) both`,
+                  }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Floating mini card */}
+      <div
+        className="glass"
+        style={{
+          position: "absolute",
+          top: 72,
+          right: 18,
+          padding: "10px 12px",
+          borderRadius: 14,
+          fontSize: 11,
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.12)",
+          animation: "floatY 5s ease-in-out infinite",
+        }}
+      >
+        <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--lavender-glow)" }} />
+        Analyzing dimension 5/8
+      </div>
+    </div>
+  );
+}
+
+// Counter hook for stat mini
+function useCounter(target: number, duration: number = 1600) {
+  const [display, setDisplay] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const started = useRef(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !started.current) {
+          started.current = true;
+          let raf: number;
+          let start: number | null = null;
+          const step = (t: number) => {
+            if (start === null) start = t;
+            const p = Math.min(1, (t - start) / duration);
+            const eased = 1 - Math.pow(1 - p, 3);
+            setDisplay(Math.round(target * eased));
+            if (p < 1) raf = requestAnimationFrame(step);
+          };
+          raf = requestAnimationFrame(step);
+        }
+      },
+      { threshold: 0.3 },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [target, duration]);
+
+  return { ref, display };
+}
+
+function StatMini({ value, suffix, label }: { value: number; suffix: string; label: string }) {
+  const { ref, display } = useCounter(value);
+  return (
+    <div ref={ref}>
+      <div style={{ fontSize: 28, fontWeight: 540, letterSpacing: "-0.8px", color: "var(--fg-1)" }}>
+        <span style={{ fontVariantNumeric: "tabular-nums" }}>{display}</span>
+        <span style={{ color: "var(--fg-3)", fontWeight: 460 }}>{suffix}</span>
+      </div>
+      <div style={{ fontSize: 13, color: "var(--fg-2)", marginTop: 4 }}>{label}</div>
+    </div>
+  );
+}
 
 export function Hero() {
-  const heroRef = useScrollReveal<HTMLDivElement>({ y: 0, stagger: 0.12, start: "top 95%" });
+  const btnRef = useRef<HTMLAnchorElement>(null);
+
+  // Mouse-tracked radial glow on CTA
+  useEffect(() => {
+    const el = btnRef.current;
+    if (!el) return;
+    const onMove = (e: MouseEvent) => {
+      const r = el.getBoundingClientRect();
+      el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+      el.style.setProperty("--my", `${e.clientY - r.top}px`);
+    };
+    el.addEventListener("mousemove", onMove);
+    return () => el.removeEventListener("mousemove", onMove);
+  }, []);
 
   return (
     <section
+      className="hero"
       style={{
         position: "relative",
-        background: "var(--hero-gradient)",
-        padding: "140px 40px 160px",
+        padding: "72px 24px 96px",
         overflow: "hidden",
-        color: "var(--white-95)",
-        textAlign: "center",
       }}
     >
-      {/* Glow orbs */}
-      <div style={{ position: "absolute", width: 560, height: 560, borderRadius: "50%", background: "#cbb7fb", filter: "blur(140px)", opacity: 0.22, top: -140, right: -120, pointerEvents: "none" }} />
-      <div style={{ position: "absolute", width: 420, height: 420, borderRadius: "50%", background: "#714cb6", filter: "blur(160px)", opacity: 0.28, bottom: -160, left: -120, pointerEvents: "none" }} />
-      {/* Star field */}
+      {/* Ambient grid */}
       <div
+        className="bg-grid"
+        aria-hidden="true"
         style={{
           position: "absolute",
           inset: 0,
           pointerEvents: "none",
-          backgroundImage:
-            "radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.35), transparent)," +
-            "radial-gradient(1px 1px at 70% 50%, rgba(255,255,255,0.3), transparent)," +
-            "radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,0.25), transparent)," +
-            "radial-gradient(1px 1px at 85% 20%, rgba(203,183,251,0.5), transparent)," +
-            "radial-gradient(1px 1px at 15% 80%, rgba(203,183,251,0.45), transparent)",
+          backgroundImage: "linear-gradient(to right, rgba(41,40,39,0.055) 1px, transparent 1px), linear-gradient(to bottom, rgba(41,40,39,0.055) 1px, transparent 1px)",
+          backgroundSize: "64px 64px",
+          maskImage: "radial-gradient(ellipse 70% 60% at 50% 40%, #000 0%, transparent 75%)",
+          WebkitMaskImage: "radial-gradient(ellipse 70% 60% at 50% 40%, #000 0%, transparent 75%)",
         }}
       />
 
-      <div ref={heroRef} style={{ maxWidth: 1120, margin: "0 auto", position: "relative" }}>
-        {/* Badge */}
-        <div className="gsap-reveal" style={{ marginBottom: 32 }}>
+      {/* Floating orbs */}
+      <div aria-hidden="true" style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
+        <div
+          style={{
+            position: "absolute",
+            width: 540,
+            height: 540,
+            borderRadius: "50%",
+            background: "rgba(203,183,251,0.55)",
+            filter: "blur(80px)",
+            opacity: 0.35,
+            top: -120,
+            left: "45%",
+            animation: "floatXY 14s ease-in-out infinite",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            width: 380,
+            height: 380,
+            borderRadius: "50%",
+            background: "#b4d4ff",
+            filter: "blur(80px)",
+            opacity: 0.22,
+            bottom: -100,
+            left: -80,
+            animation: "floatY 9s ease-in-out infinite",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            width: 300,
+            height: 300,
+            borderRadius: "50%",
+            background: "rgba(255,183,112,0.35)",
+            filter: "blur(80px)",
+            opacity: 0.3,
+            top: 40,
+            right: -60,
+            animation: "floatXY 14s ease-in-out infinite",
+          }}
+        />
+      </div>
+
+      <div style={{ maxWidth: 1240, margin: "0 auto", position: "relative" }}>
+        {/* Eyebrow */}
+        <div style={{ textAlign: "left" }}>
           <span
             style={{
-              display: "inline-block",
-              padding: "6px 12px",
-              background: "rgba(203,183,251,0.15)",
-              color: "#cbb7fb",
-              border: "1px solid rgba(203,183,251,0.3)",
-              borderRadius: "var(--r-sm)",
-              fontSize: 12,
-              fontWeight: 700,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 10,
+              padding: "6px 12px 6px 8px",
+              border: "1px solid var(--parchment-border)",
+              borderRadius: 999,
+              background: "rgba(203,183,251,0.12)",
+              fontSize: 13,
+              fontWeight: 600,
+              color: "var(--fg-1)",
+              letterSpacing: "-0.1px",
             }}
           >
-            READINESS SCORECARD — NOW LIVE
+            <span
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: "var(--lavender-glow)",
+                boxShadow: "0 0 0 0 rgba(203,183,251,0.6)",
+                animation: "pulseRing 2s ease-out infinite",
+              }}
+            />
+            New — Readiness Scorecard v2 now live
           </span>
         </div>
 
-        {/* Headline */}
-        <h1
-          className="gsap-reveal"
-          style={{
-            fontSize: 70,
-            fontWeight: 540,
-            lineHeight: 0.96,
-            letterSpacing: "-2.4px",
-            margin: 0,
-            maxWidth: 940,
-            color: "var(--white-95)",
-            marginLeft: "auto",
-            marginRight: "auto",
-          }}
-        >
-          Know exactly where your
-          <br />
-          organisation stands on{" "}
-          <em style={{ fontStyle: "normal", color: "#cbb7fb", fontWeight: 540 }}>AI</em>.
-        </h1>
-
-        {/* Who it's for */}
-        <p
-          className="gsap-reveal"
-          style={{
-            fontSize: 11,
-            fontWeight: 700,
-            letterSpacing: "1px",
-            color: "rgba(255,255,255,0.55)",
-            marginTop: 24,
-          }}
-        >
-          FOR BUSINESS LEADERS · TRANSFORMATION LEADS · AI IMPLEMENTERS
-        </p>
-
-        {/* Subhead */}
-        <p
-          className="gsap-reveal"
-          style={{
-            fontSize: 20,
-            fontWeight: 460,
-            lineHeight: 1.5,
-            color: "rgba(255,255,255,0.8)",
-            marginTop: 28,
-            maxWidth: 620,
-            marginLeft: "auto",
-            marginRight: "auto",
-          }}
-        >
-          Replace vague "AI strategy" with a high-fidelity system — a readiness
-          diagnosis, capability map, and two-quarter blueprint your team can ship.
-        </p>
-
-        {/* CTAs */}
-        <div className="gsap-reveal" style={{ display: "flex", gap: 16, marginTop: 44, justifyContent: "center", flexWrap: "wrap" }}>
-          <Link
-            href="/app"
-            style={{
-              background: "var(--warm-cream)",
-              color: "var(--charcoal-ink)",
-              padding: "16px 24px",
-              borderRadius: "var(--r-sm)",
-              fontSize: 15,
-              fontWeight: 600,
-              textDecoration: "none",
-              transition: "background 150ms",
-            }}
-          >
-            See your AI readiness score →
-          </Link>
-          <Link
-            href="#how-it-works"
-            style={{
-              background: "transparent",
-              color: "var(--white-95)",
-              padding: "16px 24px",
-              borderRadius: "var(--r-sm)",
-              border: "1px solid rgba(255,255,255,0.2)",
-              fontSize: 15,
-              fontWeight: 600,
-              textDecoration: "none",
-              transition: "background 150ms",
-            }}
-          >
-            Explore the framework
-          </Link>
-        </div>
-
-        {/* Trial hint */}
-        <p className="gsap-reveal" style={{ marginTop: 16, fontSize: 12, color: "rgba(255,255,255,0.5)" }}>
-          Free forever tier · <strong style={{ color: "rgba(255,255,255,0.75)" }}>7-day Pro trial</strong> included · No credit card to start
-        </p>
-
-        {/* Social proof — adjacent to CTAs */}
-        <figure className="gsap-reveal" style={{ marginTop: 56, maxWidth: 560, marginLeft: "auto", marginRight: "auto" }}>
-          <blockquote style={{ fontSize: 17, fontWeight: 460, lineHeight: 1.5, color: "rgba(255,255,255,0.8)", fontStyle: "italic", margin: 0 }}>
-            "The framework gave our leadership team a shared language for something we'd been struggling to align on for 18 months."
-          </blockquote>
-          <figcaption style={{ marginTop: 12, fontSize: 13, fontWeight: 540, color: "rgba(255,255,255,0.55)" }}>
-            — Head of Digital Transformation, UK Retail
-          </figcaption>
-        </figure>
-
-        {/* AI trust signals */}
+        {/* Two-column grid */}
         <div
-          className="gsap-reveal"
           style={{
-            marginTop: 48,
-            maxWidth: 640,
-            marginLeft: "auto",
-            marginRight: "auto",
-            borderRadius: "var(--r-lg)",
-            padding: 24,
-            background: "rgba(203,183,251,0.08)",
-            border: "1px solid rgba(203,183,251,0.2)",
-            textAlign: "left",
+            display: "grid",
+            gridTemplateColumns: "1.15fr 1fr",
+            gap: 64,
+            alignItems: "center",
+            marginTop: 40,
           }}
+          className="hero-grid"
         >
-          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "1px", color: "#cbb7fb", marginBottom: 14 }}>
-            HOW THIS PLATFORM USES AI
-          </p>
-          <ul style={{ display: "grid", gap: 10, gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", margin: 0, padding: 0, listStyle: "none" }}>
-            {[
-              "AI helps interpret your responses and benchmark your score",
-              "You review and control all recommendations before acting",
-              "No data is used to train third-party AI models",
-              "Your results are yours — export or delete at any time",
-            ].map((item) => (
-              <li key={item} style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 13, fontWeight: 460, color: "rgba(255,255,255,0.75)" }}>
-                <Check style={{ marginTop: 2, width: 14, height: 14, flexShrink: 0, color: "#cbb7fb" }} strokeWidth={2.5} />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+          {/* Left — copy */}
+          <div>
+            <h1
+              style={{
+                fontSize: "clamp(48px, 6.6vw, 84px)",
+                fontWeight: 540,
+                lineHeight: 0.96,
+                letterSpacing: "-2.2px",
+                color: "var(--fg-1)",
+                margin: 0,
+                maxWidth: 720,
+              }}
+            >
+              Know where your organisation stands on{" "}
+              <em
+                style={{
+                  fontStyle: "normal",
+                  background: "linear-gradient(90deg, var(--amethyst-link), var(--lavender-glow), var(--amethyst-link))",
+                  backgroundSize: "200% auto",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  color: "transparent",
+                  animation: "shimmer 6s linear infinite",
+                }}
+              >
+                AI readiness
+              </em>
+              .
+            </h1>
+            <p
+              style={{
+                fontSize: 19,
+                lineHeight: 1.55,
+                color: "var(--fg-2)",
+                maxWidth: 560,
+                margin: "24px 0 32px",
+                fontWeight: 460,
+              }}
+            >
+              Replace vague "AI strategy" with a high-fidelity system — a readiness
+              diagnosis, capability map, and 12-month blueprint your team can ship.
+            </p>
 
-        {/* Trust bar */}
-        <div className="gsap-reveal" style={{ marginTop: 48, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 32, fontSize: 12, fontWeight: 460, color: "rgba(255,255,255,0.5)" }}>
-          <span>✓ Built on Cisco data from 8,000+ organisations</span>
-          <span>✓ Results in 8 minutes</span>
-          <span>✓ WCAG 2.1 AA accessible</span>
+            {/* CTAs */}
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
+              <Link
+                ref={btnRef}
+                href="/app"
+                className="btn btn-primary"
+                style={{
+                  position: "relative",
+                  overflow: "hidden",
+                  padding: "14px 22px",
+                  fontSize: 15,
+                  textDecoration: "none",
+                  borderRadius: "var(--r-sm)",
+                  background: "var(--charcoal-ink)",
+                  color: "#fff",
+                  boxShadow: "0 1px 0 rgba(255,255,255,0.15) inset, 0 6px 20px rgba(41,40,39,0.18)",
+                }}
+              >
+                <span style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: 8 }}>
+                  Start your readiness scorecard
+                  <ArrowRight size={15} />
+                </span>
+              </Link>
+              <Link
+                href="#how-it-works"
+                className="btn btn-secondary"
+                style={{
+                  padding: "14px 22px",
+                  fontSize: 15,
+                  textDecoration: "none",
+                  borderRadius: "var(--r-sm)",
+                  background: "transparent",
+                  color: "var(--fg-1)",
+                  border: "1px solid var(--border-2)",
+                }}
+              >
+                See the framework
+              </Link>
+            </div>
+
+            {/* Trust signals below CTA */}
+            <div style={{ marginTop: 20, display: "flex", gap: 20, flexWrap: "wrap", fontSize: 12, color: "var(--fg-3)" }}>
+              <span>✓ No credit card</span>
+              <span>✓ Results in 8 minutes</span>
+              <span>✓ 7-day Pro trial</span>
+            </div>
+
+            {/* Stat minis */}
+            <div style={{ marginTop: 48, display: "flex", gap: 32, flexWrap: "wrap" }}>
+              <StatMini value={13} suffix="%" label="qualify as AI Pacesetters" />
+              <StatMini value={8} suffix=" min" label="to full readiness score" />
+              <StatMini value={8} suffix="" label="dimensions assessed" />
+            </div>
+          </div>
+
+          {/* Right — scorecard frame */}
+          <div>
+            <HeroMeter />
+          </div>
         </div>
       </div>
+
+      {/* CSS animations & responsive */}
+      <style jsx global>{`
+        @keyframes floatY {
+          0%, 100% { transform: translate3d(0, 0, 0); }
+          50% { transform: translate3d(0, -32px, 0); }
+        }
+        @keyframes floatXY {
+          0% { transform: translate3d(0, 0, 0); }
+          33% { transform: translate3d(24px, -20px, 0); }
+          66% { transform: translate3d(-16px, -40px, 0); }
+          100% { transform: translate3d(0, 0, 0); }
+        }
+        @keyframes pulseRing {
+          0% { box-shadow: 0 0 0 0 rgba(203,183,251,0.6); }
+          100% { box-shadow: 0 0 0 12px rgba(203,183,251,0); }
+        }
+        @keyframes fillBar {
+          from { transform: scaleX(0); }
+          to { transform: scaleX(1); }
+        }
+        @keyframes shimmer {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+        @media (max-width: 980px) {
+          .hero-grid { grid-template-columns: 1fr !important; gap: 48px !important; }
+        }
+      `}</style>
     </section>
   );
 }

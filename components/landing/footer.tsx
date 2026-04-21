@@ -1,99 +1,177 @@
+"use client";
+
 import Link from "next/link";
 
 export function Footer() {
-  const cols = [
-    {
-      h: "Product",
-      items: [
-        { label: "Readiness Scorecard", href: "/app" },
-        { label: "Tier benchmarks", href: "/#tiers" },
-        { label: "Pricing", href: "/pricing" },
-        { label: "About the framework", href: "/about" },
-      ],
-    },
-    {
-      h: "Company",
-      items: [
-        { label: "About", href: "/about" },
-        { label: "Contact", href: "mailto:hello@digitalreadiness.ai" },
-        { label: "Account", href: "/account" },
-      ],
-    },
-    {
-      h: "Legal",
-      items: [
-        { label: "Privacy", href: "/privacy" },
-        { label: "Terms", href: "/terms" },
-      ],
-    },
-  ];
-
   return (
-    <footer style={{ background: "var(--bg-subtle)", padding: "80px 40px 40px" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+    <footer
+      style={{
+        position: "relative",
+        padding: "80px 24px 48px",
+        background: "var(--charcoal-ink)",
+        color: "rgba(255,255,255,0.86)",
+        overflow: "hidden",
+      }}
+    >
+      {/* Accent gradient line at top */}
+      <div
+        style={{
+          position: "absolute",
+          top: -1,
+          left: 0,
+          right: 0,
+          height: 1,
+          background: "linear-gradient(90deg, transparent, var(--lavender-glow), transparent)",
+        }}
+      />
+
+      <div style={{ maxWidth: 1240, margin: "0 auto", position: "relative" }}>
+        {/* Top grid */}
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "1.4fr 2fr",
-            gap: 80,
-            paddingBottom: 60,
-            borderBottom: "1px solid var(--parchment-border)",
+            gridTemplateColumns: "2fr 1fr 1fr 1fr",
+            gap: 40,
+            paddingBottom: 48,
+            borderBottom: "1px solid rgba(255,255,255,0.1)",
           }}
+          className="footer-grid"
         >
           {/* Brand column */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 20, maxWidth: 340 }}>
-            <Link href="/" style={{ display: "flex", alignItems: "center", textDecoration: "none" }}>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 40" fill="none" style={{ height: 24 }}>
-                <g>
-                  <path d="M6 8 L6 32 L14 32" stroke="#292827" strokeWidth="2" strokeLinecap="square" fill="none" />
-                  <path d="M34 8 L34 32 L26 32" stroke="#292827" strokeWidth="2" strokeLinecap="square" fill="none" />
-                  <circle cx="20" cy="20" r="5" fill="#cbb7fb" />
-                  <circle cx="20" cy="20" r="2" fill="#1b1938" />
-                </g>
-                <text x="52" y="26" fontFamily="Inter, system-ui, sans-serif" fontWeight="540" fontSize="18" letterSpacing="-0.4" fill="#292827">Digital Readiness</text>
-                <text x="228" y="26" fontFamily="Inter, system-ui, sans-serif" fontWeight="700" fontSize="18" letterSpacing="-0.2" fill="#714cb6">AI</text>
-              </svg>
-            </Link>
-            <p style={{ fontSize: 14, fontWeight: 460, lineHeight: 1.5, color: "var(--fg-2)", margin: 0 }}>
+          <div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                color: "#fff",
+                fontWeight: 540,
+                fontSize: 17,
+                letterSpacing: "-0.3px",
+              }}
+            >
+              <span
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: 7,
+                  background: "rgba(255,255,255,0.08)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  position: "relative",
+                  overflow: "hidden",
+                }}
+              >
+                <span
+                  style={{
+                    position: "absolute",
+                    inset: 4,
+                    borderRadius: 4,
+                    background: "conic-gradient(from 0deg, var(--lavender-glow), #fff, var(--lavender-glow))",
+                    animation: "spinSlow 8s linear infinite",
+                    opacity: 0.9,
+                  }}
+                />
+              </span>
+              Digital Readiness AI
+            </div>
+            <p
+              style={{
+                fontSize: 15,
+                lineHeight: 1.55,
+                color: "rgba(255,255,255,0.65)",
+                maxWidth: 320,
+                marginTop: 16,
+              }}
+            >
               The implementation-first platform for organisations moving from AI
               curiosity to operational conviction.
             </p>
-            <span style={{ fontSize: 12, fontWeight: 700, color: "var(--fg-3)" }}>hello@digitalreadiness.ai</span>
           </div>
 
-          {/* Link columns */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 40 }}>
-            {cols.map((c) => (
-              <div key={c.h}>
-                <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.5px", marginBottom: 16, color: "var(--charcoal-ink)" }}>{c.h}</div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                  {c.items.map((item) => (
-                    <Link
-                      key={item.label}
-                      href={item.href}
-                      style={{ fontSize: 14, fontWeight: 460, color: "var(--fg-2)", textDecoration: "none" }}
-                      className="hover:text-[var(--amethyst-link)]"
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ))}
+          {/* Product */}
+          <div>
+            <h5 style={colHeadStyle}>Product</h5>
+            <ul style={colListStyle}>
+              <li><Link href="/app" style={linkStyle}>Readiness Scorecard</Link></li>
+              <li><Link href="/#framework" style={linkStyle}>Framework</Link></li>
+              <li><Link href="/#how-it-works" style={linkStyle}>How it works</Link></li>
+              <li><Link href="/pricing" style={linkStyle}>Pricing</Link></li>
+            </ul>
+          </div>
+
+          {/* Company */}
+          <div>
+            <h5 style={colHeadStyle}>Company</h5>
+            <ul style={colListStyle}>
+              <li><Link href="/about" style={linkStyle}>About</Link></li>
+              <li><Link href="/account" style={linkStyle}>Account</Link></li>
+              <li><a href="mailto:hello@digitalreadiness.ai" style={linkStyle}>Contact</a></li>
+            </ul>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h5 style={colHeadStyle}>Legal</h5>
+            <ul style={colListStyle}>
+              <li><Link href="/privacy" style={linkStyle}>Privacy</Link></li>
+              <li><Link href="/terms" style={linkStyle}>Terms</Link></li>
+            </ul>
           </div>
         </div>
 
         {/* Bottom */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 28 }}>
-          <div style={{ fontSize: 13, fontWeight: 460, color: "var(--fg-3)" }}>
-            © {new Date().getFullYear()} Digital Readiness AI — Built for operators.
-          </div>
+        <div
+          style={{
+            paddingTop: 28,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            fontSize: 13,
+            color: "rgba(255,255,255,0.5)",
+            gap: 16,
+            flexWrap: "wrap",
+          }}
+        >
+          <div>© {new Date().getFullYear()} Digital Readiness AI — days, not weeks.</div>
           <div style={{ display: "flex", gap: 24 }}>
-            <Link href="/privacy" style={{ fontSize: 13, color: "var(--fg-3)", textDecoration: "none" }}>Privacy</Link>
-            <Link href="/terms" style={{ fontSize: 13, color: "var(--fg-3)", textDecoration: "none" }}>Terms</Link>
+            <Link href="/terms" style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}>Terms</Link>
+            <Link href="/privacy" style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}>Privacy</Link>
           </div>
         </div>
       </div>
+
+      <style jsx global>{`
+        @media (max-width: 800px) {
+          .footer-grid { grid-template-columns: 1fr 1fr !important; }
+        }
+      `}</style>
     </footer>
   );
 }
+
+const colHeadStyle: React.CSSProperties = {
+  fontSize: 13,
+  fontWeight: 700,
+  textTransform: "uppercase",
+  letterSpacing: "0.5px",
+  color: "rgba(255,255,255,0.5)",
+  marginBottom: 16,
+};
+
+const colListStyle: React.CSSProperties = {
+  listStyle: "none",
+  padding: 0,
+  margin: 0,
+  display: "flex",
+  flexDirection: "column",
+  gap: 10,
+};
+
+const linkStyle: React.CSSProperties = {
+  color: "rgba(255,255,255,0.8)",
+  textDecoration: "none",
+  fontSize: 14.5,
+  transition: "color 150ms ease",
+};
