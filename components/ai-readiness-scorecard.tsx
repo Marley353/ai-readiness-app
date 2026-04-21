@@ -1570,7 +1570,7 @@ export default function AIReadinessScorecardApp() {
       {/* WELCOME OVERLAY */}
       {showWelcome && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in" style={{ background: "rgba(0, 0, 0, 0.75)", backdropFilter: "blur(12px)" }}>
-          <div className="relative max-w-2xl w-full rounded-3xl overflow-hidden animate-scale-in shadow-2xl" style={{ background: "#1b1938", border: "1px solid rgba(255,255,255,0.08)" }}>
+          <div className="relative max-w-2xl w-full rounded-3xl overflow-hidden animate-scale-in shadow-2xl" style={{ background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.08)" }}>
             <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full opacity-50 blur-[100px] pointer-events-none" style={{ background: "radial-gradient(circle, #cbb7fb, transparent 60%)" }}></div>
             <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full opacity-45 blur-[100px] pointer-events-none" style={{ background: "radial-gradient(circle, #714cb6, transparent 60%)" }}></div>
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full opacity-25 blur-[100px] pointer-events-none" style={{ background: "radial-gradient(circle, #cbb7fb, transparent 60%)" }}></div>
@@ -1622,7 +1622,7 @@ export default function AIReadinessScorecardApp() {
       )}
 
       {/* HERO HEADER */}
-      <div className="aurora-bg" style={{ background: "radial-gradient(ellipse 120% 80% at 50% 30%, #3b2d66 0%, #2a1f4a 35%, #1b1938 70%, #0f0d20 100%)" }}>
+      <div className="aurora-bg" style={{ background: "radial-gradient(ellipse at 20% 0%, rgba(203,183,251,0.28) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(113,76,182,0.28) 0%, transparent 50%), radial-gradient(ellipse at 50% 50%, rgba(203,183,251,0.18) 0%, transparent 60%), #0a0a0a" }}>
         {/* Top account bar */}
         <div className="relative z-10 mx-auto max-w-7xl px-4 pt-4 md:px-8">
           <div className="flex items-center justify-end gap-2">
@@ -1769,7 +1769,7 @@ export default function AIReadinessScorecardApp() {
             <div className="rounded-2xl bg-white shadow-sm overflow-hidden hover-lift" style={{ border: "1px solid #e2e8f0" }}>
               <div className="px-4 py-3" style={{ borderBottom: "1px solid #f1f5f9" }}>
                 <p className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4 text-indigo-600" />
+                  <CheckCircle2 className="h-4 w-4" style={{ color: "#714cb6" }} />
                   Active Assessment
                 </p>
               </div>
@@ -1806,7 +1806,7 @@ export default function AIReadinessScorecardApp() {
                   { value: "compare", label: "Compare", icon: <Building2 className="h-3.5 w-3.5" /> },
                   { value: "recommendations", label: "Actions", icon: <Sparkles className="h-3.5 w-3.5" /> },
                 ].map((t) => (
-                  <TabsTrigger key={t.value} value={t.value} className="flex items-center justify-center gap-1.5 rounded-md text-xs font-semibold py-2.5 transition text-[#55534f] hover:text-[#292827] data-[state=active]:text-[#292827] data-[state=active]:bg-[#e9e5dd] data-[state=active]:shadow-none" style={{ ["--tw-ring-color" as string]: "transparent" }}>
+                  <TabsTrigger key={t.value} value={t.value} className="flex items-center justify-center gap-1.5 rounded-full text-xs font-semibold py-2.5 transition text-white/60 hover:text-white/90 data-[state=active]:text-black data-[state=active]:bg-white data-[state=active]:shadow-[0_0_16px_rgba(255,255,255,0.25)]" style={{ ["--tw-ring-color" as string]: "transparent" }}>
                     {t.icon}
                     <span className="hidden sm:inline">{t.label}</span>
                   </TabsTrigger>
@@ -1973,7 +1973,7 @@ export default function AIReadinessScorecardApp() {
                           ) : (
                             <a
                               href="/pricing"
-                              className="block mt-1.5 text-[10px] text-slate-400 hover:text-indigo-600 transition"
+                              className="block mt-1.5 text-[10px] text-slate-400 hover:text-[#714cb6] transition"
                             >
                               <Sparkles className="inline h-3 w-3 mr-1" /> Upgrade for {sectorInfo?.label} benchmark
                             </a>
@@ -2444,7 +2444,7 @@ export default function AIReadinessScorecardApp() {
 
               {/* Sticky bottom tab bar — so users don't scroll back to the top */}
               <div className="sticky bottom-4 z-40 mt-8 mx-auto w-full max-w-2xl animate-fade-in">
-                <TabsList className="grid w-full grid-cols-6 rounded-lg p-1 h-auto shadow-[0_12px_40px_rgba(0,0,0,0.15)]" style={{ background: "rgba(255,255,255,0.95)", border: "1px solid #dcd7d3", backdropFilter: "blur(14px)" }}>
+                <TabsList className="grid w-full grid-cols-6 rounded-full p-1 h-auto shadow-[0_12px_40px_rgba(0,0,0,0.35)]" style={{ background: "rgba(10,10,10,0.92)", border: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(14px)" }}>
                   {[
                     { value: "assess", label: "Assess", icon: <Target className="h-3.5 w-3.5" /> },
                     { value: "results", label: "Results", icon: <Activity className="h-3.5 w-3.5" /> },
@@ -2453,7 +2453,7 @@ export default function AIReadinessScorecardApp() {
                     { value: "compare", label: "Compare", icon: <Building2 className="h-3.5 w-3.5" /> },
                     { value: "recommendations", label: "Actions", icon: <Sparkles className="h-3.5 w-3.5" /> },
                   ].map((t) => (
-                    <TabsTrigger key={t.value} value={t.value} className="flex items-center justify-center gap-1.5 rounded-md text-xs font-semibold py-2.5 transition text-[#55534f] hover:text-[#292827] data-[state=active]:text-[#292827] data-[state=active]:bg-[#e9e5dd] data-[state=active]:shadow-none" style={{ ["--tw-ring-color" as string]: "transparent" }}>
+                    <TabsTrigger key={t.value} value={t.value} className="flex items-center justify-center gap-1.5 rounded-full text-xs font-semibold py-2.5 transition text-white/60 hover:text-white/90 data-[state=active]:text-black data-[state=active]:bg-white data-[state=active]:shadow-[0_0_16px_rgba(255,255,255,0.25)]" style={{ ["--tw-ring-color" as string]: "transparent" }}>
                       {t.icon}
                       <span className="hidden sm:inline">{t.label}</span>
                     </TabsTrigger>
