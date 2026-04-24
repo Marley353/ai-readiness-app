@@ -37,7 +37,7 @@ export function DimensionsGrid() {
             AI readiness isn't a feeling —{" "}
             <em style={{ fontStyle: "italic" }}>it's measurable</em>
           </h2>
-          <p style={{ fontSize: 19, fontWeight: 460, lineHeight: 1.55, color: "rgba(255,255,255,0.55)", maxWidth: 680, margin: "20px auto 0" }}>
+          <p style={{ fontSize: 19, fontWeight: 460, lineHeight: 1.55, color: "rgba(255,255,255,0.75)", maxWidth: 680, margin: "20px auto 0" }}>
             We assess your organisation across eight operational dimensions that determine whether AI delivers real value — or fails to scale.
           </p>
         </div>
@@ -49,21 +49,21 @@ export function DimensionsGrid() {
               key={num}
               className="dim-card"
               style={{
-                background: "rgba(255,255,255,0.03)",
-                border: "1px solid rgba(255,255,255,0.08)",
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.12)",
                 borderRadius: 16,
                 padding: 24,
                 transition: "transform 260ms ease, border-color 260ms ease",
                 cursor: "default",
               }}
             >
-              <p style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.3)", letterSpacing: "0.6px", marginBottom: 8 }}>
+              <p style={{ fontSize: 11, fontWeight: 700, color: "var(--lavender-glow)", letterSpacing: "0.6px", marginBottom: 8 }}>
                 {num}
               </p>
               <h3 style={{ fontSize: 20, fontWeight: 540, color: "#fff", margin: "0 0 10px", letterSpacing: "-0.3px" }}>
                 {title}
               </h3>
-              <p style={{ fontSize: 14.5, color: "rgba(255,255,255,0.55)", lineHeight: 1.55, margin: "0 0 16px" }}>
+              <p style={{ fontSize: 14.5, color: "rgba(255,255,255,0.75)", lineHeight: 1.55, margin: "0 0 16px" }}>
                 {desc}
               </p>
               <div className="dim-bar" style={{ height: 3, width: 40, background: "var(--lavender-glow)", borderRadius: 2, transition: "width 300ms ease" }} />
