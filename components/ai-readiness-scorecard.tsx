@@ -15,6 +15,7 @@ import { Download, Mail, Plus, Printer, Trash2, Copy, Sparkles, AlertTriangle, T
 import { AuthHeader } from "@/components/auth-header";
 import { ProGate } from "@/components/pro-gate";
 import { getExternalMaturityLabel } from "@/lib/maturity-labels";
+import { getIndustryInsight } from "@/lib/industry-insights";
 import { useCanUse } from "@/lib/use-plan";
 import jsPDF from "jspdf";
 
@@ -1526,6 +1527,7 @@ export default function AIReadinessScorecardApp() {
 
   if (!mounted || !active) return null;
 
+  const userIndustry = typeof window !== "undefined" ? localStorage.getItem("ai_industry") || "General" : "General";
   const overall = getWeightedOverallScore(active);
   const band = getBand(overall);
   const risk = getRiskScore(active);
@@ -2171,6 +2173,15 @@ export default function AIReadinessScorecardApp() {
                       ))}
                     </div>
                   </div>
+                </div>
+
+                {/* ── INDUSTRY INSIGHT CARD ── */}
+                <div className="rounded-2xl p-6" style={{ background: "#ffffff", border: "1px solid #e2e8f0" }}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-1.5 h-1.5 rounded-full" style={{ background: "#c4661a" }} />
+                    <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Industry Insight — {userIndustry}</p>
+                  </div>
+                  <p className="text-sm text-slate-700 leading-relaxed">{getIndustryInsight(userIndustry)}</p>
                 </div>
 
                 {/* ── PRO UPSELL CARD ── */}

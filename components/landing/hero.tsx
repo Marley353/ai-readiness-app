@@ -1,8 +1,35 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 
+const INDUSTRIES = ["General", "Retail", "Facilities Management", "Finance", "Public Sector"];
+
+function getIndustryHook(industry: string): string {
+  switch (industry) {
+    case "Retail":
+      return "Understand how AI can reduce shrink, optimise staffing, and improve store operations.";
+    case "Facilities Management":
+      return "Identify how AI can optimise site inspections, incident response, and risk visibility.";
+    case "Finance":
+      return "Strengthen compliance, risk modelling, and operational efficiency with AI.";
+    case "Public Sector":
+      return "Improve service delivery, governance, and operational transparency using AI.";
+    default:
+      return "Identify where AI will deliver measurable operational and financial impact.";
+  }
+}
+
 export function Hero() {
+  const [industry, setIndustry] = useState("General");
+
+  const handleStart = () => {
+    if (industry !== "General") {
+      localStorage.setItem("ai_industry", industry);
+    }
+    window.location.href = "/app";
+  };
+
   return (
     <section
       id="hero"
@@ -28,7 +55,7 @@ export function Hero() {
         }}
       />
 
-      {/* Dark gradient overlay — strong on left for text, fades toward right to reveal dashboard */}
+      {/* Dark gradient overlay */}
       <div
         className="hero-overlay"
         style={{
@@ -39,7 +66,7 @@ export function Hero() {
         }}
       />
 
-      {/* Bottom fade to blend into next section */}
+      {/* Bottom fade */}
       <div
         style={{
           position: "absolute",
@@ -51,7 +78,7 @@ export function Hero() {
         }}
       />
 
-      {/* Content — left half only */}
+      {/* Content */}
       <div
         className="hero-content"
         style={{
@@ -63,12 +90,10 @@ export function Hero() {
           padding: "0 32px",
         }}
       >
-        {/* Brand Tagline */}
         <p className="text-sm uppercase tracking-widest" style={{ color: "#a3a3a3", marginBottom: 16 }}>
           AI Readiness Assessment — Never Trust. Always Verify.
         </p>
 
-        {/* Headline */}
         <h1
           className="hero-headline"
           style={{
@@ -83,32 +108,55 @@ export function Hero() {
           <span style={{ color: "#ffb770" }}>AI readiness</span> in minutes
         </h1>
 
-        {/* Subheading */}
+        {/* Dynamic subheading */}
         <p
           className="hero-sub"
           style={{
             fontSize: "clamp(16px, 1.8vw, 19px)",
             color: "#d4d4d4",
-            marginBottom: 36,
+            marginBottom: 24,
             lineHeight: 1.65,
           }}
         >
           Benchmark your business across 8 critical dimensions and identify
           <br className="hide-mobile" />
-          where AI will deliver measurable operational and financial impact.
+          {getIndustryHook(industry)}
         </p>
+
+        {/* Industry selector */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 28 }} className="hero-industry">
+          {INDUSTRIES.map((item) => (
+            <button
+              key={item}
+              onClick={() => setIndustry(item)}
+              style={{
+                padding: "7px 16px",
+                borderRadius: 999,
+                fontSize: 13,
+                fontWeight: industry === item ? 600 : 460,
+                background: industry === item ? "var(--lavender-glow)" : "transparent",
+                color: industry === item ? "#080D1A" : "rgba(255,255,255,0.5)",
+                border: `1px solid ${industry === item ? "var(--lavender-glow)" : "rgba(255,255,255,0.15)"}`,
+                cursor: "pointer",
+                transition: "all 200ms ease",
+              }}
+            >
+              {item}
+            </button>
+          ))}
+        </div>
 
         {/* CTA Buttons */}
         <div className="hero-ctas" style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 20 }}>
           <button
-            onClick={() => window.location.href = "/app"}
+            onClick={handleStart}
             className="px-8 py-4 bg-white text-black font-semibold rounded-xl hover:opacity-90 hover:scale-105 transition-all duration-200"
             style={{ border: "none", cursor: "pointer", fontSize: 15 }}
           >
             Start Free Assessment
           </button>
           <Link
-            href="#scorecard"
+            href="#scorecard-preview"
             style={{
               display: "inline-block",
               padding: "15px 32px",
@@ -127,12 +175,10 @@ export function Hero() {
           </Link>
         </div>
 
-        {/* Micro Trust Line */}
         <p style={{ fontSize: 13, color: "#a3a3a3", marginBottom: 28 }}>
           Takes 6–8 minutes • No technical knowledge required
         </p>
 
-        {/* Stat Strip */}
         <div style={{ fontSize: 14, color: "#d4d4d4" }}>
           <span style={{ fontWeight: 600, color: "#fff" }}>Only 13%</span> of organisations are fully AI-ready
         </div>
@@ -150,6 +196,9 @@ export function Hero() {
         }
         .hero-ctas {
           max-width: 420px;
+        }
+        .hero-industry {
+          max-width: 520px;
         }
         .hide-mobile {
           display: none;
@@ -173,11 +222,15 @@ export function Hero() {
           }
           .hero-sub,
           .hero-headline,
-          .hero-ctas {
+          .hero-ctas,
+          .hero-industry {
             max-width: 100% !important;
           }
           .hero-ctas {
             align-items: center;
+          }
+          .hero-industry {
+            justify-content: center;
           }
           .hero-overlay {
             background: rgba(0,0,0,0.82) !important;
