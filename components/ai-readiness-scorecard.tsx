@@ -1450,21 +1450,8 @@ export default function AIReadinessScorecardApp() {
   const [activeId, setActiveId] = useState<string>("");
   const [tab, setTab] = useState("assess");
   const [mounted, setMounted] = useState(false);
-  const [showWelcome, setShowWelcome] = useState(false);
+  const [showWelcome] = useState(false);
 
-  useEffect(() => {
-    if (mounted && typeof window !== "undefined") {
-      const seenWelcome = localStorage.getItem("ai-readiness-welcome-seen-v1");
-      if (!seenWelcome) setShowWelcome(true);
-    }
-  }, [mounted]);
-
-  const dismissWelcome = () => {
-    setShowWelcome(false);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("ai-readiness-welcome-seen-v1", "true");
-    }
-  };
 
   useEffect(() => {
     setMounted(true);
@@ -1568,60 +1555,6 @@ export default function AIReadinessScorecardApp() {
 
   return (
     <div className="min-h-screen" style={{ background: "#faf8f5" }}>
-      {/* WELCOME OVERLAY */}
-      {showWelcome && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in" style={{ background: "rgba(0, 0, 0, 0.75)", backdropFilter: "blur(12px)" }}>
-          <div className="relative max-w-2xl w-full rounded-3xl overflow-hidden animate-scale-in shadow-2xl" style={{ background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.08)" }}>
-            <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full opacity-50 blur-[100px] pointer-events-none" style={{ background: "radial-gradient(circle, #ffb770, transparent 60%)" }}></div>
-            <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full opacity-45 blur-[100px] pointer-events-none" style={{ background: "radial-gradient(circle, #c4661a, transparent 60%)" }}></div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full opacity-25 blur-[100px] pointer-events-none" style={{ background: "radial-gradient(circle, #ffb770, transparent 60%)" }}></div>
-            <div className="relative p-8 md:p-12">
-              <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold tracking-wide text-white/90 mb-5" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", backdropFilter: "blur(10px)" }}>
-                <Sparkles className="h-3 w-3" /> WELCOME
-              </div>
-              <h2 className="text-3xl md:text-5xl font-black text-white leading-[1.05] tracking-tight">
-                Assess your <span style={{ color: "#ffb770" }}>AI readiness</span> like a Fortune 500 leader.
-              </h2>
-              <p className="mt-5 text-white/70 text-base leading-relaxed">
-                A professional 8-dimension framework with weighted scoring, sector-specific benchmarks, and an actionable 12-month roadmap — all in one beautifully designed tool.
-              </p>
-              <div className="mt-7 grid gap-3 md:grid-cols-2">
-                {[
-                  { icon: <Target className="h-4 w-4" />, title: "8 Dimensions", desc: "Strategy, People, Process, Data, Tech, Ethics, Culture, Innovation" },
-                  { icon: <Activity className="h-4 w-4" />, title: "Industry Benchmarks", desc: "Compare against sector averages from real organisations" },
-                  { icon: <TrendingUp className="h-4 w-4" />, title: "Phased Roadmap", desc: "0–90 day foundations through 12-month enterprise scaling" },
-                  { icon: <FileText className="h-4 w-4" />, title: "Executive PDF", desc: "Beautifully designed, board-ready report in one click" },
-                ].map((item) => (
-                  <div key={item.title} className="rounded-xl p-3.5 flex items-start gap-3" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                    <div className="rounded-lg p-2 flex-shrink-0" style={{ background: "rgba(255,255,255,0.06)", color: "#fff" }}>{item.icon}</div>
-                    <div>
-                      <p className="text-sm font-bold text-white">{item.title}</p>
-                      <p className="text-xs text-white/60 mt-0.5 leading-relaxed">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-7 flex flex-col sm:flex-row gap-3">
-                <button
-                  onClick={dismissWelcome}
-                  className="group inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition hover:opacity-90"
-                  style={{ background: "#ffffff", color: "#0a0a0a" }}
-                >
-                  Start My Assessment <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                </button>
-                <button
-                  onClick={dismissWelcome}
-                  className="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-white/80 transition hover:bg-white/5 hover:text-white"
-                  style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.15)" }}
-                >
-                  Skip for now
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* HERO HEADER */}
       <div className="aurora-bg" style={{ background: "radial-gradient(ellipse at 20% 0%, rgba(255,183,112,0.28) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(196,102,26,0.28) 0%, transparent 50%), radial-gradient(ellipse at 50% 50%, rgba(255,183,112,0.18) 0%, transparent 60%), #0a0a0a" }}>
         {/* Top account bar */}
