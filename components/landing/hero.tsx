@@ -129,7 +129,7 @@ export function Hero() {
 
         {/* Micro Trust Line */}
         <p style={{ fontSize: 13, color: "#a3a3a3", marginBottom: 28 }}>
-          Takes 3–5 minutes • No technical knowledge required
+          Takes 6–8 minutes • No technical knowledge required
         </p>
 
         {/* Stat Strip */}

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useScrollReveal } from "@/lib/gsap-hooks";
 
 const ITEMS = [
-  { q: "How long does the assessment take?", a: "Most teams finish in 8-10 minutes. You score 32 factors across 8 dimensions on a simple 1-5 maturity scale — no essays, no homework, no data uploads." },
+  { q: "How long does the assessment take?", a: "Most teams finish in 6–8 minutes. You score 32 factors across 8 dimensions on a simple 1–5 maturity scale — no essays, no homework, no data uploads." },
   { q: "What is the framework based on?", a: "The 8-dimension framework synthesises research from the Cisco AI Readiness Index (8,000+ organisations surveyed), McKinsey's State of AI reporting, the Oxford Government AI Readiness Index and practitioner research across hundreds of organisations. Weights are calibrated against published AI maturity data, not invented." },
   { q: "Why does AI governance matter if we're only experimenting?", a: "Because \"experimenting\" is how most AI risk enters an organisation — uncontrolled tool adoption, unclear data boundaries, no audit trail. Governance at the experimentation stage is cheaper to retrofit than at production scale, and it's what distinguishes pacesetters from laggards." },
   { q: "What does \"responsible AI\" actually mean for us?", a: "Responsible AI is the combination of (a) clear accountability for AI-assisted decisions, (b) bias monitoring and fairness checks appropriate to your use case, (c) transparency with users about when AI is involved, and (d) regulatory alignment (UK AI White Paper, EU AI Act). The assessment scores your current state against each of these." },

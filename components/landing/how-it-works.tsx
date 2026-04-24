@@ -5,7 +5,7 @@ import { useScrollReveal } from "@/lib/gsap-hooks";
 const STEPS = [
   {
     stage: "Step 1",
-    title: "Take the 5-minute readiness scorecard",
+    title: "Take the 8-minute readiness scorecard",
     body: "Score your organisation across 8 dimensions on a simple 1-5 maturity scale. No sign-up wall, no data uploads. You walk away with a number on the board.",
   },
   {
@@ -62,7 +62,7 @@ export function HowItWorks() {
               margin: 0,
             }}
           >
-            From first click to board deck in under 10 minutes.
+            From first click to board deck in under 8 minutes.
           </h2>
           <p
             style={{
