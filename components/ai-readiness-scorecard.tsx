@@ -2032,52 +2032,52 @@ export default function AIReadinessScorecardApp() {
               {/* ─── RESULTS TAB ─── */}
               <TabsContent value="results" className="space-y-6">
                 {/* ── RESULTS HEADER ── */}
-                <div className="rounded-2xl p-8 text-center" style={{ background: "#050914", border: "1px solid #1E2D4A" }}>
-                  <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "#ffb770" }}>Assessment Complete</p>
-                  <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight mb-2">Your AI Readiness Score is ready</h2>
-                  <p className="text-sm text-slate-400 max-w-xl mx-auto leading-relaxed">Your score shows where your organisation is strong, where it is exposed, and which dimensions need priority action.</p>
+                <div className="rounded-2xl p-8 text-center" style={{ background: "#ffffff", border: "1px solid #e2e8f0" }}>
+                  <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "#c4661a" }}>Assessment Complete</p>
+                  <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight mb-2">Your AI Readiness Score is ready</h2>
+                  <p className="text-sm text-slate-500 max-w-xl mx-auto leading-relaxed">Your score shows where your organisation is strong, where it is exposed, and which dimensions need priority action.</p>
                 </div>
 
                 {/* ── OVERALL SCORE + DIMENSION BREAKDOWN ── */}
                 <div className="grid gap-6 lg:grid-cols-3">
                   {/* Overall Score Card */}
-                  <div className="rounded-2xl p-6" style={{ background: "#0F1629", border: "1px solid #1E2D4A" }}>
+                  <div className="rounded-2xl p-6" style={{ background: "#ffffff", border: "1px solid #e2e8f0" }}>
                     <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Overall Readiness</p>
                     <div className="flex items-end gap-2 mb-4">
-                      <span className="text-5xl font-black tracking-tight" style={{ color: "#ffb770" }}>{Math.round(overall)}</span>
-                      <span className="text-lg text-slate-500 mb-1">/100</span>
+                      <span className="text-5xl font-black tracking-tight" style={{ color: "#c4661a" }}>{Math.round(overall)}</span>
+                      <span className="text-lg text-slate-400 mb-1">/100</span>
                     </div>
-                    <div className="w-full h-2.5 rounded-full mb-6" style={{ background: "#1E2D4A" }}>
+                    <div className="w-full h-2.5 rounded-full mb-6" style={{ background: "#e2e8f0" }}>
                       <div className="h-full rounded-full transition-all duration-700" style={{ width: `${overall}%`, background: "linear-gradient(90deg, #c4661a, #ffb770)" }} />
                     </div>
-                    <div className="rounded-xl p-4" style={{ background: "rgba(255,183,112,0.08)", border: "1px solid rgba(255,183,112,0.2)" }}>
+                    <div className="rounded-xl p-4" style={{ background: "rgba(255,183,112,0.06)", border: "1px solid rgba(255,183,112,0.18)" }}>
                       <p className="text-xs text-slate-400 mb-1">Maturity band</p>
-                      <p className="text-xl font-black text-white">{band.label}</p>
-                      <p className="text-sm text-slate-400 mt-2 leading-relaxed">{band.advice}</p>
+                      <p className="text-xl font-black text-slate-900">{band.label}</p>
+                      <p className="text-sm text-slate-500 mt-2 leading-relaxed">{band.advice}</p>
                     </div>
                   </div>
 
                   {/* Dimension Breakdown Card */}
-                  <div className="lg:col-span-2 rounded-2xl p-6" style={{ background: "#0F1629", border: "1px solid #1E2D4A" }}>
+                  <div className="lg:col-span-2 rounded-2xl p-6" style={{ background: "#ffffff", border: "1px solid #e2e8f0" }}>
                     <div className="flex items-center justify-between mb-5">
                       <div>
                         <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-1">8-Dimension Breakdown</p>
-                        <h3 className="text-lg font-black text-white tracking-tight">Readiness Profile</h3>
+                        <h3 className="text-lg font-black text-slate-900 tracking-tight">Readiness Profile</h3>
                       </div>
                     </div>
                     <div className="space-y-4">
                       {pillarData.map((pillar, idx) => (
                         <div key={pillar.fullName}>
                           <div className="flex items-center justify-between mb-1.5">
-                            <span className="text-sm text-slate-300">{pillar.fullName}</span>
+                            <span className="text-sm text-slate-700">{pillar.fullName}</span>
                             <div className="flex items-center gap-3">
-                              <span className="text-xs text-slate-500 font-mono">{pillar.benchmark}% avg</span>
-                              <span className="text-sm font-bold" style={{ color: PILLAR_COLORS[idx]?.from || "#ffb770" }}>{Math.round(pillar.score)}%</span>
+                              <span className="text-xs text-slate-400 font-mono">{pillar.benchmark}% avg</span>
+                              <span className="text-sm font-bold" style={{ color: PILLAR_COLORS[idx]?.from || "#c4661a" }}>{Math.round(pillar.score)}%</span>
                             </div>
                           </div>
-                          <div className="relative w-full h-2 rounded-full" style={{ background: "#1E2D4A" }}>
+                          <div className="relative w-full h-2 rounded-full" style={{ background: "#e2e8f0" }}>
                             <div className="h-full rounded-full transition-all duration-700" style={{ width: `${pillar.score}%`, background: `linear-gradient(90deg, ${PILLAR_COLORS[idx]?.from || "#c4661a"}, ${PILLAR_COLORS[idx]?.to || "#ffb770"})` }} />
-                            <div className="absolute top-0 h-full w-0.5" style={{ left: `${pillar.benchmark}%`, background: "rgba(255,255,255,0.3)" }} title={`Industry avg: ${pillar.benchmark}%`} />
+                            <div className="absolute top-0 h-full w-0.5" style={{ left: `${pillar.benchmark}%`, background: "#94a3b8" }} title={`Industry avg: ${pillar.benchmark}%`} />
                           </div>
                         </div>
                       ))}
@@ -2087,45 +2087,45 @@ export default function AIReadinessScorecardApp() {
 
                 {/* ── CHARTS ── */}
                 <div className="grid gap-6 xl:grid-cols-2">
-                  <div className="rounded-2xl overflow-hidden" style={{ background: "#0F1629", border: "1px solid #1E2D4A" }}>
-                    <div className="px-6 py-4" style={{ borderBottom: "1px solid #1E2D4A" }}>
-                      <h3 className="font-bold text-white text-sm">Pillar Score Overview</h3>
-                      <p className="text-xs text-slate-500 mt-0.5">Weighted scores vs industry benchmarks</p>
+                  <div className="rounded-2xl overflow-hidden" style={{ background: "#ffffff", border: "1px solid #e2e8f0" }}>
+                    <div className="px-6 py-4" style={{ borderBottom: "1px solid #f1f5f9" }}>
+                      <h3 className="font-bold text-slate-900 text-sm">Pillar Score Overview</h3>
+                      <p className="text-xs text-slate-400 mt-0.5">Weighted scores vs industry benchmarks</p>
                     </div>
                     <div className="p-4 h-[320px]">
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={pillarData}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="#1E2D4A" />
+                          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                           <XAxis dataKey="fullName" tick={{ fontSize: 10, fill: "#64748b" }} interval={0} angle={-25} textAnchor="end" height={90} />
                           <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: "#64748b" }} />
-                          <Tooltip contentStyle={{ borderRadius: 12, background: "#0F1629", border: "1px solid #1E2D4A", color: "#fff" }} />
-                          <Legend wrapperStyle={{ fontSize: 11, paddingTop: 8, color: "#94a3b8" }} />
+                          <Tooltip contentStyle={{ borderRadius: 12, background: "#fff", border: "1px solid #e2e8f0", boxShadow: "0 10px 25px rgba(0,0,0,0.08)" }} />
+                          <Legend wrapperStyle={{ fontSize: 11, paddingTop: 8 }} />
                           <Bar dataKey="score" name="Your Score" radius={[6, 6, 0, 0]}>
                             {pillarData.map((_, index) => (
                               <Cell key={`cell-${index}`} fill={PILLAR_COLORS[index]?.from || "#c4661a"} />
                             ))}
                           </Bar>
-                          <Bar dataKey="benchmark" name="Industry Avg" radius={[6, 6, 0, 0]} fill="#334155" fillOpacity={0.6} />
+                          <Bar dataKey="benchmark" name="Industry Avg" radius={[6, 6, 0, 0]} fill="#cbd5e1" fillOpacity={0.6} />
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
                   </div>
 
-                  <div className="rounded-2xl overflow-hidden" style={{ background: "#0F1629", border: "1px solid #1E2D4A" }}>
-                    <div className="px-6 py-4" style={{ borderBottom: "1px solid #1E2D4A" }}>
-                      <h3 className="font-bold text-white text-sm">Readiness Shape</h3>
-                      <p className="text-xs text-slate-500 mt-0.5">Visual capability balance across all dimensions</p>
+                  <div className="rounded-2xl overflow-hidden" style={{ background: "#ffffff", border: "1px solid #e2e8f0" }}>
+                    <div className="px-6 py-4" style={{ borderBottom: "1px solid #f1f5f9" }}>
+                      <h3 className="font-bold text-slate-900 text-sm">Readiness Shape</h3>
+                      <p className="text-xs text-slate-400 mt-0.5">Visual capability balance across all dimensions</p>
                     </div>
                     <div className="p-4 h-[320px]">
                       <ResponsiveContainer width="100%" height="100%">
                         <RadarChart data={pillarData}>
-                          <PolarGrid stroke="#1E2D4A" />
-                          <PolarAngleAxis dataKey="fullName" tick={{ fontSize: 11, fill: "#94a3b8" }} />
-                          <PolarRadiusAxis domain={[0, 100]} tick={{ fontSize: 10, fill: "#475569" }} />
-                          <Radar name="Your Score" dataKey="score" fill="#ffb770" fillOpacity={0.2} stroke="#ffb770" strokeWidth={2.5} />
-                          <Radar name="Industry Avg" dataKey="benchmark" fill="#334155" fillOpacity={0.1} stroke="#475569" strokeWidth={1.5} strokeDasharray="4 4" />
-                          <Legend wrapperStyle={{ fontSize: 11, paddingTop: 8, color: "#94a3b8" }} />
-                          <Tooltip contentStyle={{ borderRadius: 12, background: "#0F1629", border: "1px solid #1E2D4A", color: "#fff" }} />
+                          <PolarGrid stroke="#e2e8f0" />
+                          <PolarAngleAxis dataKey="fullName" tick={{ fontSize: 11, fill: "#64748b" }} />
+                          <PolarRadiusAxis domain={[0, 100]} tick={{ fontSize: 10, fill: "#94a3b8" }} />
+                          <Radar name="Your Score" dataKey="score" fill="#c4661a" fillOpacity={0.2} stroke="#c4661a" strokeWidth={2.5} />
+                          <Radar name="Industry Avg" dataKey="benchmark" fill="#cbd5e1" fillOpacity={0.1} stroke="#94a3b8" strokeWidth={1.5} strokeDasharray="4 4" />
+                          <Legend wrapperStyle={{ fontSize: 11, paddingTop: 8 }} />
+                          <Tooltip contentStyle={{ borderRadius: 12, background: "#fff", border: "1px solid #e2e8f0" }} />
                         </RadarChart>
                       </ResponsiveContainer>
                     </div>
@@ -2134,24 +2134,24 @@ export default function AIReadinessScorecardApp() {
 
                 {/* ── INSIGHT CARDS: Interpretation ── */}
                 <div className="grid gap-4 md:grid-cols-3">
-                  <div className="rounded-2xl p-5" style={{ background: "#0F1629", border: "1px solid #1E2D4A" }}>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Strongest Dimension</p>
-                    <p className="text-lg font-black text-white tracking-tight">{[...pillarData].sort((a, b) => b.score - a.score)[0].fullName}</p>
-                    <p className="text-2xl font-black mt-1" style={{ color: "#ffb770" }}>{Math.round([...pillarData].sort((a, b) => b.score - a.score)[0].score)}%</p>
+                  <div className="rounded-2xl p-5" style={{ background: "#ffffff", border: "1px solid #e2e8f0" }}>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Strongest Dimension</p>
+                    <p className="text-lg font-black text-slate-900 tracking-tight">{[...pillarData].sort((a, b) => b.score - a.score)[0].fullName}</p>
+                    <p className="text-2xl font-black mt-1" style={{ color: "#22c55e" }}>{Math.round([...pillarData].sort((a, b) => b.score - a.score)[0].score)}%</p>
                   </div>
-                  <div className="rounded-2xl p-5" style={{ background: "#0F1629", border: "1px solid #1E2D4A" }}>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Priority Gap</p>
-                    <p className="text-lg font-black text-white tracking-tight">{lowestPillars[0].fullName}</p>
+                  <div className="rounded-2xl p-5" style={{ background: "#ffffff", border: "1px solid #e2e8f0" }}>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Priority Gap</p>
+                    <p className="text-lg font-black text-slate-900 tracking-tight">{lowestPillars[0].fullName}</p>
                     <p className="text-2xl font-black mt-1" style={{ color: "#c4661a" }}>{Math.round(lowestPillars[0].score)}%</p>
                   </div>
-                  <div className="rounded-2xl p-5" style={{ background: "#0F1629", border: "1px solid #1E2D4A" }}>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Risk Level</p>
-                    <p className="text-lg font-black text-white tracking-tight">{risk.level.charAt(0).toUpperCase() + risk.level.slice(1)} Risk</p>
+                  <div className="rounded-2xl p-5" style={{ background: "#ffffff", border: "1px solid #e2e8f0" }}>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Risk Level</p>
+                    <p className="text-lg font-black text-slate-900 tracking-tight">{risk.level.charAt(0).toUpperCase() + risk.level.slice(1)} Risk</p>
                     <p className="text-2xl font-black mt-1" style={{ color: risk.level === "high" ? "#ef4444" : risk.level === "medium" ? "#f59e0b" : "#22c55e" }}>{risk.score}/100</p>
                     {risk.factors.length > 0 && (
-                      <div className="mt-3 pt-3" style={{ borderTop: "1px solid #1E2D4A" }}>
+                      <div className="mt-3 pt-3" style={{ borderTop: "1px solid #f1f5f9" }}>
                         <p className="text-xs text-slate-500 mb-1">Critical factors:</p>
-                        {risk.factors.slice(0, 3).map((f, i) => <p key={i} className="text-xs text-slate-400">• {f}</p>)}
+                        {risk.factors.slice(0, 3).map((f, i) => <p key={i} className="text-xs text-slate-600">• {f}</p>)}
                       </div>
                     )}
                   </div>
@@ -2159,30 +2159,30 @@ export default function AIReadinessScorecardApp() {
 
                 {/* ── BUSINESS IMPACT + ROI ── */}
                 <div className="grid gap-4 md:grid-cols-2">
-                  <div className="rounded-2xl p-6" style={{ background: "#0F1629", border: "1px solid #1E2D4A" }}>
+                  <div className="rounded-2xl p-6" style={{ background: "#ffffff", border: "1px solid #e2e8f0" }}>
                     <div className="flex items-center gap-2 mb-4">
-                      <Building2 className="h-4 w-4 text-slate-400" strokeWidth={2} />
-                      <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Business Impact</p>
+                      <Building2 className="h-4 w-4 text-slate-500" strokeWidth={2} />
+                      <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Business Impact</p>
                     </div>
-                    <p className="text-xl font-black text-white tracking-tight mb-2">{impact.category}</p>
-                    <p className="text-sm text-slate-400 leading-relaxed">{impact.description}</p>
+                    <p className="text-xl font-black text-slate-900 tracking-tight mb-2">{impact.category}</p>
+                    <p className="text-sm text-slate-500 leading-relaxed">{impact.description}</p>
                   </div>
-                  <div className="rounded-2xl p-6" style={{ background: "#0F1629", border: "1px solid #1E2D4A" }}>
+                  <div className="rounded-2xl p-6" style={{ background: "#ffffff", border: "1px solid #e2e8f0" }}>
                     <div className="flex items-center gap-2 mb-4">
-                      <TrendingUp className="h-4 w-4 text-slate-400" strokeWidth={2} />
-                      <p className="text-xs font-bold uppercase tracking-widest text-slate-500">ROI Opportunity</p>
+                      <TrendingUp className="h-4 w-4 text-slate-500" strokeWidth={2} />
+                      <p className="text-xs font-bold uppercase tracking-widest text-slate-400">ROI Opportunity</p>
                     </div>
-                    <p className="text-3xl font-black tracking-tight mb-1" style={{ color: "#ffb770" }}>{roi.range}</p>
-                    <p className="text-xs text-slate-500 mb-4">Efficiency improvement potential • {roi.confidence} confidence</p>
+                    <p className="text-3xl font-black tracking-tight mb-1" style={{ color: "#c4661a" }}>{roi.range}</p>
+                    <p className="text-xs text-slate-400 mb-4">Efficiency improvement potential • {roi.confidence} confidence</p>
                     <div className="grid grid-cols-3 gap-2 text-center">
                       {[
                         { label: "Low", value: roi.scenarios.low },
                         { label: "Mid", value: roi.scenarios.mid },
                         { label: "High", value: roi.scenarios.high },
                       ].map((s) => (
-                        <div key={s.label} className="rounded-lg p-2" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid #1E2D4A" }}>
-                          <p className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">{s.label}</p>
-                          <p className="text-sm font-black text-white">{s.value}</p>
+                        <div key={s.label} className="rounded-lg p-2" style={{ background: "#f8fafc", border: "1px solid #e2e8f0" }}>
+                          <p className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">{s.label}</p>
+                          <p className="text-sm font-black text-slate-900">{s.value}</p>
                         </div>
                       ))}
                     </div>
@@ -2191,46 +2191,46 @@ export default function AIReadinessScorecardApp() {
 
                 {/* ── OPPORTUNITIES + RISKS ── */}
                 <div className="grid gap-4 md:grid-cols-2">
-                  <div className="rounded-2xl overflow-hidden" style={{ background: "#0F1629", border: "1px solid #1E2D4A" }}>
-                    <div className="px-5 py-4" style={{ borderBottom: "1px solid #1E2D4A" }}>
+                  <div className="rounded-2xl overflow-hidden" style={{ background: "#ffffff", border: "1px solid #e2e8f0" }}>
+                    <div className="px-5 py-4" style={{ borderBottom: "1px solid #f1f5f9" }}>
                       <div className="flex items-center gap-2">
-                        <Target className="h-4 w-4" style={{ color: "#22c55e" }} strokeWidth={2} />
-                        <h3 className="font-bold text-white text-sm">Top 3 AI Opportunities</h3>
+                        <Target className="h-4 w-4 text-emerald-600" strokeWidth={2} />
+                        <h3 className="font-bold text-slate-900 text-sm">Top 3 AI Opportunities</h3>
                       </div>
-                      <p className="text-xs text-slate-500 mt-0.5">Highest-impact for {sectorInfo?.label}</p>
+                      <p className="text-xs text-slate-400 mt-0.5">Highest-impact for {sectorInfo?.label}</p>
                     </div>
                     <div className="p-4 space-y-2.5">
                       {topOpportunities.map((opp, idx) => (
-                        <div key={idx} className="rounded-xl p-4" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                        <div key={idx} className="rounded-xl p-4" style={{ background: "#f8fafc", border: "1px solid #f1f5f9" }}>
                           <div className="flex items-start justify-between gap-2">
                             <div>
-                              <p className="font-bold text-white text-sm">{opp.title}</p>
-                              <p className="text-xs text-slate-400 mt-1 leading-relaxed">{opp.description}</p>
+                              <p className="font-bold text-slate-900 text-sm">{opp.title}</p>
+                              <p className="text-xs text-slate-500 mt-1 leading-relaxed">{opp.description}</p>
                             </div>
-                            <span className="flex-shrink-0 text-[10px] px-2 py-1 rounded-full font-bold" style={{ background: "rgba(34,197,94,0.15)", color: "#4ade80" }}>{opp.impact}</span>
+                            <span className="flex-shrink-0 text-[10px] px-2 py-1 rounded-full font-bold" style={{ background: "#ecfdf5", color: "#065f46" }}>{opp.impact}</span>
                           </div>
                         </div>
                       ))}
                     </div>
                   </div>
 
-                  <div className="rounded-2xl overflow-hidden" style={{ background: "#0F1629", border: "1px solid #1E2D4A" }}>
-                    <div className="px-5 py-4" style={{ borderBottom: "1px solid #1E2D4A" }}>
+                  <div className="rounded-2xl overflow-hidden" style={{ background: "#ffffff", border: "1px solid #e2e8f0" }}>
+                    <div className="px-5 py-4" style={{ borderBottom: "1px solid #f1f5f9" }}>
                       <div className="flex items-center gap-2">
-                        <AlertTriangle className="h-4 w-4" style={{ color: "#ef4444" }} strokeWidth={2} />
-                        <h3 className="font-bold text-white text-sm">Top 3 Risks if No Action</h3>
+                        <AlertTriangle className="h-4 w-4 text-rose-600" strokeWidth={2} />
+                        <h3 className="font-bold text-slate-900 text-sm">Top 3 Risks if No Action</h3>
                       </div>
-                      <p className="text-xs text-slate-500 mt-0.5">Consequences of delaying AI transformation</p>
+                      <p className="text-xs text-slate-400 mt-0.5">Consequences of delaying AI transformation</p>
                     </div>
                     <div className="p-4 space-y-2.5">
                       {topRisks.map((r, idx) => (
-                        <div key={idx} className="rounded-xl p-4" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                        <div key={idx} className="rounded-xl p-4" style={{ background: "#f8fafc", border: "1px solid #f1f5f9" }}>
                           <div className="flex items-start justify-between gap-2">
                             <div>
-                              <p className="font-bold text-white text-sm">{r.title}</p>
-                              <p className="text-xs text-slate-400 mt-1 leading-relaxed">{r.description}</p>
+                              <p className="font-bold text-slate-900 text-sm">{r.title}</p>
+                              <p className="text-xs text-slate-500 mt-1 leading-relaxed">{r.description}</p>
                             </div>
-                            <span className="flex-shrink-0 text-[10px] px-2 py-1 rounded-full font-bold" style={{ background: r.severity === "High" ? "rgba(239,68,68,0.15)" : "rgba(245,158,11,0.15)", color: r.severity === "High" ? "#f87171" : "#fbbf24" }}>{r.severity}</span>
+                            <span className="flex-shrink-0 text-[10px] px-2 py-1 rounded-full font-bold" style={{ background: r.severity === "High" ? "#fef2f2" : "#fffbeb", color: r.severity === "High" ? "#991b1b" : "#854d0e" }}>{r.severity}</span>
                           </div>
                         </div>
                       ))}
@@ -2239,8 +2239,8 @@ export default function AIReadinessScorecardApp() {
                 </div>
 
                 {/* ── PRO UPSELL CARD ── */}
-                <div className="rounded-2xl p-8 text-center relative overflow-hidden" style={{ background: "linear-gradient(135deg, #0F1629, #1a1040)", border: "1px solid rgba(255,183,112,0.2)" }}>
-                  <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full opacity-30 blur-[80px] pointer-events-none" style={{ background: "#ffb770" }} />
+                <div className="rounded-2xl p-8 text-center relative overflow-hidden" style={{ background: "#292827", border: "1px solid rgba(255,183,112,0.2)" }}>
+                  <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full opacity-20 blur-[80px] pointer-events-none" style={{ background: "#ffb770" }} />
                   <div className="relative">
                     <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "#ffb770" }}>Unlock Pro</p>
                     <h3 className="text-xl md:text-2xl font-black text-white tracking-tight mb-2">Your personalised 90-day action plan is ready</h3>
@@ -2250,7 +2250,7 @@ export default function AIReadinessScorecardApp() {
                     <button
                       onClick={() => setTab("roadmap")}
                       className="hover:scale-105 transition-all duration-200"
-                      style={{ padding: "14px 32px", background: "#ffb770", color: "#080D1A", fontWeight: 600, fontSize: 15, borderRadius: 10, border: "none", cursor: "pointer", boxShadow: "0 0 32px rgba(255,183,112,0.2)" }}
+                      style={{ padding: "14px 32px", background: "#ffb770", color: "#292827", fontWeight: 600, fontSize: 15, borderRadius: 10, border: "none", cursor: "pointer", boxShadow: "0 0 32px rgba(255,183,112,0.2)" }}
                     >
                       Unlock 90-Day Plan
                     </button>
