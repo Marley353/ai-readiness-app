@@ -101,7 +101,7 @@ export function Hero() {
         {/* CTA Buttons */}
         <div className="hero-ctas" style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 20 }}>
           <button
-            onClick={() => document.getElementById('assessment')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={() => window.location.href = "/app"}
             className="px-8 py-4 bg-white text-black font-semibold rounded-xl hover:opacity-90 hover:scale-105 transition-all duration-200"
             style={{ border: "none", cursor: "pointer", fontSize: 15 }}
           >

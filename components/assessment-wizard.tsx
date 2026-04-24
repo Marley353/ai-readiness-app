@@ -132,8 +132,10 @@ export function AssessmentWizard({ onComplete, existingScores }: AssessmentWizar
       const nextStep = step + 1;
 
       if (nextStep >= TOTAL) {
+        const fullScores: Scores = {};
+        allQuestions.forEach((q) => { fullScores[q.id] = updated[q.id] ?? 2; });
         setPhase("done");
-        onComplete(updated);
+        onComplete(fullScores);
         return;
       }
 
@@ -157,11 +159,9 @@ export function AssessmentWizard({ onComplete, existingScores }: AssessmentWizar
   }, [step]);
 
   const handleExit = useCallback(() => {
-    if (Object.keys(scores).length > 0) {
-      onComplete(scores);
-    } else {
-      setPhase("start");
-    }
+    const fullScores: Scores = {};
+    allQuestions.forEach((q) => { fullScores[q.id] = scores[q.id] ?? 2; });
+    onComplete(fullScores);
   }, [scores, onComplete]);
 
   useEffect(() => {
