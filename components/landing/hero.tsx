@@ -100,23 +100,23 @@ export function Hero() {
 
         {/* CTA Buttons */}
         <div className="hero-ctas" style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 20 }}>
-          <Link
-            href="/app"
+          <button
+            onClick={() => document.getElementById('assessment')?.scrollIntoView({ behavior: 'smooth' })}
             style={{
-              display: "inline-block",
               padding: "15px 32px",
               background: "#fff",
               color: "#000",
               fontWeight: 600,
               borderRadius: 10,
-              textDecoration: "none",
+              border: "none",
+              cursor: "pointer",
               fontSize: 15,
               textAlign: "center",
               transition: "opacity 150ms",
             }}
           >
             Start Free Assessment
-          </Link>
+          </button>
           <Link
             href="#scorecard"
             style={{
