@@ -29,7 +29,7 @@ export function PricingTeaser() {
             <em style={{ fontStyle: "italic" }}>Upgrade when you need a plan.</em>
           </h2>
           <p style={{ fontSize: 19, fontWeight: 460, lineHeight: 1.55, color: "rgba(255,255,255,0.6)", maxWidth: 640, margin: "20px auto 0" }}>
-            The assessment is free. The roadmap, benchmarks, and board-ready outputs are where the real value sits.
+            The assessment is free. The strategic roadmap, industry benchmarks, and board-ready outputs are where the real value sits.
           </p>
         </div>
 

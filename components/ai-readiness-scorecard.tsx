@@ -1970,8 +1970,8 @@ export default function AIReadinessScorecardApp() {
                 {/* ── RESULTS HEADER ── */}
                 <div className="rounded-2xl p-8 text-center" style={{ background: "#ffffff", border: "1px solid #e2e8f0" }}>
                   <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "#c4661a" }}>Assessment Complete</p>
-                  <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight mb-2">Your AI Readiness Score is ready</h2>
-                  <p className="text-sm text-slate-500 max-w-xl mx-auto leading-relaxed">Your score shows where your organisation is strong, where it is exposed, and which dimensions need priority action.</p>
+                  <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight mb-2">Your Executive AI Readiness Report</h2>
+                  <p className="text-sm text-slate-500 max-w-xl mx-auto leading-relaxed">A board-level view of where your organisation is strong, where it is exposed, and which dimensions need priority investment.</p>
                 </div>
 
                 {/* ── OVERALL SCORE + DIMENSION BREAKDOWN ── */}
@@ -2099,7 +2099,7 @@ export default function AIReadinessScorecardApp() {
                   <div className="rounded-2xl p-6" style={{ background: "#ffffff", border: "1px solid #e2e8f0" }}>
                     <div className="flex items-center gap-2 mb-4">
                       <Building2 className="h-4 w-4 text-slate-500" strokeWidth={2} />
-                      <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Business Impact</p>
+                      <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Commercial Impact</p>
                     </div>
                     <p className="text-xl font-black text-slate-900 tracking-tight mb-2">{impact.category}</p>
                     <p className="text-sm text-slate-500 leading-relaxed">{impact.description}</p>
@@ -2107,10 +2107,10 @@ export default function AIReadinessScorecardApp() {
                   <div className="rounded-2xl p-6" style={{ background: "#ffffff", border: "1px solid #e2e8f0" }}>
                     <div className="flex items-center gap-2 mb-4">
                       <TrendingUp className="h-4 w-4 text-slate-500" strokeWidth={2} />
-                      <p className="text-xs font-bold uppercase tracking-widest text-slate-400">ROI Opportunity</p>
+                      <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Estimated ROI Potential</p>
                     </div>
                     <p className="text-3xl font-black tracking-tight mb-1" style={{ color: "#c4661a" }}>{roi.range}</p>
-                    <p className="text-xs text-slate-400 mb-4">Efficiency improvement potential • {roi.confidence} confidence</p>
+                    <p className="text-xs text-slate-400 mb-4">Projected efficiency improvement • {roi.confidence} confidence</p>
                     <div className="grid grid-cols-3 gap-2 text-center">
                       {[
                         { label: "Low", value: roi.scenarios.low },
@@ -2188,10 +2188,10 @@ export default function AIReadinessScorecardApp() {
                 <div className="rounded-2xl p-8 text-center relative overflow-hidden" style={{ background: "#292827", border: "1px solid rgba(255,183,112,0.2)" }}>
                   <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full opacity-20 blur-[80px] pointer-events-none" style={{ background: "#ffb770" }} />
                   <div className="relative">
-                    <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "#ffb770" }}>Unlock Pro</p>
-                    <h3 className="text-xl md:text-2xl font-black text-white tracking-tight mb-2">Your personalised 90-day action plan is ready</h3>
+                    <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "#ffb770" }}>Enterprise Upgrade</p>
+                    <h3 className="text-xl md:text-2xl font-black text-white tracking-tight mb-2">Your board-ready 90-day transformation plan is ready</h3>
                     <p className="text-sm text-slate-400 max-w-lg mx-auto mb-6 leading-relaxed">
-                      Unlock detailed recommendations, benchmark context, exportable reports, and a structured roadmap across all 8 dimensions.
+                      Unlock strategic recommendations, industry benchmarks, presentation-ready exports, and a structured roadmap designed for executive decision-making.
                     </p>
                     <button
                       onClick={() => setTab("roadmap")}

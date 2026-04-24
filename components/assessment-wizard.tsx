@@ -162,7 +162,7 @@ export function AssessmentWizard({ onComplete, existingScores }: AssessmentWizar
         <div style={{ maxWidth: 820, width: "100%", textAlign: "center", position: "relative", zIndex: 1 }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,183,112,0.1)", border: "1px solid rgba(255,183,112,0.2)", borderRadius: 999, padding: "6px 16px", marginBottom: 24 }}>
             <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--lavender-glow)" }} />
-            <span style={{ fontSize: 12, fontWeight: 700, color: "var(--lavender-glow)", textTransform: "uppercase", letterSpacing: "0.6px" }}>AI Readiness Assessment</span>
+            <span style={{ fontSize: 12, fontWeight: 700, color: "var(--lavender-glow)", textTransform: "uppercase", letterSpacing: "0.6px" }}>Board-Level AI Assessment</span>
           </div>
 
           <h1 style={{ fontSize: "clamp(34px, 5vw, 60px)", fontWeight: 460, lineHeight: 0.98, letterSpacing: "-1.6px", marginBottom: 20 }}>
@@ -170,7 +170,7 @@ export function AssessmentWizard({ onComplete, existingScores }: AssessmentWizar
           </h1>
 
           <p style={{ fontSize: 18, color: "rgba(255,255,255,0.6)", maxWidth: 560, margin: "0 auto 48px", lineHeight: 1.6 }}>
-            32 structured questions across 8 dimensions. Your responses become a readiness score, benchmark position, and priority action plan.
+            32 structured questions across 8 dimensions. Your responses become an executive readiness scorecard, benchmark position, and prioritised action plan.
           </p>
 
           {/* Info blocks */}

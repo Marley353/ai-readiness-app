@@ -94,7 +94,7 @@ export function AiGap() {
               AI readiness is now a board-level operating risk.
             </h3>
             <p style={{ fontSize: 15, color: "rgba(255,255,255,0.6)", lineHeight: 1.55, margin: 0, maxWidth: 640 }}>
-              Without a measurable baseline, organisations risk funding isolated pilots, unmanaged tools, weak governance, and unclear returns.
+              Without a measurable baseline, organisations risk funding isolated pilots, unmanaged shadow AI, weak governance, and unclear returns — making AI a liability, not a capability.
             </p>
           </div>
           <button

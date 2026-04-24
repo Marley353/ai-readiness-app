@@ -54,13 +54,13 @@ export function ScorecardPreview() {
         {/* Header */}
         <div className="gsap-reveal" style={{ maxWidth: 720, marginBottom: 56 }}>
           <span style={{ fontSize: 12, fontWeight: 700, color: "var(--amethyst-link)", textTransform: "uppercase" as const, letterSpacing: "0.6px", display: "inline-block", marginBottom: 16 }}>
-            Your AI Readiness Scorecard
+            Executive Readiness Scorecard
           </span>
           <h2 style={{ fontSize: "clamp(34px, 4.4vw, 56px)", fontWeight: 460, lineHeight: 0.98, letterSpacing: "-1.4px", color: "var(--fg-1)", margin: 0 }}>
-            See where your organisation is <em style={{ fontStyle: "italic" }}>ready</em> — and where it is exposed
+            A board-ready view of where you <em style={{ fontStyle: "italic" }}>stand</em> — and what to prioritise
           </h2>
           <p style={{ fontSize: 19, fontWeight: 460, lineHeight: 1.55, color: "var(--fg-2)", marginTop: 20 }}>
-            Your results are translated into a clear readiness score, benchmark comparison, and priority action areas across 8 dimensions.
+            Your results are translated into a clear readiness score, benchmark position, and priority action areas — formatted for leadership decision-making.
           </p>
         </div>
 

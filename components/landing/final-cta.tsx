@@ -85,9 +85,9 @@ export function FinalCta() {
             margin: 0,
           }}
         >
-          Stop reading about AI.
+          Stop debating AI readiness.
           <br />
-          <em style={{ fontStyle: "italic" }}>Start shipping it.</em>
+          <em style={{ fontStyle: "italic" }}>Start measuring it.</em>
         </h2>
         <p
           className="gsap-reveal"
@@ -101,8 +101,8 @@ export function FinalCta() {
             lineHeight: 1.55,
           }}
         >
-          Eight minutes. Eight dimensions. A scorecard your leadership team
-          will actually use.
+          6–8 minutes. Eight dimensions. A board-ready scorecard your
+          leadership team will actually use.
         </p>
         <div
           className="gsap-reveal"

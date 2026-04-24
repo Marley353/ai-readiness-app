@@ -91,7 +91,7 @@ export function Hero() {
         }}
       >
         <p className="text-sm uppercase tracking-widest" style={{ color: "#a3a3a3", marginBottom: 16 }}>
-          AI Readiness Assessment — Never Trust. Always Verify.
+          Board-Level AI Readiness Assessment
         </p>
 
         <h1
