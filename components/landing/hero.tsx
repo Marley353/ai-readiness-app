@@ -11,7 +11,7 @@ export function Hero() {
         width: "100%",
         minHeight: "100vh",
         display: "flex",
-        alignItems: "center",
+        alignItems: "flex-start",
         overflow: "hidden",
         color: "#fff",
       }}
@@ -59,7 +59,7 @@ export function Hero() {
           maxWidth: 1200,
           width: "100%",
           margin: "0 auto",
-          padding: "120px 32px 80px",
+          padding: "140px 32px 100px",
         }}
       >
         {/* Brand Tagline */}
@@ -145,6 +145,45 @@ export function Hero() {
         <div style={{ fontSize: 14, color: "#d4d4d4" }}>
           <span style={{ fontWeight: 600, color: "#fff" }}>Only 13%</span> of organisations are fully AI-ready
         </div>
+
+        {/* Dashboard Preview */}
+        <div
+          className="hero-dashboard"
+          style={{
+            marginTop: 48,
+            background: "rgba(23,23,23,0.85)",
+            backdropFilter: "blur(12px)",
+            borderRadius: 16,
+            padding: 24,
+            border: "1px solid rgba(255,255,255,0.08)",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+            <h3 style={{ fontSize: 16, fontWeight: 600, margin: 0 }}>AI Readiness Score</h3>
+            <span style={{ fontSize: 22, fontWeight: 700, color: "#ffb770" }}>62 / 100</span>
+          </div>
+
+          <div
+            style={{
+              height: 200,
+              background: "rgba(10,10,10,0.6)",
+              borderRadius: 10,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#525252",
+              fontSize: 14,
+              border: "1px solid rgba(255,255,255,0.04)",
+            }}
+          >
+            Radar Chart — 8 Dimensions
+          </div>
+
+          <div style={{ marginTop: 14, fontSize: 13, color: "#a3a3a3" }}>
+            Top gaps: <span style={{ color: "#d4d4d4" }}>Governance</span> • <span style={{ color: "#d4d4d4" }}>Data</span> • <span style={{ color: "#d4d4d4" }}>Training</span>
+          </div>
+        </div>
       </div>
 
       <style jsx global>{`
@@ -164,12 +203,19 @@ export function Hero() {
           display: none;
         }
 
+        .hero-dashboard {
+          max-width: 520px;
+        }
+
         @media (min-width: 768px) {
           .hero-ctas {
             flex-direction: row !important;
           }
           .hero-sub {
             max-width: 540px;
+          }
+          .hero-dashboard {
+            max-width: 560px;
           }
           .hide-mobile {
             display: inline;
@@ -182,7 +228,8 @@ export function Hero() {
           }
           .hero-sub,
           .hero-headline,
-          .hero-ctas {
+          .hero-ctas,
+          .hero-dashboard {
             max-width: 100% !important;
           }
           .hero-ctas {
