@@ -47,13 +47,12 @@ export function AiGap() {
           {STATS.map((item) => (
             <div
               key={item.stat}
-              className="gap-card"
+              className="gap-card card-hover reveal"
               style={{
                 background: "rgba(255,255,255,0.04)",
                 border: "1px solid rgba(255,255,255,0.1)",
                 borderRadius: 16,
                 padding: 32,
-                transition: "border-color 300ms ease",
               }}
             >
               <p style={{ fontSize: "clamp(44px, 5.2vw, 60px)", fontWeight: 540, color: "var(--lavender-glow)", lineHeight: 1, marginBottom: 20, fontFamily: "var(--font-mono)" }}>
@@ -100,7 +99,7 @@ export function AiGap() {
           </div>
           <button
             onClick={() => document.getElementById("assessment")?.scrollIntoView({ behavior: "smooth" })}
-            className="hover:scale-105 transition-all duration-200"
+            className="hover:scale-105 transition-all duration-200 cta-glow"
             style={{
               padding: "14px 28px",
               background: "var(--lavender-glow)",

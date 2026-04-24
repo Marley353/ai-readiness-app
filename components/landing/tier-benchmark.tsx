@@ -106,7 +106,7 @@ export function TierBenchmark() {
         <div className="gsap-reveal" style={{ marginTop: 48, textAlign: "center" }}>
           <button
             onClick={() => document.getElementById("assessment")?.scrollIntoView({ behavior: "smooth" })}
-            className="hover:scale-105 transition-all duration-200"
+            className="hover:scale-105 transition-all duration-200 cta-glow"
             style={{
               display: "inline-flex",
               alignItems: "center",

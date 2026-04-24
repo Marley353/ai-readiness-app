@@ -11,25 +11,30 @@ import { PricingTeaser } from "@/components/landing/pricing-teaser";
 import { Faq } from "@/components/landing/faq";
 import { FinalCta } from "@/components/landing/final-cta";
 import { Footer } from "@/components/landing/footer";
+import { RevealObserver } from "@/components/landing/reveal-observer";
 
-// Marketing landing page. The actual assessment tool lives at /app.
-// Narrative arc:
-//   Hero → Scorecard Preview (value reveal) → AI Gap (problem) →
-//   Dimensions (framework) → How it works (agitation→solution) →
-//   Tier Benchmark (desire) → Feature slabs → Personas →
-//   Pricing teaser → FAQ → Final CTA (action)
+function Divider() {
+  return <div className="section-divider" />;
+}
+
 export default function LandingPage() {
   return (
     <>
+      <RevealObserver />
       <TopNav />
       <Hero />
+      <Divider />
       <ScorecardPreview />
+      <Divider />
       <AiGap />
+      <Divider />
       <DimensionsGrid />
+      <Divider />
       <HowItWorks />
       <TierBenchmark />
       <FeatureSlabs />
       <Personas />
+      <Divider />
       <PricingTeaser />
       <Faq />
       <FinalCta />

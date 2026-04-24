@@ -47,13 +47,12 @@ export function DimensionsGrid() {
           {DIMENSIONS.map(({ num, title, desc }) => (
             <div
               key={num}
-              className="dim-card"
+              className="dim-card card-hover reveal"
               style={{
                 background: "rgba(255,255,255,0.06)",
                 border: "1px solid rgba(255,255,255,0.12)",
                 borderRadius: 16,
                 padding: 24,
-                transition: "transform 260ms ease, border-color 260ms ease",
                 cursor: "default",
               }}
             >
@@ -75,7 +74,7 @@ export function DimensionsGrid() {
         <div className="gsap-reveal" style={{ textAlign: "center", marginTop: 64 }}>
           <button
             onClick={() => document.getElementById("assessment")?.scrollIntoView({ behavior: "smooth" })}
-            className="hover:scale-105 transition-all duration-200"
+            className="hover:scale-105 transition-all duration-200 cta-glow"
             style={{
               padding: "14px 28px",
               background: "var(--lavender-glow)",

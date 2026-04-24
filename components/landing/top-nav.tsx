@@ -19,20 +19,17 @@ export function TopNav() {
     <nav
       className={`nav ${scrolled ? "scrolled" : ""}`}
       style={{
-        position: "sticky",
+        position: "fixed",
         top: 0,
+        left: 0,
+        right: 0,
         zIndex: 50,
         padding: "14px 24px",
         transition: "background 240ms ease, border-color 240ms ease, backdrop-filter 240ms ease",
-        borderBottom: "1px solid transparent",
-        ...(scrolled
-          ? {
-              background: "rgba(250, 248, 245, 0.72)",
-              backdropFilter: "saturate(1.4) blur(14px)",
-              WebkitBackdropFilter: "saturate(1.4) blur(14px)",
-              borderBottomColor: "var(--parchment-border)",
-            }
-          : {}),
+        borderBottom: scrolled ? "1px solid rgba(255,255,255,0.08)" : "1px solid transparent",
+        background: scrolled ? "rgba(8,13,26,0.75)" : "transparent",
+        backdropFilter: scrolled ? "blur(16px)" : "none",
+        WebkitBackdropFilter: scrolled ? "blur(16px)" : "none",
       }}
     >
       <div
@@ -53,7 +50,7 @@ export function TopNav() {
             alignItems: "center",
             gap: 10,
             fontWeight: 540,
-            color: "var(--fg-1)",
+            color: "#fff",
             fontSize: 16,
             textDecoration: "none",
             letterSpacing: "-0.3px",
@@ -99,14 +96,14 @@ export function TopNav() {
               key={l.href}
               href={l.href}
               style={{
-                color: "var(--fg-2)",
+                color: "rgba(255,255,255,0.65)",
                 textDecoration: "none",
                 fontSize: 15,
                 fontWeight: 460,
                 letterSpacing: "-0.1px",
                 transition: "color 150ms ease",
               }}
-              className="hover:!text-[var(--fg-1)]"
+              className="hover:!text-white"
             >
               {l.label}
             </Link>
@@ -133,7 +130,7 @@ export function TopNav() {
                 style={{
                   fontSize: 15,
                   fontWeight: 540,
-                  color: "var(--fg-1)",
+                  color: "rgba(255,255,255,0.8)",
                   textDecoration: "none",
                 }}
               >

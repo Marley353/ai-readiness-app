@@ -69,7 +69,7 @@ export function PricingTeaser() {
             </div>
             <button
               onClick={() => document.getElementById("assessment")?.scrollIntoView({ behavior: "smooth" })}
-              className="hover:scale-105 transition-all duration-200"
+              className="hover:scale-105 transition-all duration-200 cta-glow"
               style={{
                 marginTop: 32,
                 width: "100%",
@@ -141,7 +141,7 @@ export function PricingTeaser() {
             </div>
             <Link
               href="/pricing"
-              className="hover:scale-105 transition-all duration-200"
+              className="hover:scale-105 transition-all duration-200 cta-glow"
               style={{
                 marginTop: 32,
                 width: "100%",
@@ -195,7 +195,7 @@ export function PricingTeaser() {
             </div>
             <Link
               href="/pricing"
-              className="hover:scale-105 transition-all duration-200"
+              className="hover:scale-105 transition-all duration-200 cta-glow"
               style={{
                 marginTop: 32,
                 width: "100%",
