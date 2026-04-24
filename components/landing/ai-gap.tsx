@@ -1,39 +1,12 @@
 "use client";
 
 import { useScrollReveal } from "@/lib/gsap-hooks";
-import React, { useEffect, useRef, useState } from "react";
-
-function useCounter(target: number, duration = 1600) {
-  const [display, setDisplay] = useState(0);
-  const ref = useRef<HTMLDivElement>(null);
-  const started = useRef(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && !started.current) {
-        started.current = true;
-        let raf: number, start: number | null = null;
-        const step = (t: number) => {
-          if (start === null) start = t;
-          const p = Math.min(1, (t - start) / duration);
-          setDisplay(Math.round(target * (1 - Math.pow(1 - p, 3))));
-          if (p < 1) raf = requestAnimationFrame(step);
-        };
-        raf = requestAnimationFrame(step);
-      }
-    }, { threshold: 0.3 });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [target, duration]);
-  return { ref, display };
-}
 
 const STATS = [
-  { value: 15, suffix: "%", label: "of organisations have infrastructure ready for AI workloads", source: "Cisco AI Readiness Index" },
-  { value: 76, suffix: "%", label: "of top performers have centralised data — only 19% of all organisations do", source: "Cisco AI Readiness Index" },
-  { value: 46, suffix: "%", label: "of leaders cite skills gaps as their primary AI adoption barrier", source: "McKinsey State of AI" },
-  { value: 13, suffix: "%", label: "of organisations qualify as AI Pacesetters", source: "Cisco AI Readiness Index" },
+  { stat: "15%", title: "Infrastructure-ready", body: "Only a small minority of organisations have infrastructure ready for AI workloads.", source: "Cisco AI Readiness Index" },
+  { stat: "76%", title: "Centralised data", body: "Top performers are far more likely to have fully centralised data foundations.", source: "Cisco AI Readiness Index" },
+  { stat: "46%", title: "Skills gap", body: "Many leaders identify skills gaps as a major barrier to AI adoption.", source: "McKinsey workforce research" },
+  { stat: "13%", title: "AI pacesetters", body: "Only a small group of organisations qualify as AI pacesetters.", source: "Cisco AI Readiness Index" },
 ];
 
 export function AiGap() {
@@ -41,54 +14,139 @@ export function AiGap() {
 
   return (
     <section
-      id="scorecard"
-      style={{ position: "relative", padding: "120px 24px" }}
+      id="readiness-gap"
+      style={{
+        position: "relative",
+        padding: "120px 24px",
+        background: "#050914",
+        color: "#fff",
+      }}
     >
-      <div ref={sectionRef} style={{ maxWidth: 1240, margin: "0 auto", position: "relative" }}>
-        <div className="gsap-reveal">
-          <span style={{ fontSize: 12, fontWeight: 700, color: "var(--amethyst-link)", textTransform: "uppercase" as const, letterSpacing: "0.6px", display: "inline-block", marginBottom: 16 }}>
-            The AI Readiness Gap
-          </span>
-          <h2 style={{ fontSize: "clamp(34px, 4.4vw, 56px)", fontWeight: 460, lineHeight: 0.98, letterSpacing: "-1.4px", maxWidth: 820, color: "var(--fg-1)", margin: 0 }}>
-            The numbers are sobering.
-          </h2>
-          <p style={{ fontSize: 19, lineHeight: 1.55, color: "var(--fg-2)", maxWidth: 640, marginTop: 20 }}>
-            The research tells a consistent story — the difference between AI pacesetters and everyone else isn't budget or ambition. It's foundational readiness.
-          </p>
+      <div ref={sectionRef} style={{ maxWidth: 1240, margin: "0 auto" }}>
+
+        {/* Header — two-column split */}
+        <div className="gsap-reveal gap-header" style={{ display: "grid", gap: 64, alignItems: "start", marginBottom: 64 }}>
+          <div>
+            <span style={{ fontSize: 12, fontWeight: 700, color: "var(--lavender-glow)", textTransform: "uppercase" as const, letterSpacing: "0.6px", display: "inline-block", marginBottom: 16 }}>
+              The AI Readiness Gap
+            </span>
+            <h2 style={{ fontSize: "clamp(34px, 4.4vw, 56px)", fontWeight: 460, lineHeight: 0.98, letterSpacing: "-1.4px", color: "#fff", margin: 0 }}>
+              Most organisations are experimenting.{" "}
+              <em style={{ fontStyle: "italic" }}>Few are ready to scale.</em>
+            </h2>
+          </div>
+          <div style={{ paddingTop: 4 }}>
+            <p style={{ fontSize: 18, color: "rgba(255,255,255,0.65)", lineHeight: 1.6 }}>
+              The gap between AI pacesetters and everyone else is not ambition. It is the maturity of their data, infrastructure, governance, skills, and ability to turn pilots into measurable value.
+            </p>
+          </div>
         </div>
 
-        {/* Metrics grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 24, marginTop: 48 }} className="metrics-grid">
-          {STATS.map((s, i) => {
-            const { ref, display } = useCounter(s.value);
-            return (
-              <div
-                key={s.label}
-                ref={ref}
-                className="gsap-reveal"
-                style={{
-                  padding: "32px 24px",
-                  borderRadius: 16,
-                  background: "var(--pure-white)",
-                  border: "1px solid var(--parchment-border)",
-                  transition: "transform 260ms ease, border-color 260ms ease",
-                }}
-              >
-                <div style={{ fontSize: "clamp(44px, 5.2vw, 64px)", fontWeight: 540, lineHeight: 1, letterSpacing: "-2px", color: "var(--fg-1)", fontVariantNumeric: "tabular-nums" }}>
-                  <span>{display}</span>
-                  <span style={{ fontSize: "0.55em", color: "var(--fg-3)", fontWeight: 460, marginLeft: 4 }}>{s.suffix}</span>
-                </div>
-                <div style={{ marginTop: 12, fontSize: 14.5, color: "var(--fg-2)", lineHeight: 1.45 }}>{s.label}</div>
-                <div style={{ marginTop: 12, fontSize: 11, fontWeight: 700, color: "var(--fg-3)", textTransform: "uppercase" as const, letterSpacing: "0.4px" }}>{s.source}</div>
-              </div>
-            );
-          })}
+        {/* Stat cards */}
+        <div className="gsap-reveal gap-grid" style={{ display: "grid", gap: 24 }}>
+          {STATS.map((item) => (
+            <div
+              key={item.stat}
+              className="gap-card"
+              style={{
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: 16,
+                padding: 32,
+                transition: "border-color 300ms ease",
+              }}
+            >
+              <p style={{ fontSize: "clamp(44px, 5.2vw, 60px)", fontWeight: 540, color: "var(--lavender-glow)", lineHeight: 1, marginBottom: 20, fontFamily: "var(--font-mono)" }}>
+                {item.stat}
+              </p>
+              <h3 style={{ fontSize: 20, fontWeight: 540, color: "#fff", margin: "0 0 10px", letterSpacing: "-0.3px" }}>
+                {item.title}
+              </h3>
+              <p style={{ fontSize: 14.5, color: "rgba(255,255,255,0.65)", lineHeight: 1.55, margin: "0 0 20px" }}>
+                {item.body}
+              </p>
+              <p style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.35)", textTransform: "uppercase" as const, letterSpacing: "0.5px", margin: 0 }}>
+                {item.source}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom callout bar */}
+        <div
+          className="gsap-reveal gap-callout"
+          style={{
+            marginTop: 48,
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: 16,
+            padding: "32px 40px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 32,
+          }}
+        >
+          <div>
+            <span style={{ fontSize: 12, fontWeight: 700, color: "var(--lavender-glow)", textTransform: "uppercase" as const, letterSpacing: "0.6px", display: "inline-block", marginBottom: 12 }}>
+              Why this matters
+            </span>
+            <h3 style={{ fontSize: "clamp(22px, 2.5vw, 28px)", fontWeight: 540, color: "#fff", margin: "0 0 8px", letterSpacing: "-0.3px" }}>
+              AI readiness is now a board-level operating risk.
+            </h3>
+            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.6)", lineHeight: 1.55, margin: 0, maxWidth: 640 }}>
+              Without a measurable baseline, organisations risk funding isolated pilots, unmanaged tools, weak governance, and unclear returns.
+            </p>
+          </div>
+          <button
+            onClick={() => document.getElementById("assessment")?.scrollIntoView({ behavior: "smooth" })}
+            className="hover:scale-105 transition-all duration-200"
+            style={{
+              padding: "14px 28px",
+              background: "var(--lavender-glow)",
+              color: "#080D1A",
+              fontWeight: 600,
+              fontSize: 15,
+              borderRadius: "var(--r-sm)",
+              border: "none",
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+              flexShrink: 0,
+            }}
+          >
+            Start Free Assessment
+          </button>
         </div>
       </div>
 
       <style jsx global>{`
-        @media (max-width: 980px) { .metrics-grid { grid-template-columns: repeat(2, 1fr) !important; } }
-        @media (max-width: 560px) { .metrics-grid { grid-template-columns: 1fr !important; } }
+        .gap-header {
+          grid-template-columns: 1fr;
+        }
+        .gap-grid {
+          grid-template-columns: repeat(4, 1fr);
+        }
+        .gap-card:hover {
+          border-color: var(--lavender-glow) !important;
+        }
+        @media (min-width: 1024px) {
+          .gap-header {
+            grid-template-columns: 3fr 2fr;
+          }
+        }
+        @media (max-width: 980px) {
+          .gap-grid { grid-template-columns: repeat(2, 1fr) !important; }
+        }
+        @media (max-width: 560px) {
+          .gap-grid { grid-template-columns: 1fr !important; }
+        }
+        @media (max-width: 767px) {
+          .gap-callout {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            padding: 24px !important;
+          }
+        }
       `}</style>
     </section>
   );
