@@ -64,7 +64,7 @@ export function Hero() {
         }}
       >
         {/* Brand Tagline */}
-        <p style={{ fontSize: 13, textTransform: "uppercase", letterSpacing: "0.15em", color: "#a3a3a3", marginBottom: 16 }}>
+        <p className="text-sm uppercase tracking-widest" style={{ color: "#a3a3a3", marginBottom: 16 }}>
           AI Readiness Assessment — Never Trust. Always Verify.
         </p>
 
