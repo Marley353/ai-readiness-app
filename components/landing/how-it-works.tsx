@@ -30,7 +30,7 @@ export function HowItWorks() {
 
   return (
     <section
-      id="how-it-works"
+      id="assessment"
       style={{ position: "relative", padding: "120px 24px" }}
     >
       <div

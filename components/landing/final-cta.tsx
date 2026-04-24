@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { useScrollReveal } from "@/lib/gsap-hooks";
 
 export function FinalCta() {
@@ -116,13 +115,12 @@ export function FinalCta() {
             flexWrap: "wrap",
           }}
         >
-          <Link
-            href="/app"
-            className="btn btn-primary"
+          <button
+            onClick={() => document.getElementById("assessment")?.scrollIntoView({ behavior: "smooth" })}
+            className="hover:scale-105 transition-all duration-200"
             style={{
               padding: "14px 22px",
               fontSize: 15,
-              textDecoration: "none",
               borderRadius: "var(--r-sm)",
               background: "var(--charcoal-ink)",
               color: "#fff",
@@ -130,11 +128,12 @@ export function FinalCta() {
               display: "inline-flex",
               alignItems: "center",
               gap: 8,
+              border: "none",
+              cursor: "pointer",
             }}
           >
-            <span>Start your readiness scorecard</span>
-            <ArrowRight size={15} />
-          </Link>
+            <span>Start Free Assessment</span>
+          </button>
           <Link
             href="/pricing"
             className="btn btn-secondary"

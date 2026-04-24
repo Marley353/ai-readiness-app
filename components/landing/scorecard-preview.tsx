@@ -151,7 +151,7 @@ export function ScorecardPreview() {
               cursor: "pointer",
             }}
           >
-            Get Your Readiness Score
+            Start Free Assessment
           </button>
           <p style={{ fontSize: 14, color: "var(--fg-3)", marginTop: 16 }}>
             Complete the assessment to generate your own scorecard and priority actions.

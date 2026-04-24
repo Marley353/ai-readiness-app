@@ -141,8 +141,8 @@ const SLABS = [
     title: "The Readiness Scorecard.",
     body: "Thirty-two calibrated questions across eight dimensions. No sign-up wall, no sales-first gate. You walk away with a number on the board and a side-by-side benchmark against your sector.",
     bullets: ["Sector-specific benchmark on every pillar", "Instant radar chart + bar chart visualisation", "Scored against Cisco Index data from 8,000+ organisations"],
-    cta: "Score your team →",
-    href: "/app",
+    cta: "Start Free Assessment →",
+    href: "#assessment",
     Visual: ScorecardMock,
   },
   {
@@ -161,8 +161,8 @@ const SLABS = [
     title: "Board-ready PDF export.",
     body: "Professional 4-page report with your organisation name, sector profile, scorecard, benchmarks, opportunities and risks, and strategic recommendations. Designed for executive circulation.",
     bullets: ["Confidential cover page with your branding area", "Executive summary, pillar scores and ROI scenarios", "Auto-paginated — no manual formatting needed"],
-    cta: "Try the export →",
-    href: "/app",
+    cta: "Start Free Assessment →",
+    href: "#assessment",
     Visual: PdfMock,
   },
 ];
@@ -217,12 +217,21 @@ export function FeatureSlabs() {
                     </li>
                   ))}
                 </ul>
-                <Link
-                  href={slab.href}
-                  style={{ fontSize: 15, fontWeight: 540, color: "var(--amethyst-link)", textDecoration: "underline", textUnderlineOffset: "3px" }}
-                >
-                  {slab.cta}
-                </Link>
+                {slab.href === "#assessment" ? (
+                  <button
+                    onClick={() => document.getElementById("assessment")?.scrollIntoView({ behavior: "smooth" })}
+                    style={{ fontSize: 15, fontWeight: 540, color: "var(--amethyst-link)", textDecoration: "underline", textUnderlineOffset: "3px", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                  >
+                    {slab.cta}
+                  </button>
+                ) : (
+                  <Link
+                    href={slab.href}
+                    style={{ fontSize: 15, fontWeight: 540, color: "var(--amethyst-link)", textDecoration: "underline", textUnderlineOffset: "3px" }}
+                  >
+                    {slab.cta}
+                  </Link>
+                )}
               </div>
 
               {/* Visual — product mockup instead of generic icon */}

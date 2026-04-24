@@ -19,8 +19,8 @@ export function PricingTeaser() {
       sub: "",
       desc: "The 8-dimension assessment and a benchmark against your sector.",
       features: ["32-question scorecard", "Sector benchmark", "Basic PDF report"],
-      cta: "Start scorecard",
-      href: "/app",
+      cta: "Start Free Assessment",
+      href: "#assessment",
       highlight: false,
     },
     {
@@ -29,7 +29,7 @@ export function PricingTeaser() {
       sub: "/month",
       desc: "Full roadmap, benchmarks on every chart, clean exports and unlimited assessments.",
       features: ["Everything in Free", "12-month roadmap", "Industry benchmarks", "Clean PDF export", "Compare assessments"],
-      cta: "Start 7-day trial",
+      cta: "Start Pro Trial",
       href: "/pricing",
       highlight: true,
     },
@@ -39,7 +39,7 @@ export function PricingTeaser() {
       sub: "/year",
       desc: `Save ${savings}% — everything in Pro, billed annually.`,
       features: ["Everything in Pro", `≈ £${(PRICING.annual.amount / 12).toFixed(0)}/month`, "Priority support", "First access to new features"],
-      cta: "Start 7-day trial",
+      cta: "Start Pro Trial",
       href: "/pricing",
       highlight: false,
     },
@@ -105,28 +105,51 @@ export function PricingTeaser() {
                   </li>
                 ))}
               </ul>
-              <Link
-                href={p.href}
-                style={{
-                  marginTop: "auto",
-                  position: "relative",
-                  textAlign: "center",
-                  padding: "14px 20px",
-                  borderRadius: "var(--r-sm)",
-                  fontSize: 15,
-                  fontWeight: 600,
-                  textDecoration: "none",
-                  background: p.highlight ? "var(--lavender-glow)" : "var(--warm-cream)",
-                  color: "var(--charcoal-ink)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 8,
-                }}
-              >
-                {p.cta}
-                {p.highlight && <ArrowRight size={14} />}
-              </Link>
+              {p.href === "#assessment" ? (
+                <button
+                  onClick={() => document.getElementById("assessment")?.scrollIntoView({ behavior: "smooth" })}
+                  className="hover:scale-105 transition-all duration-200"
+                  style={{
+                    marginTop: "auto",
+                    position: "relative",
+                    textAlign: "center",
+                    padding: "14px 20px",
+                    borderRadius: "var(--r-sm)",
+                    fontSize: 15,
+                    fontWeight: 600,
+                    background: "var(--warm-cream)",
+                    color: "var(--charcoal-ink)",
+                    border: "none",
+                    cursor: "pointer",
+                    width: "100%",
+                  }}
+                >
+                  {p.cta}
+                </button>
+              ) : (
+                <Link
+                  href={p.href}
+                  style={{
+                    marginTop: "auto",
+                    position: "relative",
+                    textAlign: "center",
+                    padding: "14px 20px",
+                    borderRadius: "var(--r-sm)",
+                    fontSize: 15,
+                    fontWeight: 600,
+                    textDecoration: "none",
+                    background: p.highlight ? "var(--lavender-glow)" : "var(--warm-cream)",
+                    color: "var(--charcoal-ink)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                  }}
+                >
+                  {p.cta}
+                  {p.highlight && <ArrowRight size={14} />}
+                </Link>
+              )}
             </div>
           ))}
         </div>

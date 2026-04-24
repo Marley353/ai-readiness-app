@@ -139,13 +139,13 @@ export function TopNav() {
               >
                 Sign in
               </Link>
-              <Link
-                href="/app"
+              <button
+                onClick={() => document.getElementById("assessment")?.scrollIntoView({ behavior: "smooth" })}
                 className="btn btn-primary"
-                style={{ padding: "10px 16px", fontSize: 14, textDecoration: "none" }}
+                style={{ padding: "10px 16px", fontSize: 14, border: "none", cursor: "pointer" }}
               >
-                <span>Start scorecard</span>
-              </Link>
+                <span>Start Free Assessment</span>
+              </button>
             </>
           )}
         </div>

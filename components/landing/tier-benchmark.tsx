@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { useScrollReveal } from "@/lib/gsap-hooks";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -106,8 +104,9 @@ export function TierBenchmark() {
 
         {/* CTA */}
         <div className="gsap-reveal" style={{ marginTop: 48, textAlign: "center" }}>
-          <Link
-            href="/app"
+          <button
+            onClick={() => document.getElementById("assessment")?.scrollIntoView({ behavior: "smooth" })}
+            className="hover:scale-105 transition-all duration-200"
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -118,13 +117,12 @@ export function TierBenchmark() {
               fontWeight: 600,
               background: "var(--warm-cream)",
               color: "var(--charcoal-ink)",
-              textDecoration: "none",
-              transition: "background 150ms",
+              border: "none",
+              cursor: "pointer",
             }}
           >
-            Find out which tier you're in
-            <ArrowRight size={15} />
-          </Link>
+            Start Free Assessment
+          </button>
         </div>
       </div>
 
