@@ -31,7 +31,7 @@ export function HowItWorks() {
   return (
     <section
       id="assessment"
-      style={{ position: "relative", padding: "120px 24px" }}
+      style={{ position: "relative", padding: "120px 24px", background: "#050914", color: "#fff" }}
     >
       <div
         ref={sectionRef}
@@ -42,7 +42,7 @@ export function HowItWorks() {
             style={{
               fontSize: 12,
               fontWeight: 700,
-              color: "var(--amethyst-link)",
+              color: "var(--lavender-glow)",
               textTransform: "uppercase" as const,
               letterSpacing: "0.6px",
               display: "inline-block",
@@ -58,7 +58,7 @@ export function HowItWorks() {
               lineHeight: 0.98,
               letterSpacing: "-1.4px",
               maxWidth: 820,
-              color: "var(--fg-1)",
+              color: "#fff",
               margin: 0,
             }}
           >
@@ -68,7 +68,7 @@ export function HowItWorks() {
             style={{
               fontSize: 19,
               lineHeight: 1.55,
-              color: "var(--fg-2)",
+              color: "rgba(255,255,255,0.65)",
               maxWidth: 640,
               marginTop: 20,
             }}
@@ -94,7 +94,7 @@ export function HowItWorks() {
               top: 8,
               bottom: 0,
               width: 2,
-              background: "linear-gradient(180deg, var(--lavender-glow), var(--parchment-border))",
+              background: "linear-gradient(180deg, var(--lavender-glow), rgba(255,255,255,0.1))",
             }}
           />
 
@@ -124,7 +124,7 @@ export function HowItWorks() {
                 style={{
                   fontSize: 12,
                   fontWeight: 700,
-                  color: "var(--amethyst-link)",
+                  color: "var(--lavender-glow)",
                   textTransform: "uppercase" as const,
                   letterSpacing: "0.5px",
                 }}
@@ -135,7 +135,7 @@ export function HowItWorks() {
                 style={{
                   fontSize: 22,
                   fontWeight: 540,
-                  color: "var(--fg-1)",
+                  color: "#fff",
                   letterSpacing: "-0.4px",
                   margin: "6px 0 8px",
                 }}
@@ -146,7 +146,7 @@ export function HowItWorks() {
                 style={{
                   fontSize: 15.5,
                   lineHeight: 1.6,
-                  color: "var(--fg-2)",
+                  color: "rgba(255,255,255,0.65)",
                 }}
               >
                 {item.body}

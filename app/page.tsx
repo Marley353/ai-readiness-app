@@ -13,32 +13,23 @@ import { FinalCta } from "@/components/landing/final-cta";
 import { Footer } from "@/components/landing/footer";
 import { RevealObserver } from "@/components/landing/reveal-observer";
 
-function Divider() {
-  return <div className="section-divider" />;
-}
-
 export default function LandingPage() {
   return (
     <>
       <RevealObserver />
       <TopNav />
-      <Hero />
-      <Divider />
-      <ScorecardPreview />
-      <Divider />
-      <AiGap />
-      <Divider />
-      <DimensionsGrid />
-      <Divider />
-      <HowItWorks />
-      <TierBenchmark />
-      <FeatureSlabs />
-      <Personas />
-      <Divider />
-      <PricingTeaser />
-      <Faq />
-      <FinalCta />
-      <Footer />
+      {/* D */} <Hero />
+      {/* L */} <ScorecardPreview />
+      {/* D */} <AiGap />
+      {/* L */} <DimensionsGrid />
+      {/* D */} <HowItWorks />
+      {/* L */} <TierBenchmark />
+      {/* D */} <FeatureSlabs />
+      {/* L */} <Personas />
+      {/* D */} <PricingTeaser />
+      {/* L */} <Faq />
+      {/* D */} <FinalCta />
+      {/* D */} <Footer />
     </>
   );
 }

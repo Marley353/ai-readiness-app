@@ -45,20 +45,19 @@ export function TierBenchmark() {
       style={{
         position: "relative",
         padding: "120px 24px",
-        background: "var(--charcoal-ink)",
-        color: "var(--white-95)",
+        background: "var(--bg-page-2, #f2ede4)",
       }}
     >
       <div ref={sectionRef} style={{ maxWidth: 1240, margin: "0 auto", position: "relative" }}>
         <div className="gsap-reveal" style={{ maxWidth: 820 }}>
-          <span style={{ fontSize: 12, fontWeight: 700, color: "var(--lavender-glow)", textTransform: "uppercase" as const, letterSpacing: "0.6px", display: "inline-block", marginBottom: 16 }}>
+          <span style={{ fontSize: 12, fontWeight: 700, color: "var(--amethyst-link)", textTransform: "uppercase" as const, letterSpacing: "0.6px", display: "inline-block", marginBottom: 16 }}>
             Tier benchmarks
           </span>
-          <h2 style={{ fontSize: "clamp(34px, 4.4vw, 56px)", fontWeight: 460, lineHeight: 0.98, letterSpacing: "-1.4px", color: "var(--white-95)", margin: 0 }}>
+          <h2 style={{ fontSize: "clamp(34px, 4.4vw, 56px)", fontWeight: 460, lineHeight: 0.98, letterSpacing: "-1.4px", color: "var(--fg-1)", margin: 0 }}>
             Where your organisation lands against{" "}
-            <em style={{ fontStyle: "italic", color: "var(--lavender-glow)" }}>8,000+ assessed organisations.</em>
+            <em style={{ fontStyle: "italic", color: "var(--amethyst-link)" }}>8,000+ assessed organisations.</em>
           </h2>
-          <p style={{ fontSize: 19, lineHeight: 1.55, color: "var(--white-60)", maxWidth: 640, marginTop: 20 }}>
+          <p style={{ fontSize: 19, lineHeight: 1.55, color: "var(--fg-2)", maxWidth: 640, marginTop: 20 }}>
             Anonymized benchmarks from the Cisco AI Readiness Index. You'll know not just where you are, but who's ahead and how the gap closes.
           </p>
         </div>
@@ -74,29 +73,29 @@ export function TierBenchmark() {
                 className="gsap-reveal"
                 style={{
                   position: "relative",
-                  border: `1px solid ${t.highlight ? "rgba(255,183,112,0.4)" : "rgba(255,255,255,0.1)"}`,
+                  border: `1px solid ${t.highlight ? "rgba(255,183,112,0.4)" : "var(--parchment-border)"}`,
                   borderRadius: 16,
                   padding: 28,
                   display: "flex",
                   flexDirection: "column",
                   gap: 8,
-                  background: t.highlight ? "rgba(255,183,112,0.08)" : "rgba(255,255,255,0.04)",
+                  background: t.highlight ? "rgba(255,183,112,0.08)" : "var(--pure-white)",
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                  <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.55)", letterSpacing: "0.5px" }}>{t.range}</span>
+                  <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700, color: "var(--fg-3)", letterSpacing: "0.5px" }}>{t.range}</span>
                   {t.highlight && (
                     <span style={{ fontSize: 10, fontWeight: 700, color: "var(--charcoal-ink)", background: "var(--lavender-glow)", padding: "3px 8px", borderRadius: 6, letterSpacing: "0.5px" }}>
                       YOU ARE HERE
                     </span>
                   )}
                 </div>
-                <div style={{ fontSize: 22, fontWeight: 540, letterSpacing: "-0.4px", color: "var(--white-95)" }}>{t.name}</div>
+                <div style={{ fontSize: 22, fontWeight: 540, letterSpacing: "-0.4px", color: "var(--fg-1)" }}>{t.name}</div>
                 <div style={{ fontSize: 48, fontWeight: 540, lineHeight: 1, letterSpacing: "-1.3px", color: "var(--lavender-glow)", marginTop: 8, fontVariantNumeric: "tabular-nums" }}>
                   {t.pct === 1 ? "<1" : display}%
                 </div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.55)", letterSpacing: "0.5px" }}>of assessed orgs</div>
-                <p style={{ fontSize: 14, fontWeight: 460, lineHeight: 1.5, color: "rgba(255,255,255,0.7)", margin: "12px 0 0" }}>{t.body}</p>
+                <div style={{ fontSize: 12, fontWeight: 600, color: "var(--fg-3)", letterSpacing: "0.5px" }}>of assessed orgs</div>
+                <p style={{ fontSize: 14, fontWeight: 460, lineHeight: 1.5, color: "var(--fg-2)", margin: "12px 0 0" }}>{t.body}</p>
               </div>
             );
           })}

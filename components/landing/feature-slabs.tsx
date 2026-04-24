@@ -175,15 +175,16 @@ export function FeatureSlabs() {
       style={{
         position: "relative",
         padding: "120px 24px",
-        background: "var(--bg-page-2, #f2ede4)",
+        background: "#050914",
+        color: "#fff",
       }}
     >
       <div ref={sectionRef} style={{ maxWidth: 1240, margin: "0 auto", position: "relative" }}>
         <div className="gsap-reveal" style={{ maxWidth: 720, marginBottom: 56 }}>
-          <span style={{ fontSize: 12, fontWeight: 700, color: "var(--amethyst-link)", textTransform: "uppercase" as const, letterSpacing: "0.6px", display: "inline-block", marginBottom: 16 }}>
+          <span style={{ fontSize: 12, fontWeight: 700, color: "var(--lavender-glow)", textTransform: "uppercase" as const, letterSpacing: "0.6px", display: "inline-block", marginBottom: 16 }}>
             What you get
           </span>
-          <h2 style={{ fontSize: "clamp(34px, 4.4vw, 56px)", fontWeight: 460, lineHeight: 0.98, letterSpacing: "-1.4px", color: "var(--fg-1)", margin: 0 }}>
+          <h2 style={{ fontSize: "clamp(34px, 4.4vw, 56px)", fontWeight: 460, lineHeight: 0.98, letterSpacing: "-1.4px", color: "#fff", margin: 0 }}>
             A high-fidelity <em style={{ fontStyle: "italic" }}>mechanism</em>,<br />not another deck.
           </h2>
         </div>
@@ -197,8 +198,8 @@ export function FeatureSlabs() {
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr",
                 gap: 0,
-                background: "var(--pure-white)",
-                border: "1px solid var(--parchment-border)",
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(255,255,255,0.1)",
                 borderRadius: 16,
                 overflow: "hidden",
                 alignItems: "stretch",
@@ -206,13 +207,13 @@ export function FeatureSlabs() {
             >
               {/* Text */}
               <div style={{ padding: 48, display: "flex", flexDirection: "column", gap: 18, justifyContent: "center", order: i % 2 === 1 ? 2 : 1 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: "var(--amethyst-link)", letterSpacing: "1px" }}>{slab.num}</span>
-                <h3 style={{ fontSize: 40, fontWeight: 540, lineHeight: 1, letterSpacing: "-1px", color: "var(--fg-1)", margin: 0 }}>{slab.title}</h3>
-                <p style={{ fontSize: 17, fontWeight: 460, lineHeight: 1.55, color: "var(--fg-2)", margin: 0 }}>{slab.body}</p>
+                <span style={{ fontSize: 11, fontWeight: 700, color: "var(--lavender-glow)", letterSpacing: "1px" }}>{slab.num}</span>
+                <h3 style={{ fontSize: 40, fontWeight: 540, lineHeight: 1, letterSpacing: "-1px", color: "#fff", margin: 0 }}>{slab.title}</h3>
+                <p style={{ fontSize: 17, fontWeight: 460, lineHeight: 1.55, color: "rgba(255,255,255,0.65)", margin: 0 }}>{slab.body}</p>
                 <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 8 }}>
                   {slab.bullets.map((b) => (
-                    <li key={b} style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: 14.5, color: "var(--fg-2)" }}>
-                      <span style={{ color: "var(--amethyst-link)", marginTop: 1 }}>—</span>
+                    <li key={b} style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: 14.5, color: "rgba(255,255,255,0.7)" }}>
+                      <span style={{ color: "var(--lavender-glow)", marginTop: 1 }}>—</span>
                       <span>{b}</span>
                     </li>
                   ))}
@@ -220,14 +221,14 @@ export function FeatureSlabs() {
                 {slab.href === "#assessment" ? (
                   <button
                     onClick={() => document.getElementById("assessment")?.scrollIntoView({ behavior: "smooth" })}
-                    style={{ fontSize: 15, fontWeight: 540, color: "var(--amethyst-link)", textDecoration: "underline", textUnderlineOffset: "3px", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                    style={{ fontSize: 15, fontWeight: 540, color: "var(--lavender-glow)", textDecoration: "underline", textUnderlineOffset: "3px", background: "none", border: "none", cursor: "pointer", padding: 0 }}
                   >
                     {slab.cta}
                   </button>
                 ) : (
                   <Link
                     href={slab.href}
-                    style={{ fontSize: 15, fontWeight: 540, color: "var(--amethyst-link)", textDecoration: "underline", textUnderlineOffset: "3px" }}
+                    style={{ fontSize: 15, fontWeight: 540, color: "var(--lavender-glow)", textDecoration: "underline", textUnderlineOffset: "3px" }}
                   >
                     {slab.cta}
                   </Link>

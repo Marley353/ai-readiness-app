@@ -13,9 +13,8 @@ export function FinalCta() {
         position: "relative",
         padding: "120px 24px",
         overflow: "hidden",
-        background: "var(--bg-page-2, #f2ede4)",
-        borderTop: "1px solid var(--parchment-border)",
-        borderBottom: "1px solid var(--parchment-border)",
+        background: "#050914",
+        color: "#fff",
       }}
     >
       {/* Ambient grid */}
@@ -26,7 +25,7 @@ export function FinalCta() {
           inset: 0,
           pointerEvents: "none",
           backgroundImage:
-            "linear-gradient(to right, rgba(41,40,39,0.055) 1px, transparent 1px), linear-gradient(to bottom, rgba(41,40,39,0.055) 1px, transparent 1px)",
+            "linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)",
           backgroundSize: "48px 48px",
           maskImage: "radial-gradient(ellipse 70% 60% at 50% 40%, #000 0%, transparent 75%)",
           WebkitMaskImage: "radial-gradient(ellipse 70% 60% at 50% 40%, #000 0%, transparent 75%)",
@@ -82,19 +81,19 @@ export function FinalCta() {
             fontWeight: 460,
             lineHeight: 0.98,
             letterSpacing: "-1.8px",
-            color: "var(--fg-1)",
+            color: "#fff",
             margin: 0,
           }}
         >
           Stop reading about AI.
           <br />
-          <em style={{ fontStyle: "italic", color: "var(--fg-1)" }}>Start shipping it.</em>
+          <em style={{ fontStyle: "italic" }}>Start shipping it.</em>
         </h2>
         <p
           className="gsap-reveal"
           style={{
             fontSize: 19,
-            color: "var(--fg-2)",
+            color: "rgba(255,255,255,0.65)",
             marginTop: 20,
             maxWidth: 560,
             marginLeft: "auto",
@@ -122,9 +121,8 @@ export function FinalCta() {
               padding: "14px 22px",
               fontSize: 15,
               borderRadius: "var(--r-sm)",
-              background: "var(--charcoal-ink)",
-              color: "#fff",
-              boxShadow: "0 1px 0 rgba(255,255,255,0.15) inset, 0 6px 20px rgba(41,40,39,0.18)",
+              background: "var(--lavender-glow)",
+              color: "#080D1A",
               display: "inline-flex",
               alignItems: "center",
               gap: 8,
@@ -143,8 +141,8 @@ export function FinalCta() {
               textDecoration: "none",
               borderRadius: "var(--r-sm)",
               background: "transparent",
-              color: "var(--fg-1)",
-              border: "1px solid var(--border-2)",
+              color: "rgba(255,255,255,0.8)",
+              border: "1px solid rgba(255,255,255,0.2)",
             }}
           >
             See pricing
