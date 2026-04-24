@@ -20,7 +20,7 @@ export function PricingTeaser() {
       <div ref={sectionRef} style={{ maxWidth: 1240, margin: "0 auto" }}>
 
         {/* Header */}
-        <div className="gsap-reveal" style={{ textAlign: "center", marginBottom: 64 }}>
+        <div className="gsap-reveal" style={{ textAlign: "center", marginBottom: 40 }}>
           <span style={{ fontSize: 12, fontWeight: 700, color: "var(--lavender-glow)", textTransform: "uppercase" as const, letterSpacing: "0.6px", display: "inline-block", marginBottom: 16 }}>
             Pricing
           </span>
@@ -30,6 +30,16 @@ export function PricingTeaser() {
           </h2>
           <p style={{ fontSize: 19, fontWeight: 460, lineHeight: 1.55, color: "rgba(255,255,255,0.6)", maxWidth: 640, margin: "20px auto 0" }}>
             The assessment is free. The strategic roadmap, industry benchmarks, and board-ready outputs are where the real value sits.
+          </p>
+        </div>
+
+        {/* Context bridge */}
+        <div className="gsap-reveal" style={{ textAlign: "center", marginBottom: 40, maxWidth: 640, marginLeft: "auto", marginRight: "auto" }}>
+          <p style={{ fontSize: 12, fontWeight: 700, color: "var(--lavender-glow)", textTransform: "uppercase" as const, letterSpacing: "0.6px", marginBottom: 12 }}>
+            From insight to action
+          </p>
+          <p style={{ fontSize: 17, color: "rgba(255,255,255,0.55)", lineHeight: 1.55 }}>
+            You've seen where your organisation stands. The next step is turning that insight into a structured, prioritised plan.
           </p>
         </div>
 
@@ -66,6 +76,9 @@ export function PricingTeaser() {
                   </li>
                 ))}
               </ul>
+              <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginTop: 16 }}>
+                Score only — no roadmap or prioritisation included
+              </p>
             </div>
             <button
               onClick={() => window.location.href = "/app"}
@@ -121,7 +134,7 @@ export function PricingTeaser() {
                 <span style={{ fontSize: 14, color: "rgba(255,255,255,0.5)" }}>/ month</span>
               </div>
               <p style={{ fontSize: 15, color: "rgba(255,255,255,0.6)", lineHeight: 1.55, marginBottom: 24 }}>
-                Turn your score into a structured AI transformation plan.
+                Turn your score into a clear, prioritised AI execution plan your team can actually deliver.
               </p>
               <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }}>
                 {[
@@ -138,26 +151,40 @@ export function PricingTeaser() {
                   </li>
                 ))}
               </ul>
+              {/* Outcome layer */}
+              <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.08)", fontSize: 14, color: "rgba(255,255,255,0.5)" }}>
+                <p style={{ marginBottom: 8 }}>What this gives you:</p>
+                <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 4 }}>
+                  <li style={{ fontSize: 13, color: "rgba(255,255,255,0.6)" }}>• Clear 90-day priorities</li>
+                  <li style={{ fontSize: 13, color: "rgba(255,255,255,0.6)" }}>• Reduced execution risk</li>
+                  <li style={{ fontSize: 13, color: "rgba(255,255,255,0.6)" }}>• Defensible board-level direction</li>
+                </ul>
+              </div>
             </div>
-            <Link
-              href="/pricing"
-              className="hover:scale-105 transition-all duration-200 cta-glow"
-              style={{
-                marginTop: 32,
-                width: "100%",
-                padding: "14px 20px",
-                background: "var(--lavender-glow)",
-                color: "#080D1A",
-                fontWeight: 600,
-                fontSize: 15,
-                borderRadius: "var(--r-sm)",
-                textDecoration: "none",
-                textAlign: "center",
-                display: "block",
-              }}
-            >
-              Start Pro Trial
-            </Link>
+            <div>
+              <Link
+                href="/app"
+                className="hover:scale-105 transition-all duration-200 cta-glow"
+                style={{
+                  marginTop: 32,
+                  width: "100%",
+                  padding: "14px 20px",
+                  background: "var(--lavender-glow)",
+                  color: "#080D1A",
+                  fontWeight: 600,
+                  fontSize: 15,
+                  borderRadius: "var(--r-sm)",
+                  textDecoration: "none",
+                  textAlign: "center",
+                  display: "block",
+                }}
+              >
+                Start Pro Trial
+              </Link>
+              <p style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginTop: 12, textAlign: "center" }}>
+                Most teams upgrade after seeing their results
+              </p>
+            </div>
           </div>
 
           {/* ANNUAL */}
@@ -177,7 +204,7 @@ export function PricingTeaser() {
                 <span style={{ fontSize: 14, color: "rgba(255,255,255,0.5)" }}>/ year</span>
               </div>
               <p style={{ fontSize: 15, color: "rgba(255,255,255,0.6)", lineHeight: 1.55, marginBottom: 24 }}>
-                Best for teams embedding AI into long-term operations.
+                Best for organisations actively executing AI transformation across teams.
               </p>
               <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }}>
                 {[
@@ -194,7 +221,7 @@ export function PricingTeaser() {
               </ul>
             </div>
             <Link
-              href="/pricing"
+              href="/app"
               className="hover:scale-105 transition-all duration-200 cta-glow"
               style={{
                 marginTop: 32,
@@ -216,10 +243,13 @@ export function PricingTeaser() {
           </div>
         </div>
 
-        {/* Bottom reinforcement */}
+        {/* Bottom trust signals */}
         <div className="gsap-reveal" style={{ textAlign: "center", marginTop: 48 }}>
-          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)" }}>
+          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", marginBottom: 8 }}>
             No credit card required for the free assessment.
+          </p>
+          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.3)" }}>
+            No contracts. Upgrade only when you need structured execution support.
           </p>
         </div>
       </div>
