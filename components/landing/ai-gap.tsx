@@ -98,7 +98,7 @@ export function AiGap() {
             </p>
           </div>
           <button
-            onClick={() => document.getElementById("assessment")?.scrollIntoView({ behavior: "smooth" })}
+            onClick={() => window.location.href = "/app"}
             className="hover:scale-105 transition-all duration-200 cta-glow"
             style={{
               padding: "14px 28px",

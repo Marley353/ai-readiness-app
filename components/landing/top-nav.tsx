@@ -137,7 +137,7 @@ export function TopNav() {
                 Sign in
               </Link>
               <button
-                onClick={() => document.getElementById("assessment")?.scrollIntoView({ behavior: "smooth" })}
+                onClick={() => window.location.href = "/app"}
                 className="btn btn-primary"
                 style={{ padding: "10px 16px", fontSize: 14, border: "none", cursor: "pointer" }}
               >
