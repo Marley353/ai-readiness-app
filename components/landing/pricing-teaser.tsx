@@ -1,49 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { PRICING } from "@/lib/plans";
 import { useScrollReveal } from "@/lib/gsap-hooks";
 
 export function PricingTeaser() {
   const sectionRef = useScrollReveal<HTMLDivElement>({ y: 30, stagger: 0.1 });
-
-  const savings = Math.round(
-    ((PRICING.monthly.amount - PRICING.annual.amount / 12) / PRICING.monthly.amount) * 100,
-  );
-
-  const plans = [
-    {
-      tier: "Scorecard",
-      price: "Free",
-      sub: "",
-      desc: "The 8-dimension assessment and a benchmark against your sector.",
-      features: ["32-question scorecard", "Sector benchmark", "Basic PDF report"],
-      cta: "Start Free Assessment",
-      href: "#assessment",
-      highlight: false,
-    },
-    {
-      tier: "Pro",
-      price: `£${PRICING.monthly.amount}`,
-      sub: "/month",
-      desc: "Full roadmap, benchmarks on every chart, clean exports and unlimited assessments.",
-      features: ["Everything in Free", "12-month roadmap", "Industry benchmarks", "Clean PDF export", "Compare assessments"],
-      cta: "Start Pro Trial",
-      href: "/pricing",
-      highlight: true,
-    },
-    {
-      tier: "Annual",
-      price: `£${PRICING.annual.amount}`,
-      sub: "/year",
-      desc: `Save ${savings}% — everything in Pro, billed annually.`,
-      features: ["Everything in Pro", `≈ £${(PRICING.annual.amount / 12).toFixed(0)}/month`, "Priority support", "First access to new features"],
-      cta: "Start Pro Trial",
-      href: "/pricing",
-      highlight: false,
-    },
-  ];
 
   return (
     <section
@@ -51,121 +13,229 @@ export function PricingTeaser() {
       style={{
         position: "relative",
         padding: "120px 24px",
-        background: "var(--bg-page-2, #f2ede4)",
+        background: "#050914",
+        color: "#fff",
       }}
     >
-      <div ref={sectionRef} style={{ maxWidth: 1240, margin: "0 auto", position: "relative" }}>
-        <div className="gsap-reveal" style={{ textAlign: "center", maxWidth: 640, marginLeft: "auto", marginRight: "auto" }}>
-          <span style={{ fontSize: 12, fontWeight: 700, color: "var(--amethyst-link)", textTransform: "uppercase" as const, letterSpacing: "0.6px", display: "inline-block", marginBottom: 16 }}>
+      <div ref={sectionRef} style={{ maxWidth: 1240, margin: "0 auto" }}>
+
+        {/* Header */}
+        <div className="gsap-reveal" style={{ textAlign: "center", marginBottom: 64 }}>
+          <span style={{ fontSize: 12, fontWeight: 700, color: "var(--lavender-glow)", textTransform: "uppercase" as const, letterSpacing: "0.6px", display: "inline-block", marginBottom: 16 }}>
             Pricing
           </span>
-          <h2 style={{ fontSize: "clamp(34px, 4.4vw, 56px)", fontWeight: 460, lineHeight: 0.98, letterSpacing: "-1.4px", color: "var(--fg-1)", margin: 0 }}>
-            Three ways in. <em style={{ fontStyle: "italic" }}>One outcome.</em>
+          <h2 style={{ fontSize: "clamp(34px, 4.4vw, 56px)", fontWeight: 460, lineHeight: 0.98, letterSpacing: "-1.4px", color: "#fff", margin: 0 }}>
+            Start with a score.{" "}
+            <em style={{ fontStyle: "italic" }}>Upgrade when you need a plan.</em>
           </h2>
-          <p style={{ fontSize: 19, lineHeight: 1.55, color: "var(--fg-2)", marginTop: 20, marginLeft: "auto", marginRight: "auto" }}>
-            Start free with a scorecard. Upgrade to Pro when you need the roadmap and benchmarks.
+          <p style={{ fontSize: 19, fontWeight: 460, lineHeight: 1.55, color: "rgba(255,255,255,0.6)", maxWidth: 640, margin: "20px auto 0" }}>
+            The assessment is free. The roadmap, benchmarks, and board-ready outputs are where the real value sits.
           </p>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20, marginTop: 56 }} className="pricing-grid">
-          {plans.map((p) => (
-            <div
-              key={p.tier}
-              className="gsap-reveal"
-              style={{
-                background: p.highlight ? "var(--charcoal-ink)" : "var(--pure-white)",
-                color: p.highlight ? "var(--white-95)" : "var(--fg-1)",
-                border: `1px solid ${p.highlight ? "transparent" : "var(--parchment-border)"}`,
-                borderRadius: 16,
-                padding: 32,
-                display: "flex",
-                flexDirection: "column",
-                gap: 20,
-                position: "relative",
-                overflow: "hidden",
-              }}
-            >
-              {p.highlight && (
-                <div style={{ position: "absolute", width: 260, height: 260, borderRadius: "50%", background: "var(--amethyst-link)", filter: "blur(100px)", opacity: 0.4, bottom: -120, right: -80 }} />
-              )}
-              <div style={{ position: "relative" }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: p.highlight ? "var(--lavender-glow)" : "var(--amethyst-link)", letterSpacing: "1px", textTransform: "uppercase" as const }}>{p.tier}</div>
-                <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 12 }}>
-                  <span style={{ fontSize: 48, fontWeight: 540, letterSpacing: "-1.2px", lineHeight: 1 }}>{p.price}</span>
-                  {p.sub && <span style={{ fontSize: 14, color: p.highlight ? "rgba(255,255,255,0.6)" : "var(--fg-3)" }}>{p.sub}</span>}
-                </div>
-                <p style={{ fontSize: 15, fontWeight: 460, lineHeight: 1.5, color: p.highlight ? "rgba(255,255,255,0.75)" : "var(--fg-2)", margin: "12px 0 0" }}>{p.desc}</p>
-              </div>
-              <div style={{ height: 1, background: p.highlight ? "rgba(255,255,255,0.12)" : "var(--parchment-border)", position: "relative" }} />
-              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10, position: "relative" }}>
-                {p.features.map((f) => (
-                  <li key={f} style={{ fontSize: 14, fontWeight: 460, color: p.highlight ? "rgba(255,255,255,0.85)" : "var(--fg-2)", display: "flex", gap: 10, alignItems: "flex-start" }}>
-                    <span style={{ color: p.highlight ? "var(--lavender-glow)" : "var(--amethyst-link)", marginTop: 1 }}>—</span>
+        {/* Cards */}
+        <div className="gsap-reveal pricing-grid" style={{ display: "grid", gap: 24, alignItems: "stretch" }}>
+
+          {/* FREE */}
+          <div style={{
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: 16,
+            padding: 32,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}>
+            <div>
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", marginBottom: 8 }}>Scorecard</p>
+              <h3 style={{ fontSize: 32, fontWeight: 540, color: "#fff", margin: "0 0 16px" }}>Free</h3>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.6)", lineHeight: 1.55, marginBottom: 24 }}>
+                Get a clear, defensible baseline of your AI readiness.
+              </p>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }}>
+                {[
+                  "32-question assessment",
+                  "AI readiness score (0–100)",
+                  "8-dimension breakdown",
+                  "Sector benchmark comparison",
+                  "Basic PDF export",
+                ].map((f) => (
+                  <li key={f} style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", display: "flex", gap: 10, alignItems: "flex-start" }}>
+                    <span style={{ color: "var(--lavender-glow)" }}>•</span>
                     <span>{f}</span>
                   </li>
                 ))}
               </ul>
-              {p.href === "#assessment" ? (
-                <button
-                  onClick={() => document.getElementById("assessment")?.scrollIntoView({ behavior: "smooth" })}
-                  className="hover:scale-105 transition-all duration-200"
-                  style={{
-                    marginTop: "auto",
-                    position: "relative",
-                    textAlign: "center",
-                    padding: "14px 20px",
-                    borderRadius: "var(--r-sm)",
-                    fontSize: 15,
-                    fontWeight: 600,
-                    background: "var(--warm-cream)",
-                    color: "var(--charcoal-ink)",
-                    border: "none",
-                    cursor: "pointer",
-                    width: "100%",
-                  }}
-                >
-                  {p.cta}
-                </button>
-              ) : (
-                <Link
-                  href={p.href}
-                  style={{
-                    marginTop: "auto",
-                    position: "relative",
-                    textAlign: "center",
-                    padding: "14px 20px",
-                    borderRadius: "var(--r-sm)",
-                    fontSize: 15,
-                    fontWeight: 600,
-                    textDecoration: "none",
-                    background: p.highlight ? "var(--lavender-glow)" : "var(--warm-cream)",
-                    color: "var(--charcoal-ink)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                  }}
-                >
-                  {p.cta}
-                  {p.highlight && <ArrowRight size={14} />}
-                </Link>
-              )}
             </div>
-          ))}
+            <button
+              onClick={() => document.getElementById("assessment")?.scrollIntoView({ behavior: "smooth" })}
+              className="hover:scale-105 transition-all duration-200"
+              style={{
+                marginTop: 32,
+                width: "100%",
+                padding: "14px 20px",
+                background: "var(--lavender-glow)",
+                color: "#080D1A",
+                fontWeight: 600,
+                fontSize: 15,
+                borderRadius: "var(--r-sm)",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              Start Free Assessment
+            </button>
+          </div>
+
+          {/* PRO (HIGHLIGHTED) */}
+          <div style={{
+            background: "linear-gradient(to bottom, rgba(255,255,255,0.06), rgba(255,255,255,0.02))",
+            border: "2px solid var(--lavender-glow)",
+            borderRadius: 16,
+            padding: 32,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            position: "relative",
+            overflow: "hidden",
+          }}>
+            <div style={{
+              position: "absolute",
+              top: 16,
+              right: 16,
+              fontSize: 11,
+              fontWeight: 700,
+              background: "var(--lavender-glow)",
+              color: "#080D1A",
+              padding: "4px 12px",
+              borderRadius: 999,
+              textTransform: "uppercase" as const,
+              letterSpacing: "0.5px",
+            }}>
+              Most Popular
+            </div>
+            <div>
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", marginBottom: 8 }}>Pro</p>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 8 }}>
+                <h3 style={{ fontSize: 32, fontWeight: 540, color: "#fff", margin: 0 }}>£{PRICING.monthly.amount}</h3>
+                <span style={{ fontSize: 14, color: "rgba(255,255,255,0.5)" }}>/ month</span>
+              </div>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.6)", lineHeight: 1.55, marginBottom: 24 }}>
+                Turn your score into a structured AI transformation plan.
+              </p>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }}>
+                {[
+                  "Everything in Free",
+                  "12-month AI roadmap",
+                  "Priority action plan (90 days)",
+                  "Full benchmark visibility",
+                  "Clean board-ready PDF export",
+                  "Compare multiple assessments",
+                ].map((f) => (
+                  <li key={f} style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", display: "flex", gap: 10, alignItems: "flex-start" }}>
+                    <span style={{ color: "var(--lavender-glow)" }}>•</span>
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <Link
+              href="/pricing"
+              className="hover:scale-105 transition-all duration-200"
+              style={{
+                marginTop: 32,
+                width: "100%",
+                padding: "14px 20px",
+                background: "var(--lavender-glow)",
+                color: "#080D1A",
+                fontWeight: 600,
+                fontSize: 15,
+                borderRadius: "var(--r-sm)",
+                textDecoration: "none",
+                textAlign: "center",
+                display: "block",
+              }}
+            >
+              Start Pro Trial
+            </Link>
+          </div>
+
+          {/* ANNUAL */}
+          <div style={{
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: 16,
+            padding: 32,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}>
+            <div>
+              <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", marginBottom: 8 }}>Annual</p>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 8 }}>
+                <h3 style={{ fontSize: 32, fontWeight: 540, color: "#fff", margin: 0 }}>£{PRICING.annual.amount}</h3>
+                <span style={{ fontSize: 14, color: "rgba(255,255,255,0.5)" }}>/ year</span>
+              </div>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,0.6)", lineHeight: 1.55, marginBottom: 24 }}>
+                Best for teams embedding AI into long-term operations.
+              </p>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }}>
+                {[
+                  "Everything in Pro",
+                  "Save ~28%",
+                  "Priority feature access",
+                  "Ongoing reassessment tracking",
+                ].map((f) => (
+                  <li key={f} style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", display: "flex", gap: 10, alignItems: "flex-start" }}>
+                    <span style={{ color: "var(--lavender-glow)" }}>•</span>
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <Link
+              href="/pricing"
+              className="hover:scale-105 transition-all duration-200"
+              style={{
+                marginTop: 32,
+                width: "100%",
+                padding: "14px 20px",
+                background: "transparent",
+                color: "var(--lavender-glow)",
+                fontWeight: 600,
+                fontSize: 15,
+                borderRadius: "var(--r-sm)",
+                border: "1px solid var(--lavender-glow)",
+                textDecoration: "none",
+                textAlign: "center",
+                display: "block",
+              }}
+            >
+              Start Pro Trial
+            </Link>
+          </div>
         </div>
 
-        <div className="gsap-reveal" style={{ marginTop: 32, textAlign: "center" }}>
-          <Link
-            href="/pricing"
-            style={{ fontSize: 15, fontWeight: 540, color: "var(--amethyst-link)", textDecoration: "underline", textUnderlineOffset: "3px" }}
-          >
-            See full feature comparison →
-          </Link>
+        {/* Bottom reinforcement */}
+        <div className="gsap-reveal" style={{ textAlign: "center", marginTop: 48 }}>
+          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)" }}>
+            No credit card required for the free assessment.
+          </p>
         </div>
       </div>
 
       <style jsx global>{`
-        @media (max-width: 980px) { .pricing-grid { grid-template-columns: 1fr !important; max-width: 480px; margin-left: auto; margin-right: auto; } }
+        .pricing-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        @media (max-width: 980px) {
+          .pricing-grid {
+            grid-template-columns: 1fr !important;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+          }
+        }
       `}</style>
     </section>
   );
