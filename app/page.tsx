@@ -1,5 +1,6 @@
 import { TopNav } from "@/components/landing/top-nav";
 import { Hero } from "@/components/landing/hero";
+import { ScorecardPreview } from "@/components/landing/scorecard-preview";
 import { AiGap } from "@/components/landing/ai-gap";
 import { DimensionsGrid } from "@/components/landing/dimensions";
 import { HowItWorks } from "@/components/landing/how-it-works";
@@ -12,15 +13,17 @@ import { FinalCta } from "@/components/landing/final-cta";
 import { Footer } from "@/components/landing/footer";
 
 // Marketing landing page. The actual assessment tool lives at /app.
-// Narrative arc (per skill v1.1):
-//   Hero (PAS opening) → AI Gap (problem) → Dimensions (framework) →
-//   How it works (agitation→solution) → Tier Benchmark (desire) →
-//   Feature slabs → Personas → Pricing teaser → FAQ → Final CTA (action)
+// Narrative arc:
+//   Hero → Scorecard Preview (value reveal) → AI Gap (problem) →
+//   Dimensions (framework) → How it works (agitation→solution) →
+//   Tier Benchmark (desire) → Feature slabs → Personas →
+//   Pricing teaser → FAQ → Final CTA (action)
 export default function LandingPage() {
   return (
     <>
       <TopNav />
       <Hero />
+      <ScorecardPreview />
       <AiGap />
       <DimensionsGrid />
       <HowItWorks />
