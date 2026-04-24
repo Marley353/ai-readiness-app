@@ -151,8 +151,8 @@ const SLABS = [
     title: "The 12-Month Roadmap.",
     body: "A phased plan auto-generated from your scores. Foundation (0-90 days), Build (3-6 months), Scale (6-12 months) — every action mapped to your weakest dimensions.",
     bullets: ["Phase-by-phase action items with priority tags", "Tailored to your lowest-scoring dimensions first", "Timeline format ready to drop into a board pack"],
-    cta: "Preview the roadmap →",
-    href: "/pricing",
+    cta: "Start Free Assessment →",
+    href: "/app",
     Visual: RoadmapMock,
   },
   {
