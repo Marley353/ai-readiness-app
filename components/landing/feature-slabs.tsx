@@ -192,7 +192,7 @@ export function FeatureSlabs() {
           {SLABS.map((slab, i) => (
             <div
               key={slab.num}
-              className="gsap-reveal slab-grid"
+              className="gsap-reveal slab-grid shadow-lg hover:shadow-2xl transition duration-300"
               style={{
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr",
