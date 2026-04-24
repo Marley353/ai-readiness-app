@@ -14,7 +14,7 @@ const SOURCES = [
     Icon: Database,
     title: "Cisco AI Readiness Index",
     description:
-      "Annual survey of 8,000+ organisations across 30 markets. Defines the 4-tier readiness model (Laggard / Follower / Chaser / Pacesetter) and provides the weighted infrastructure, data and governance baselines we calibrate against.",
+      "Annual survey of 8,000+ organisations across 30 markets. Defines the 4-tier readiness model — Laggard (Early), Follower (Emerging), Chaser (Progressing), Pacesetter (Advanced) — and provides the weighted infrastructure, data and governance baselines we calibrate against.",
   },
   {
     Icon: BookOpen,

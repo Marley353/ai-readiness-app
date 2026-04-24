@@ -30,10 +30,10 @@ function useCounter(target: number, duration = 1600) {
 }
 
 const TIERS = [
-  { name: "Laggard", range: "0–25", pct: 1, body: "No strategy, no infrastructure. AI is someone else's problem." },
-  { name: "Follower", range: "26–50", pct: 35, body: "Experimenting. No systematic approach. Pilots rarely reach production." },
-  { name: "Chaser", range: "51–75", pct: 51, body: "Active pilots and some structure. Scaling is where the wheels come off.", highlight: true },
-  { name: "Pacesetter", range: "76–100", pct: 13, body: "Systematic. Scaling. Seeing measurable value. The destination." },
+  { name: "Laggard", internal: "Early", range: "0–25", pct: 1, body: "No strategy, no infrastructure. AI is someone else's problem." },
+  { name: "Follower", internal: "Emerging", range: "26–50", pct: 35, body: "Experimenting. No systematic approach. Pilots rarely reach production." },
+  { name: "Chaser", internal: "Progressing", range: "51–75", pct: 51, body: "Active pilots and some structure. Scaling is where the wheels come off.", highlight: true },
+  { name: "Pacesetter", internal: "Advanced", range: "76–100", pct: 13, body: "Systematic. Scaling. Seeing measurable value. The destination." },
 ];
 
 export function TierBenchmark() {
@@ -91,6 +91,7 @@ export function TierBenchmark() {
                   )}
                 </div>
                 <div style={{ fontSize: 22, fontWeight: 540, letterSpacing: "-0.4px", color: "var(--fg-1)" }}>{t.name}</div>
+                <div style={{ fontSize: 12, color: "var(--fg-3)", marginTop: 2 }}>({t.internal})</div>
                 <div style={{ fontSize: 48, fontWeight: 540, lineHeight: 1, letterSpacing: "-1.3px", color: "var(--lavender-glow)", marginTop: 8, fontVariantNumeric: "tabular-nums" }}>
                   {t.pct === 1 ? "<1" : display}%
                 </div>

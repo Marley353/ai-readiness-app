@@ -14,6 +14,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { Download, Mail, Plus, Printer, Trash2, Copy, Sparkles, AlertTriangle, TrendingUp, Shield, Building2, FileText, Zap, Target, Activity, ArrowRight, Clock, CheckCircle2, Compass, Users, Workflow, Database, Cpu, Scale, Heart, Rocket, Beaker, type LucideIcon } from "lucide-react";
 import { AuthHeader } from "@/components/auth-header";
 import { ProGate } from "@/components/pro-gate";
+import { getExternalMaturityLabel } from "@/lib/maturity-labels";
 import { useCanUse } from "@/lib/use-plan";
 import jsPDF from "jspdf";
 
@@ -655,9 +656,9 @@ Business Profile:
 - Annual Revenue: ${assessment.annualRevenue || "Not specified"}
 - Operational Complexity: ${complexity?.label || "Not specified"}
 
-Overall Readiness: ${overall}% (${band.label})
+Overall Readiness: ${overall}% — ${getExternalMaturityLabel(band.label)} (${band.label})
 
-${assessment.businessName || "The organisation"} demonstrates ${band.label.toLowerCase()} AI readiness with an overall score of ${overall}%. ${band.advice}
+${assessment.businessName || "The organisation"} is classified as a ${getExternalMaturityLabel(band.label)} (${band.label}) with an overall AI readiness score of ${overall}%. ${band.advice}
 
 Risk Profile: ${risk.level.charAt(0).toUpperCase() + risk.level.slice(1)} Risk
 ${risk.level === "high" ? "Critical attention required in: " + risk.factors.slice(0, 3).join(", ") + "." : risk.level === "medium" ? "Moderate risks identified that should be addressed in the near term." : "Risk posture is well-managed with no critical gaps identified."}
@@ -896,7 +897,7 @@ function exportPdf(assessment: Assessment) {
   doc.text("READINESS", W - 50, 124, { align: "center" });
   doc.setFontSize(10);
   doc.setTextColor(203, 213, 225);
-  doc.text(band.label, W - 50, 132, { align: "center" });
+  doc.text(`${getExternalMaturityLabel(band.label)} (${band.label})`, W - 50, 132, { align: "center" });
 
   // Bottom strip
   doc.setFillColor(20, 184, 166, 0.15);
@@ -929,7 +930,7 @@ function exportPdf(assessment: Assessment) {
 
   // Score overview boxes (4-up)
   const kpis = [
-    { label: "AI Readiness Score", value: `${overall}%`, sub: band.label, c: scoreColor(overall) },
+    { label: "AI Readiness Score", value: `${overall}%`, sub: `${getExternalMaturityLabel(band.label)} (${band.label})`, c: scoreColor(overall) },
     { label: "Risk Level", value: risk.level.charAt(0).toUpperCase() + risk.level.slice(1), sub: `Score ${risk.score}/100`, c: risk.level === "high" ? [239, 68, 68] as [number,number,number] : risk.level === "medium" ? [217, 119, 6] as [number,number,number] : [5, 150, 105] as [number,number,number] },
     { label: "Business Impact", value: impact.category.split(" ")[0], sub: impact.category, c: [8, 145, 178] as [number,number,number] },
     { label: "ROI Opportunity", value: roi.range, sub: `${roi.confidence} confidence`, c: [13, 148, 136] as [number,number,number] },
@@ -1356,7 +1357,7 @@ function mailTo(assessment: Assessment) {
     `Assessment: ${assessment.name}`,
     `Assessor: ${assessment.assessor || "N/A"}`,
     ``,
-    `Overall Score: ${overall}% (${band.label})`,
+    `Overall Score: ${overall}% — ${getExternalMaturityLabel(band.label)} (${band.label})`,
     `Risk Level: ${risk.level.charAt(0).toUpperCase() + risk.level.slice(1)}`,
     `Business Impact: ${impact.category}`,
     `ROI Opportunity: ${roi.range}`,
@@ -1668,8 +1669,8 @@ export default function AIReadinessScorecardApp() {
               <ScoreRing score={overall} size={148} />
               <div className="hidden md:flex flex-col gap-2">
                 <div className={`rounded-xl px-4 py-2.5 text-center border ${band.tone}`}>
-                  <p className="text-base font-black">{band.label}</p>
-                  <p className="text-xs opacity-70 mt-0.5">Maturity Band</p>
+                  <p className="text-base font-black">{getExternalMaturityLabel(band.label)}</p>
+                  <p className="text-xs opacity-70 mt-0.5">{band.label}</p>
                 </div>
                 <div className={`rounded-xl px-4 py-2.5 text-center ${risk.level === "high" ? "bg-red-100 text-red-800 border border-red-200" : risk.level === "medium" ? "bg-amber-100 text-amber-800 border border-amber-200" : "bg-emerald-100 text-emerald-800 border border-emerald-200"}`}>
                   <p className="text-sm font-bold">{risk.level.charAt(0).toUpperCase() + risk.level.slice(1)} Risk</p>
@@ -1685,7 +1686,7 @@ export default function AIReadinessScorecardApp() {
           <div className="mx-auto max-w-7xl px-4 py-4 md:px-8">
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4 stagger-children">
               {[
-                { label: "AI Maturity", numeric: overall, sub: band.label, icon: <TrendingUp className="h-3.5 w-3.5" />, color: "#ffb770" },
+                { label: "AI Maturity", numeric: overall, sub: `${getExternalMaturityLabel(band.label)} (${band.label})`, icon: <TrendingUp className="h-3.5 w-3.5" />, color: "#ffb770" },
                 { label: "Operational Impact", numeric: operationalImpact, sub: "Process & tech", icon: <Activity className="h-3.5 w-3.5" />, color: "#ffb770" },
                 { label: "Efficiency Opportunity", numeric: efficiencyOpportunity, sub: "Improvement gap", icon: <Zap className="h-3.5 w-3.5" />, color: "#ffb770" },
                 { label: "Risk Exposure", numeric: riskExposure, sub: `${risk.level.charAt(0).toUpperCase() + risk.level.slice(1)} risk`, icon: <AlertTriangle className="h-3.5 w-3.5" />, color: riskExposure >= 60 ? "#fda4af" : riskExposure >= 30 ? "#fcd34d" : "#86efac" },
@@ -1776,7 +1777,7 @@ export default function AIReadinessScorecardApp() {
               <div className="p-4 space-y-2.5">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-slate-500">Maturity</span>
-                  <span className="font-bold" style={{ color: overall >= 70 ? "#4d7c63" : overall >= 50 ? "#c4661a" : overall >= 30 ? "#8f7240" : "#9a3b57" }}>{band.label}</span>
+                  <span className="font-bold" style={{ color: overall >= 70 ? "#4d7c63" : overall >= 50 ? "#c4661a" : overall >= 30 ? "#8f7240" : "#9a3b57" }}>{getExternalMaturityLabel(band.label)}</span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-slate-500">Risk profile</span>
@@ -2052,7 +2053,8 @@ export default function AIReadinessScorecardApp() {
                     </div>
                     <div className="rounded-xl p-4" style={{ background: "rgba(255,183,112,0.06)", border: "1px solid rgba(255,183,112,0.18)" }}>
                       <p className="text-xs text-slate-400 mb-1">Maturity band</p>
-                      <p className="text-xl font-black text-slate-900">{band.label}</p>
+                      <p className="text-xl font-black text-slate-900">{getExternalMaturityLabel(band.label)}</p>
+                      <p className="text-xs text-slate-400 mt-0.5">({band.label})</p>
                       <p className="text-sm text-slate-500 mt-2 leading-relaxed">{band.advice}</p>
                     </div>
                   </div>
@@ -2382,7 +2384,7 @@ export default function AIReadinessScorecardApp() {
                     <div className="divide-y divide-slate-50 px-6">
                       {[
                         { label: "Overall Readiness", value: `${overall}%` },
-                        { label: "Maturity Band", badge: <span className={`text-xs px-2.5 py-1 rounded-full font-bold border ${band.tone}`}>{band.label}</span> },
+                        { label: "Maturity Band", badge: <span className={`text-xs px-2.5 py-1 rounded-full font-bold border ${band.tone}`}>{getExternalMaturityLabel(band.label)} ({band.label})</span> },
                         { label: "Risk Level", badge: <span className="text-xs px-2.5 py-1 rounded-full font-bold" style={{ background: risk.level === "high" ? "#fee2e2" : risk.level === "medium" ? "#fef3c7" : "#d1fae5", color: risk.level === "high" ? "#991b1b" : risk.level === "medium" ? "#92400e" : "#065f46" }}>{risk.level.charAt(0).toUpperCase() + risk.level.slice(1)}</span> },
                         { label: "ROI Potential", value: roi.range },
                         { label: "Sector", value: sectorInfo?.label },

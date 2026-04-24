@@ -83,6 +83,7 @@ export function ScorecardPreview() {
             <div style={{ background: "rgba(255,183,112,0.08)", borderRadius: 16, padding: 20, border: "1px solid rgba(255,183,112,0.25)" }}>
               <p style={{ fontSize: 14, color: "var(--fg-3)", marginBottom: 4 }}>Indicative tier</p>
               <p style={{ fontSize: 22, fontWeight: 540, color: "var(--fg-1)", margin: 0 }}>Chaser</p>
+              <p style={{ fontSize: 12, color: "var(--fg-3)", marginTop: 2 }}>(Progressing)</p>
               <p style={{ fontSize: 14, color: "var(--fg-2)", marginTop: 8, lineHeight: 1.55 }}>
                 Active experimentation, but not yet consistently scaled or governed.
               </p>
