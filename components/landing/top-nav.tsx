@@ -90,7 +90,7 @@ export function TopNav() {
             { href: "#framework", label: "Framework" },
             { href: "#how-it-works", label: "How it works" },
             { href: "/about", label: "About" },
-            { href: "/pricing", label: "Pricing" },
+            { href: "#pricing", label: "Pricing" },
           ].map((l) => (
             <Link
               key={l.href}
