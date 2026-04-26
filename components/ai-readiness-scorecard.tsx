@@ -1251,6 +1251,7 @@ export default function AIReadinessScorecardApp() {
   const [tab, setTab] = useState("assess");
   const [mounted, setMounted] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [email, setEmail] = useState('');
 
   useEffect(() => {
     if (mounted && typeof window !== "undefined") {
@@ -1948,6 +1949,50 @@ export default function AIReadinessScorecardApp() {
                     </div>
                   </div>
                 </div>
+
+                {/* ─── SAVE YOUR RESULTS ─── */}
+                <div className="rounded-3xl bg-white shadow-sm p-8" style={{ border: "1px solid #e2e8f0" }}>
+                  <p className="text-sm uppercase tracking-widest font-bold mb-3" style={{ color: "#00C9A7" }}>Save your results</p>
+                  <h3 className="text-xl font-semibold text-slate-900 mb-2">Send this to yourself or your team</h3>
+                  <p className="text-sm text-slate-500 mb-6">Get a copy of your readiness score and key insights to review or share internally.</p>
+                  <div className="flex flex-col md:flex-row gap-3">
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your email"
+                      className="flex-1 px-4 py-3 rounded-xl text-slate-900 placeholder:text-slate-400"
+                      style={{ background: "#f8fafc", border: "1px solid #e2e8f0" }}
+                    />
+                    <button
+                      onClick={() => console.log('Send results to:', email)}
+                      className="px-6 py-3 rounded-xl font-semibold text-white transition hover:opacity-90"
+                      style={{ background: "#00C9A7" }}
+                    >
+                      Send Results
+                    </button>
+                  </div>
+                </div>
+
+                {/* ─── BOARD SHARE ─── */}
+                <div className="rounded-3xl p-8" style={{ background: "#f8fafc", border: "1px solid #00C9A7" }}>
+                  <p className="text-sm uppercase tracking-widest font-bold mb-3" style={{ color: "#00C9A7" }}>Board-ready output</p>
+                  <h3 className="text-xl font-semibold text-slate-900 mb-2">Need to present this internally?</h3>
+                  <p className="text-slate-600 mb-4">Export a clean executive summary and supporting insights ready for board or leadership discussion.</p>
+                  <button
+                    onClick={() => console.log('Prepare board summary')}
+                    className="px-6 py-3 rounded-xl font-semibold text-white transition hover:opacity-90"
+                    style={{ background: "#00C9A7" }}
+                  >
+                    Prepare Board Summary
+                  </button>
+                </div>
+
+                {/* ─── RETURN LOOP ─── */}
+                <div className="text-center mt-16 text-sm text-slate-400">
+                  <p>AI readiness evolves quickly. Reassess in 90 days to track progress and measure what has improved.</p>
+                </div>
+
               </TabsContent>
 
               {/* ─── ROADMAP TAB ─── */}
