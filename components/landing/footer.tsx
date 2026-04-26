@@ -45,36 +45,13 @@ export function Footer() {
                 alignItems: "center",
                 gap: 10,
                 color: "#fff",
-                fontWeight: 540,
+                fontWeight: 600,
                 fontSize: 17,
                 letterSpacing: "-0.3px",
               }}
             >
-              <span
-                style={{
-                  width: 28,
-                  height: 28,
-                  borderRadius: 7,
-                  background: "rgba(255,255,255,0.08)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  position: "relative",
-                  overflow: "hidden",
-                }}
-              >
-                <span
-                  style={{
-                    position: "absolute",
-                    inset: 4,
-                    borderRadius: 4,
-                    background: "conic-gradient(from 0deg, var(--lavender-glow), #fff, var(--lavender-glow))",
-                    animation: "spinSlow 8s linear infinite",
-                    opacity: 0.9,
-                  }}
-                />
-              </span>
-              Digital Readiness AI
+              <img src="/logo.svg" alt="AI Readiness" width={30} height={30} />
+              AI Readiness
             </div>
             <p
               style={{
@@ -134,7 +111,7 @@ export function Footer() {
             flexWrap: "wrap",
           }}
         >
-          <div>© {new Date().getFullYear()} Digital Readiness AI — days, not weeks.</div>
+          <div>© {new Date().getFullYear()} AI Readiness — days, not weeks.</div>
           <div style={{ display: "flex", gap: 24 }}>
             <Link href="/terms" style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}>Terms</Link>
             <Link href="/privacy" style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", textDecoration: "none" }}>Privacy</Link>

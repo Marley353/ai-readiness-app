@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <defs>
+    <linearGradient id="hex-grad" x1="10" y1="110" x2="110" y2="10" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1a6dff"/>
+      <stop offset="100%" stop-color="#4da3ff"/>
+    </linearGradient>
+  </defs>
+  <!-- Outer hexagon -->
+  <polygon points="60,6 108,30 108,78 60,102 12,78 12,30" stroke="url(#hex-grad)" stroke-width="5" fill="none" stroke-linejoin="round"/>
+  <!-- Middle hexagon -->
+  <polygon points="60,22 94,40 94,72 60,90 26,72 26,40" stroke="url(#hex-grad)" stroke-width="4" fill="none" stroke-linejoin="round" opacity="0.7"/>
+  <!-- Inner hexagon -->
+  <polygon points="60,40 78,50 78,68 60,78 42,68 42,50" stroke="url(#hex-grad)" stroke-width="3.5" fill="url(#hex-grad)" fill-opacity="0.15" stroke-linejoin="round"/>
+  <!-- Centre dot -->
+  <circle cx="60" cy="59" r="5" fill="url(#hex-grad)"/>
+</svg>

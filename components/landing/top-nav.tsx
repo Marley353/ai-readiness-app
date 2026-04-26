@@ -49,38 +49,15 @@ export function TopNav() {
             display: "flex",
             alignItems: "center",
             gap: 10,
-            fontWeight: 540,
+            fontWeight: 600,
             color: "#fff",
-            fontSize: 16,
+            fontSize: 17,
             textDecoration: "none",
             letterSpacing: "-0.3px",
           }}
         >
-          <span
-            style={{
-              width: 28,
-              height: 28,
-              borderRadius: 7,
-              background: "var(--charcoal-ink)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              position: "relative",
-              overflow: "hidden",
-            }}
-          >
-            <span
-              style={{
-                position: "absolute",
-                inset: 4,
-                borderRadius: 4,
-                background: "conic-gradient(from 0deg, var(--lavender-glow), #fff, var(--lavender-glow))",
-                animation: "spinSlow 8s linear infinite",
-                opacity: 0.9,
-              }}
-            />
-          </span>
-          Digital Readiness AI
+          <img src="/logo.svg" alt="AI Readiness" width={30} height={30} className="nav-logo-icon" />
+          AI Readiness
         </Link>
 
         {/* Centre links */}
@@ -149,9 +126,12 @@ export function TopNav() {
       </div>
 
       <style jsx global>{`
-        @keyframes spinSlow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
+        @keyframes logoPulse {
+          0%, 100% { filter: drop-shadow(0 0 0px rgba(77,163,255,0)); }
+          50% { filter: drop-shadow(0 0 8px rgba(77,163,255,0.6)); }
+        }
+        .nav-logo-icon {
+          animation: logoPulse 3s ease-in-out infinite;
         }
         @media (min-width: 880px) {
           .nav .hidden.md\\:flex { display: flex !important; }

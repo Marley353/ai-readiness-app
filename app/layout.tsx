@@ -5,15 +5,15 @@ import { dark } from '@clerk/themes'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Digital Readiness AI · 8-Dimension Enterprise Framework',
+  title: 'AI Readiness · 8-Dimension Enterprise Framework',
   description: 'Professional AI readiness assessment with industry benchmarks, weighted scoring across 8 dimensions, and an actionable 12-month maturity roadmap.',
-  generator: 'Digital Readiness AI',
-  applicationName: 'Digital Readiness AI',
+  generator: 'AI Readiness',
+  applicationName: 'AI Readiness',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Digital Readiness AI',
+    title: 'AI Readiness',
   },
   formatDetection: {
     telephone: false,
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: 'Digital Readiness AI',
+    title: 'AI Readiness',
     description: 'Assess your organisation across 8 dimensions with industry benchmarks and a phased 12-month roadmap.',
     type: 'website',
   },
