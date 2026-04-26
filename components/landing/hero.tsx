@@ -1,9 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 
-const INDUSTRIES = ["General", "Retail", "Facilities Management", "Finance", "Public Sector"];
+const INDUSTRIES = [
+  { key: "General", label: "General" },
+  { key: "Retail", label: "Retail" },
+  { key: "Facilities Management", label: "FM" },
+  { key: "Finance", label: "Finance" },
+  { key: "Public Sector", label: "Public Sector" },
+];
 
 function getIndustryHook(industry: string): string {
   switch (industry) {
@@ -22,6 +27,11 @@ function getIndustryHook(industry: string): string {
 
 export function Hero() {
   const [industry, setIndustry] = useState("General");
+
+  const handleSampleReport = () => {
+    const el = document.getElementById("scorecard-preview");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
 
   const handleStart = () => {
     if (industry !== "General") {
@@ -127,21 +137,21 @@ export function Hero() {
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 28 }} className="hero-industry">
           {INDUSTRIES.map((item) => (
             <button
-              key={item}
-              onClick={() => setIndustry(item)}
+              key={item.key}
+              onClick={() => setIndustry(item.key)}
               style={{
                 padding: "7px 16px",
                 borderRadius: 999,
                 fontSize: 13,
-                fontWeight: industry === item ? 600 : 460,
-                background: industry === item ? "var(--lavender-glow)" : "transparent",
-                color: industry === item ? "#080D1A" : "rgba(255,255,255,0.5)",
-                border: `1px solid ${industry === item ? "var(--lavender-glow)" : "rgba(255,255,255,0.15)"}`,
+                fontWeight: industry === item.key ? 600 : 460,
+                background: industry === item.key ? "var(--lavender-glow)" : "transparent",
+                color: industry === item.key ? "#080D1A" : "rgba(255,255,255,0.5)",
+                border: `1px solid ${industry === item.key ? "var(--lavender-glow)" : "rgba(255,255,255,0.15)"}`,
                 cursor: "pointer",
                 transition: "all 200ms ease",
               }}
             >
-              {item}
+              {item.label}
             </button>
           ))}
         </div>
@@ -155,24 +165,23 @@ export function Hero() {
           >
             Start Free Assessment
           </button>
-          <Link
-            href="#scorecard-preview"
+          <button
+            onClick={handleSampleReport}
             style={{
-              display: "inline-block",
               padding: "15px 32px",
               background: "transparent",
               color: "#fff",
               fontWeight: 600,
               borderRadius: 10,
               border: "1px solid rgba(255,255,255,0.35)",
-              textDecoration: "none",
               fontSize: 15,
               textAlign: "center",
+              cursor: "pointer",
               transition: "all 150ms",
             }}
           >
             View Sample Report
-          </Link>
+          </button>
         </div>
 
         <p style={{ fontSize: 13, color: "#a3a3a3", marginBottom: 28 }}>
