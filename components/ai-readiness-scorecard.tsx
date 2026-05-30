@@ -13,6 +13,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Cell, PieChart, Pie, Legend } from "recharts";
 import { Download, Mail, Plus, Printer, Trash2, Copy, Sparkles, AlertTriangle, TrendingUp, Shield, Building2, FileText, Zap, Target, Activity, ArrowRight, Clock, CheckCircle2, Compass, Users, Workflow, Database, Cpu, Scale, Heart, Rocket, Beaker, type LucideIcon } from "lucide-react";
 import { AuthHeader } from "@/components/auth-header";
+import { NeuralField } from "@/components/landing/neural-field";
+import { TiltCard } from "@/components/landing/tilt-card";
 import { ProGate } from "@/components/pro-gate";
 import { getExternalMaturityLabel } from "@/lib/maturity-labels";
 import { getIndustryInsight } from "@/lib/industry-insights";
@@ -1559,14 +1561,16 @@ export default function AIReadinessScorecardApp() {
   return (
     <div className="min-h-screen" style={{ background: "#faf8f5" }}>
       {/* HERO HEADER */}
-      <div className="aurora-bg" style={{ background: "radial-gradient(ellipse at 20% 0%, rgba(255,183,112,0.28) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(196,102,26,0.28) 0%, transparent 50%), radial-gradient(ellipse at 50% 50%, rgba(255,183,112,0.18) 0%, transparent 60%), #0a0a0a" }}>
+      <div className="aurora-bg" style={{ position: "relative", overflow: "hidden", background: "radial-gradient(ellipse at 20% 0%, rgba(255,183,112,0.28) 0%, transparent 50%), radial-gradient(ellipse at 80% 100%, rgba(196,102,26,0.28) 0%, transparent 50%), radial-gradient(ellipse at 50% 50%, rgba(255,183,112,0.18) 0%, transparent 60%), #0a0a0a" }}>
+        {/* Animated neural mesh — cohesive with landing hero */}
+        <NeuralField colors={["255, 183, 112", "196, 102, 26", "255, 210, 160"]} density={20000} linkDistance={130} style={{ opacity: 0.5, zIndex: 0 }} />
         {/* Top account bar */}
         <div className="relative z-10 mx-auto max-w-7xl px-4 pt-4 md:px-8">
           <div className="flex items-center justify-end gap-2">
             <AuthHeader />
           </div>
         </div>
-        <div className="relative mx-auto max-w-7xl px-4 pt-4 pb-0 md:px-8">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 pt-4 pb-0 md:px-8">
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div className="flex-1 min-w-0">
               <div className="mb-3 flex flex-wrap items-center gap-2">
@@ -1618,7 +1622,7 @@ export default function AIReadinessScorecardApp() {
         </div>
 
         {/* KPI strip */}
-        <div className="mt-6" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+        <div className="relative z-10 mt-6" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
           <div className="mx-auto max-w-7xl px-4 py-4 md:px-8">
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4 stagger-children">
               {[
@@ -1627,13 +1631,13 @@ export default function AIReadinessScorecardApp() {
                 { label: "Efficiency Opportunity", numeric: efficiencyOpportunity, sub: "Improvement gap", icon: <Zap className="h-3.5 w-3.5" />, color: "#ffb770" },
                 { label: "Risk Exposure", numeric: riskExposure, sub: `${risk.level.charAt(0).toUpperCase() + risk.level.slice(1)} risk`, icon: <AlertTriangle className="h-3.5 w-3.5" />, color: riskExposure >= 60 ? "#fda4af" : riskExposure >= 30 ? "#fcd34d" : "#86efac" },
               ].map((kpi) => (
-                <div key={kpi.label} className="glass-strong rounded-2xl p-3 hover-lift">
+                <TiltCard key={kpi.label} max={6} scale={1.03} glare={false} className="glass-strong rounded-2xl p-3">
                   <div className="flex items-center gap-1.5 text-xs font-semibold mb-1.5" style={{ color: kpi.color }}>
                     {kpi.icon} {kpi.label}
                   </div>
                   <AnimatedNumber value={kpi.numeric} suffix="%" className="text-2xl font-black text-white" />
                   <p className="text-xs text-slate-400 mt-0.5">{kpi.sub}</p>
-                </div>
+                </TiltCard>
               ))}
             </div>
           </div>

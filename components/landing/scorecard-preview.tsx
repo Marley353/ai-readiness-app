@@ -121,17 +121,26 @@ export function ScorecardPreview() {
           {INSIGHTS.map((card) => (
             <div
               key={card.tag}
+              className="insight-card"
+              onMouseMove={(e) => {
+                const r = e.currentTarget.getBoundingClientRect();
+                e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
+                e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
+              }}
               style={{
+                position: "relative",
                 background: "var(--pure-white)",
                 border: "1px solid var(--parchment-border)",
                 borderRadius: 16,
                 padding: 28,
-                transition: "transform 260ms ease, border-color 260ms ease",
+                overflow: "hidden",
+                transition: "transform 260ms cubic-bezier(.22,1,.36,1), border-color 260ms ease, box-shadow 260ms ease",
               }}
             >
-              <span style={{ fontSize: 11, fontWeight: 700, color: "var(--amethyst-link)", textTransform: "uppercase" as const, letterSpacing: "1px" }}>{card.tag}</span>
-              <h3 style={{ fontSize: 20, fontWeight: 540, color: "var(--fg-1)", margin: "10px 0 8px", letterSpacing: "-0.3px" }}>{card.title}</h3>
-              <p style={{ fontSize: 14.5, color: "var(--fg-2)", lineHeight: 1.55, margin: 0 }}>{card.body}</p>
+              <span className="insight-spotlight" aria-hidden />
+              <span style={{ position: "relative", fontSize: 11, fontWeight: 700, color: "var(--amethyst-link)", textTransform: "uppercase" as const, letterSpacing: "1px" }}>{card.tag}</span>
+              <h3 style={{ position: "relative", fontSize: 20, fontWeight: 540, color: "var(--fg-1)", margin: "10px 0 8px", letterSpacing: "-0.3px" }}>{card.title}</h3>
+              <p style={{ position: "relative", fontSize: 14.5, color: "var(--fg-2)", lineHeight: 1.55, margin: 0 }}>{card.body}</p>
             </div>
           ))}
         </div>
@@ -172,6 +181,20 @@ export function ScorecardPreview() {
           transform: translateY(-2px);
           border-color: var(--border-2);
         }
+        .insight-card:hover {
+          transform: translateY(-4px);
+          border-color: rgba(255,165,82,0.55);
+          box-shadow: 0 20px 50px rgba(255,138,61,0.1);
+        }
+        .insight-spotlight {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          opacity: 0;
+          transition: opacity 300ms ease;
+          background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%), rgba(255,165,82,0.16), transparent 60%);
+        }
+        .insight-card:hover .insight-spotlight { opacity: 1; }
         @media (min-width: 1024px) {
           .scorecard-grid {
             grid-template-columns: 1fr 2fr;
