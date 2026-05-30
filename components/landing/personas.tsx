@@ -29,8 +29,14 @@ export function Personas() {
           {PERSONAS.map((p) => (
             <div
               key={p.tag}
-              className="gsap-reveal"
+              className="gsap-reveal persona-card"
+              onMouseMove={(e) => {
+                const r = e.currentTarget.getBoundingClientRect();
+                e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
+                e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
+              }}
               style={{
+                position: "relative",
                 background: "var(--pure-white)",
                 border: "1px solid var(--parchment-border)",
                 borderRadius: 16,
@@ -38,28 +44,34 @@ export function Personas() {
                 display: "flex",
                 flexDirection: "column",
                 gap: 12,
-                transition: "transform 240ms ease, border-color 240ms ease, box-shadow 240ms ease",
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLDivElement).style.transform = "translateY(-2px)";
-                (e.currentTarget as HTMLDivElement).style.borderColor = "var(--border-2)";
-                (e.currentTarget as HTMLDivElement).style.boxShadow = "0 8px 24px rgba(41,40,39,0.06)";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)";
-                (e.currentTarget as HTMLDivElement).style.borderColor = "var(--parchment-border)";
-                (e.currentTarget as HTMLDivElement).style.boxShadow = "none";
+                overflow: "hidden",
+                transition: "transform 240ms cubic-bezier(.22,1,.36,1), border-color 240ms ease, box-shadow 240ms ease",
               }}
             >
-              <span style={{ fontSize: 11, fontWeight: 700, color: "var(--amethyst-link)", letterSpacing: "1px" }}>{p.tag}</span>
-              <h3 style={{ fontSize: 22, fontWeight: 540, letterSpacing: "-0.4px", color: "var(--fg-1)", margin: 0, lineHeight: 1.1 }}>{p.title}</h3>
-              <p style={{ fontSize: 14, fontWeight: 460, lineHeight: 1.55, color: "var(--fg-2)", margin: 0 }}>{p.description}</p>
+              <span className="persona-spotlight" aria-hidden />
+              <span style={{ position: "relative", fontSize: 11, fontWeight: 700, color: "var(--amethyst-link)", letterSpacing: "1px" }}>{p.tag}</span>
+              <h3 style={{ position: "relative", fontSize: 22, fontWeight: 540, letterSpacing: "-0.4px", color: "var(--fg-1)", margin: 0, lineHeight: 1.1 }}>{p.title}</h3>
+              <p style={{ position: "relative", fontSize: 14, fontWeight: 460, lineHeight: 1.55, color: "var(--fg-2)", margin: 0 }}>{p.description}</p>
             </div>
           ))}
         </div>
       </div>
 
       <style jsx global>{`
+        .persona-card:hover {
+          transform: translateY(-4px);
+          border-color: rgba(255,165,82,0.55) !important;
+          box-shadow: 0 20px 50px rgba(255,138,61,0.1);
+        }
+        .persona-spotlight {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          opacity: 0;
+          transition: opacity 300ms ease;
+          background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 50%), rgba(255,165,82,0.14), transparent 60%);
+        }
+        .persona-card:hover .persona-spotlight { opacity: 1; }
         @media (max-width: 980px) { .personas-grid { grid-template-columns: repeat(2, 1fr) !important; } }
         @media (max-width: 560px) { .personas-grid { grid-template-columns: 1fr !important; } }
       `}</style>

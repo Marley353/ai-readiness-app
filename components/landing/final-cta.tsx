@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useScrollReveal } from "@/lib/gsap-hooks";
+import { NeuralField } from "./neural-field";
 
 export function FinalCta() {
   const sectionRef = useScrollReveal<HTMLDivElement>({ y: 30, stagger: 0.12 });
@@ -17,6 +18,9 @@ export function FinalCta() {
         color: "#fff",
       }}
     >
+      {/* Animated neural mesh — cohesive closing moment */}
+      <NeuralField colors={["255, 183, 112", "196, 102, 26", "255, 210, 160"]} density={18000} linkDistance={130} style={{ opacity: 0.45 }} />
+
       {/* Ambient grid */}
       <div
         aria-hidden="true"
