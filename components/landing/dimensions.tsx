@@ -47,24 +47,33 @@ export function DimensionsGrid() {
             <div
               key={num}
               className="dim-card card-hover reveal"
+              onMouseMove={(e) => {
+                const r = e.currentTarget.getBoundingClientRect();
+                e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
+                e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
+              }}
               style={{
+                position: "relative",
                 background: "var(--pure-white)",
                 border: "1px solid var(--parchment-border)",
                 borderRadius: 16,
                 padding: 24,
                 cursor: "default",
+                overflow: "hidden",
               }}
             >
-              <p style={{ fontSize: 11, fontWeight: 700, color: "var(--amethyst-link)", letterSpacing: "0.6px", marginBottom: 8 }}>
+              {/* cursor spotlight */}
+              <span className="dim-spotlight" aria-hidden />
+              <p style={{ position: "relative", fontSize: 11, fontWeight: 700, color: "var(--amethyst-link)", letterSpacing: "0.6px", marginBottom: 8 }}>
                 {num}
               </p>
-              <h3 style={{ fontSize: 20, fontWeight: 540, color: "var(--fg-1)", margin: "0 0 10px", letterSpacing: "-0.3px" }}>
+              <h3 style={{ position: "relative", fontSize: 20, fontWeight: 540, color: "var(--fg-1)", margin: "0 0 10px", letterSpacing: "-0.3px" }}>
                 {title}
               </h3>
-              <p style={{ fontSize: 14.5, color: "var(--fg-2)", lineHeight: 1.55, margin: "0 0 16px" }}>
+              <p style={{ position: "relative", fontSize: 14.5, color: "var(--fg-2)", lineHeight: 1.55, margin: "0 0 16px" }}>
                 {desc}
               </p>
-              <div className="dim-bar" style={{ height: 3, width: 40, background: "var(--amethyst-link)", borderRadius: 2, transition: "width 300ms ease" }} />
+              <div className="dim-bar" style={{ position: "relative", height: 3, width: 40, background: "var(--amethyst-link)", borderRadius: 2, transition: "width 300ms ease" }} />
             </div>
           ))}
         </div>
@@ -94,13 +103,26 @@ export function DimensionsGrid() {
         .dim-grid {
           grid-template-columns: repeat(4, 1fr);
         }
+        .dim-card {
+          transition: transform 300ms cubic-bezier(.22,1,.36,1), border-color 300ms ease, box-shadow 300ms ease;
+        }
         .dim-card:hover {
-          transform: scale(1.04);
-          border-color: rgba(255,183,112,0.6) !important;
+          transform: translateY(-4px);
+          border-color: rgba(255,165,82,0.6) !important;
+          box-shadow: 0 20px 50px rgba(255,138,61,0.1);
         }
         .dim-card:hover .dim-bar {
           width: 100% !important;
         }
+        .dim-spotlight {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          opacity: 0;
+          transition: opacity 300ms ease;
+          background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%), rgba(255,165,82,0.16), transparent 60%);
+        }
+        .dim-card:hover .dim-spotlight { opacity: 1; }
         @media (max-width: 980px) {
           .dim-grid { grid-template-columns: repeat(2, 1fr) !important; }
         }
