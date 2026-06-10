@@ -1453,23 +1453,27 @@ export default function AIReadinessScorecardApp() {
   const [activeId, setActiveId] = useState<string>("");
   const [tab, setTab] = useState("assess");
   const [mounted, setMounted] = useState(false);
-  const [showWelcome] = useState(false);
   const [email, setEmail] = useState('');
-
 
   useEffect(() => {
     setMounted(true);
     const stored = localStorage.getItem(STORAGE_KEY);
     const active = localStorage.getItem(ACTIVE_KEY);
     if (stored) {
-      const parsed: Assessment[] = JSON.parse(stored);
-      setAssessments(parsed);
-      setActiveId(active && parsed.some((a) => a.id === active) ? active : parsed[0]?.id || "");
-    } else {
-      const first = makeBlankAssessment();
-      setAssessments([first]);
-      setActiveId(first.id);
+      try {
+        const parsed: Assessment[] = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length) {
+          setAssessments(parsed);
+          setActiveId(active && parsed.some((a) => a.id === active) ? active : parsed[0]?.id || "");
+          return;
+        }
+      } catch {
+        localStorage.removeItem(STORAGE_KEY);
+      }
     }
+    const first = makeBlankAssessment();
+    setAssessments([first]);
+    setActiveId(first.id);
   }, []);
 
   useEffect(() => {
@@ -2223,11 +2227,12 @@ export default function AIReadinessScorecardApp() {
                       style={{ background: "#f8fafc", border: "1px solid #e2e8f0" }}
                     />
                     <button
-                      onClick={() => console.log('Send results to:', email)}
-                      className="px-6 py-3 rounded-xl font-semibold text-white transition hover:opacity-90"
-                      style={{ background: "#00C9A7" }}
+                      disabled
+                      className="px-6 py-3 rounded-xl font-semibold text-white transition"
+                      style={{ background: "#94a3b8", cursor: "not-allowed" }}
+                      title="Coming soon"
                     >
-                      Send Results
+                      Send Results (Coming Soon)
                     </button>
                   </div>
                 </div>
@@ -2238,11 +2243,12 @@ export default function AIReadinessScorecardApp() {
                   <h3 className="text-xl font-semibold text-slate-900 mb-2">Need to present this internally?</h3>
                   <p className="text-slate-600 mb-4">Export a clean executive summary and supporting insights ready for board or leadership discussion.</p>
                   <button
-                    onClick={() => console.log('Prepare board summary')}
-                    className="px-6 py-3 rounded-xl font-semibold text-white transition hover:opacity-90"
-                    style={{ background: "#00C9A7" }}
+                    disabled
+                    className="px-6 py-3 rounded-xl font-semibold text-white transition"
+                    style={{ background: "#94a3b8", cursor: "not-allowed" }}
+                    title="Coming soon"
                   >
-                    Prepare Board Summary
+                    Prepare Board Summary (Coming Soon)
                   </button>
                 </div>
 

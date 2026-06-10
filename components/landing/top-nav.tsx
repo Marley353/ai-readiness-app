@@ -65,7 +65,7 @@ export function TopNav() {
           {[
             { href: "#scorecard", label: "Scorecard" },
             { href: "#framework", label: "Framework" },
-            { href: "#how-it-works", label: "How it works" },
+            { href: "#assessment", label: "How it works" },
             { href: "/about", label: "About" },
             { href: "#pricing", label: "Pricing" },
           ].map((l) => (

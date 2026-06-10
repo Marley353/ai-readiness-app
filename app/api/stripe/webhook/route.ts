@@ -9,14 +9,10 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 async function setUserPlan(clerkUserId: string, plan: "free" | "pro", extra: Record<string, unknown> = {}) {
-  try {
-    const client = await clerkClient();
-    await client.users.updateUser(clerkUserId, {
-      publicMetadata: { plan, ...extra },
-    });
-  } catch (e) {
-    console.error("[stripe webhook] failed to update Clerk user", clerkUserId, e);
-  }
+  const client = await clerkClient();
+  await client.users.updateUser(clerkUserId, {
+    publicMetadata: { plan, ...extra },
+  });
 }
 
 export async function POST(req: NextRequest) {

@@ -73,7 +73,7 @@ export function Footer() {
             <ul style={colListStyle}>
               <li><Link href="/app" style={linkStyle}>Readiness Scorecard</Link></li>
               <li><Link href="/#framework" style={linkStyle}>Framework</Link></li>
-              <li><Link href="/#how-it-works" style={linkStyle}>How it works</Link></li>
+              <li><Link href="/#assessment" style={linkStyle}>How it works</Link></li>
               <li><Link href="/pricing" style={linkStyle}>Pricing</Link></li>
             </ul>
           </div>

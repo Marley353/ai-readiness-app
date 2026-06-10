@@ -155,13 +155,23 @@ export function NeuralField({
     };
     const onLeave = () => { pointer.current.active = false; };
 
+    const onVisibility = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(rafRef.current);
+      } else if (!reduce) {
+        rafRef.current = requestAnimationFrame(step);
+      }
+    };
+
     window.addEventListener("resize", onResize);
+    document.addEventListener("visibilitychange", onVisibility);
     canvas.parentElement?.addEventListener("pointermove", onMove);
     canvas.parentElement?.addEventListener("pointerleave", onLeave);
 
     return () => {
       cancelAnimationFrame(rafRef.current);
       window.removeEventListener("resize", onResize);
+      document.removeEventListener("visibilitychange", onVisibility);
       canvas.parentElement?.removeEventListener("pointermove", onMove);
       canvas.parentElement?.removeEventListener("pointerleave", onLeave);
     };
