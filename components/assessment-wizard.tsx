@@ -1,57 +1,55 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
+import { PILLARS as ENGINE_PILLARS } from "@/lib/scoring";
 
-const PILLARS = [
-  { id: "strategy", title: "Leadership & Strategy", icon: "01", factors: [
-    { id: "strategy_vision", label: "Do you have a clearly defined AI vision with target outcomes?" },
-    { id: "strategy_exec", label: "Is there executive sponsorship and governance for AI initiatives?" },
-    { id: "strategy_roi", label: "Are your AI use cases linked to ROI or risk reduction?" },
-    { id: "strategy_policy", label: "Do you have policies for responsible AI use?" },
-  ]},
-  { id: "people", title: "People & Capability", icon: "02", factors: [
-    { id: "people_awareness", label: "How aware is your workforce of AI opportunities?" },
-    { id: "people_skills", label: "Do you have access to AI skills or partners?" },
-    { id: "people_change", label: "How ready is your organisation for AI-driven change?" },
-    { id: "people_champions", label: "Do you have named AI champions or product owners?" },
-  ]},
-  { id: "process", title: "Process & Operations", icon: "03", factors: [
-    { id: "process_manual", label: "Have you identified manual, repetitive workflows for AI?" },
-    { id: "process_standard", label: "Are your processes documented and standardised?" },
-    { id: "process_metrics", label: "Do operational baselines and KPIs exist?" },
-    { id: "process_pipeline", label: "Do you have a delivery process for piloting and scaling?" },
-  ]},
-  { id: "data", title: "Data & Insight", icon: "04", factors: [
-    { id: "data_quality", label: "Is your data quality trusted across the organisation?" },
-    { id: "data_access", label: "Is data accessible across teams and tools?" },
-    { id: "data_governance", label: "Is data ownership and governance clear?" },
-    { id: "data_structure", label: "Do you have sufficient structured data for your use cases?" },
-  ]},
-  { id: "tech", title: "Technology & Integration", icon: "05", factors: [
-    { id: "tech_stack", label: "Does your technology stack support modern AI tooling?" },
-    { id: "tech_api", label: "Do you have API and integration capability?" },
-    { id: "tech_security", label: "Are security and access controls in place for AI?" },
-    { id: "tech_scale", label: "Can you move AI from pilot to production scale?" },
-  ]},
-  { id: "ethics", title: "Governance, Risk & Ethics", icon: "06", factors: [
-    { id: "ethics_policy", label: "Do you have AI ethics policies and frameworks?" },
-    { id: "ethics_bias", label: "Do you monitor for bias and fairness in AI systems?" },
-    { id: "ethics_compliance", label: "Are you ready for AI regulations (EU AI Act, GDPR)?" },
-    { id: "ethics_transparency", label: "Do you practise transparency and explainability in AI?" },
-  ]},
-  { id: "culture", title: "Culture & Change", icon: "07", factors: [
-    { id: "culture_innovation", label: "Does your organisation have an innovation culture and digital mindset?" },
-    { id: "culture_change", label: "How mature are your change management capabilities?" },
-    { id: "culture_collaboration", label: "How strong is cross-functional collaboration?" },
-    { id: "culture_leadership", label: "Is leadership aligned on AI vision and communication?" },
-  ]},
-  { id: "innovation", title: "Innovation & Experimentation", icon: "08", factors: [
-    { id: "innovation_pilot", label: "Do you have proof-of-concept and pilot capabilities?" },
-    { id: "innovation_proto", label: "Is rapid prototyping infrastructure available?" },
-    { id: "innovation_learning", label: "Do you have learning loops and iteration processes?" },
-    { id: "innovation_metrics", label: "Are innovation metrics and success tracking in place?" },
-  ]},
-];
+// Question-phrased wording for the wizard. Factor IDs and ordering come
+// from the scoring engine (lib/scoring.ts) so the two can never desync;
+// any factor missing here falls back to its canonical engine label.
+const WIZARD_QUESTIONS: Record<string, string> = {
+  strategy_vision: "Do you have a clearly defined AI vision with target outcomes?",
+  strategy_exec: "Is there executive sponsorship and governance for AI initiatives?",
+  strategy_roi: "Are your AI use cases linked to ROI or risk reduction?",
+  strategy_policy: "Do you have policies for responsible AI use?",
+  people_awareness: "How aware is your workforce of AI opportunities?",
+  people_skills: "Do you have access to AI skills or partners?",
+  people_change: "How ready is your organisation for AI-driven change?",
+  people_champions: "Do you have named AI champions or product owners?",
+  process_manual: "Have you identified manual, repetitive workflows for AI?",
+  process_standard: "Are your processes documented and standardised?",
+  process_metrics: "Do operational baselines and KPIs exist?",
+  process_pipeline: "Do you have a delivery process for piloting and scaling?",
+  data_quality: "Is your data quality trusted across the organisation?",
+  data_access: "Is data accessible across teams and tools?",
+  data_governance: "Is data ownership and governance clear?",
+  data_structure: "Do you have sufficient structured data for your use cases?",
+  tech_stack: "Does your technology stack support modern AI tooling?",
+  tech_api: "Do you have API and integration capability?",
+  tech_security: "Are security and access controls in place for AI?",
+  tech_scale: "Can you move AI from pilot to production scale?",
+  ethics_policy: "Do you have AI ethics policies and frameworks?",
+  ethics_bias: "Do you monitor for bias and fairness in AI systems?",
+  ethics_compliance: "Are you ready for AI regulations (EU AI Act, GDPR)?",
+  ethics_transparency: "Do you practise transparency and explainability in AI?",
+  culture_innovation: "Does your organisation have an innovation culture and digital mindset?",
+  culture_change: "How mature are your change management capabilities?",
+  culture_collaboration: "How strong is cross-functional collaboration?",
+  culture_leadership: "Is leadership aligned on AI vision and communication?",
+  innovation_pilot: "Do you have proof-of-concept and pilot capabilities?",
+  innovation_proto: "Is rapid prototyping infrastructure available?",
+  innovation_learning: "Do you have learning loops and iteration processes?",
+  innovation_metrics: "Are innovation metrics and success tracking in place?",
+};
+
+const PILLARS = ENGINE_PILLARS.map((p, i) => ({
+  id: p.id,
+  title: p.title,
+  icon: String(i + 1).padStart(2, "0"),
+  factors: p.factors.map((f) => ({
+    id: f.id,
+    label: WIZARD_QUESTIONS[f.id] ?? f.label,
+  })),
+}));
 
 const ANSWER_OPTIONS = [
   { value: 1, label: "Not at all", sub: "No activity in this area" },

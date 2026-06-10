@@ -107,10 +107,15 @@ function PdfMock() {
         </div>
         <div style={{ height: 1, background: "rgba(255,255,255,0.08)", marginBottom: 12 }} />
         {/* Meta rows */}
-        {["Organisation", "Sector", "Assessor", "Date"].map((label) => (
+        {[
+          { label: "Organisation", w: 72 },
+          { label: "Sector", w: 58 },
+          { label: "Assessor", w: 85 },
+          { label: "Date", w: 51 },
+        ].map(({ label, w }) => (
           <div key={label} style={{ marginBottom: 8 }}>
             <div style={{ fontSize: 7, fontWeight: 700, color: "rgba(255,255,255,0.35)", letterSpacing: "0.3px", textTransform: "uppercase" as const }}>{label}</div>
-            <div style={{ height: 6, width: `${50 + Math.random() * 40}%`, borderRadius: 2, background: "rgba(255,255,255,0.08)", marginTop: 3 }} />
+            <div style={{ height: 6, width: `${w}%`, borderRadius: 2, background: "rgba(255,255,255,0.08)", marginTop: 3 }} />
           </div>
         ))}
         {/* Score circle */}

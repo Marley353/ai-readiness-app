@@ -98,7 +98,7 @@ export function TopNav() {
               >
                 Open app
               </Link>
-              <UserButton afterSignOutUrl="/" />
+              <UserButton />
             </>
           ) : (
             <>

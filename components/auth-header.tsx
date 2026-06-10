@@ -30,7 +30,6 @@ export function AuthHeader() {
           Account
         </Link>
         <UserButton
-          afterSignOutUrl="/"
           appearance={{
             elements: {
               avatarBox: "w-8 h-8 ring-2 ring-white/20 hover:ring-white/40 transition",

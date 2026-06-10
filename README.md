@@ -34,6 +34,8 @@ npm run dev
 | `STRIPE_PRICE_ID_MONTHLY` | For payments | Stripe Price ID for monthly plan |
 | `STRIPE_PRICE_ID_ANNUAL` | For payments | Stripe Price ID for annual plan |
 | `NEXT_PUBLIC_APP_URL` | For payments | Production URL (e.g. `https://yourapp.vercel.app`) |
+| `RESEND_API_KEY` | For email | Resend API key — enables the "Send Results" email feature |
+| `RESEND_FROM` | Optional | From address for result emails (defaults to Resend onboarding sender) |
 
 ## Data storage
 
