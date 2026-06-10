@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { PILLARS as ENGINE_PILLARS } from "@/lib/scoring";
+import { NeuralField } from "@/components/landing/neural-field";
 
 // Question-phrased wording for the wizard. Factor IDs and ordering come
 // from the scoring engine (lib/scoring.ts) so the two can never desync;
@@ -151,6 +152,8 @@ export function AssessmentWizard({ onComplete, existingScores }: AssessmentWizar
   if (phase === "start") {
     return (
       <section style={{ minHeight: "100vh", background: "#050914", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 24px", position: "relative", overflow: "hidden" }}>
+        {/* Animated neural mesh — cohesive with the landing hero */}
+        <NeuralField colors={["255, 183, 112", "196, 102, 26", "255, 210, 160"]} density={18000} linkDistance={130} style={{ opacity: 0.45 }} />
         {/* Ambient orbs */}
         <div aria-hidden="true" style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
           <div style={{ position: "absolute", width: 500, height: 500, borderRadius: "50%", background: "rgba(255,183,112,0.15)", filter: "blur(120px)", top: "-15%", right: "-10%" }} />

@@ -722,10 +722,23 @@ function ScoreRing({ score, size = 140 }: { score: number; size?: number }) {
   const cy = size / 2;
   return (
     <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ transform: "rotate(-90deg)" }}>
+      {/* Soft glow halo matching the score colour */}
+      <div
+        aria-hidden
+        style={{
+          position: "absolute",
+          inset: -size * 0.12,
+          borderRadius: "50%",
+          background: `radial-gradient(circle, ${color}33, transparent 70%)`,
+          filter: "blur(10px)",
+          pointerEvents: "none",
+        }}
+      />
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ transform: "rotate(-90deg)", position: "relative" }}>
         <circle cx={cx} cy={cy} r={radius} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth={strokeWidth} />
         <circle cx={cx} cy={cy} r={radius} fill="none" stroke={color} strokeWidth={strokeWidth}
-          strokeDasharray={`${filled} ${circumference - filled}`} strokeLinecap="round" />
+          strokeDasharray={`${filled} ${circumference - filled}`} strokeLinecap="round"
+          style={{ filter: `drop-shadow(0 0 6px ${color}aa)`, transition: "stroke-dasharray 1s cubic-bezier(.22,1,.36,1)" }} />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <AnimatedNumber value={score} suffix="%" className="text-3xl font-black text-white leading-none" />
