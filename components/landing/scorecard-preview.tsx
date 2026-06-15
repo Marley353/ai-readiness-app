@@ -1,6 +1,7 @@
 "use client";
 
 import { useScrollReveal } from "@/lib/gsap-hooks";
+import { CtaButton } from "./cta-button";
 
 const DIMENSIONS = [
   { label: "Leadership & Strategy", score: 74 },
@@ -147,22 +148,7 @@ export function ScorecardPreview() {
 
         {/* CTA */}
         <div className="gsap-reveal" style={{ textAlign: "center", marginTop: 48 }}>
-          <button
-            onClick={() => window.location.href = "/app"}
-            className="hover:scale-105 transition-all duration-200 cta-glow"
-            style={{
-              padding: "14px 28px",
-              background: "var(--charcoal-ink)",
-              color: "#fff",
-              fontWeight: 600,
-              fontSize: 15,
-              borderRadius: "var(--r-sm)",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            Start Free Assessment
-          </button>
+          <CtaButton>Start Free Assessment</CtaButton>
           <p style={{ fontSize: 14, color: "var(--fg-3)", marginTop: 16 }}>
             Complete the assessment to generate your own scorecard and priority actions.
           </p>

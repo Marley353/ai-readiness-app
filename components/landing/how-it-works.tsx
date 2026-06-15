@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { Zap, Users, Target, TrendingUp } from "lucide-react";
 import { useScrollReveal } from "@/lib/gsap-hooks";
 
 const STEPS = [
@@ -70,10 +71,10 @@ const STEPS = [
 ];
 
 const STATS = [
-  { icon: "⚡", label: "8 Minutes", sub: "Total time to complete", color: "#f59e0b" },
-  { icon: "👥", label: "8,000+", sub: "Organisations benchmarked", color: "#8b5cf6" },
-  { icon: "🎯", label: "90-Day Plan", sub: "Clear, prioritised actions", color: "#3b82f6" },
-  { icon: "📈", label: "Quarterly Tracking", sub: "Measure what moves the needle", color: "#14b8a6" },
+  { Icon: Zap, label: "8 Minutes", sub: "Total time to complete", color: "#f59e0b" },
+  { Icon: Users, label: "8,000+", sub: "Organisations benchmarked", color: "#8b5cf6" },
+  { Icon: Target, label: "90-Day Plan", sub: "Clear, prioritised actions", color: "#3b82f6" },
+  { Icon: TrendingUp, label: "Quarterly Tracking", sub: "Measure what moves the needle", color: "#14b8a6" },
 ];
 
 export function HowItWorks() {
@@ -252,7 +253,20 @@ export function HowItWorks() {
         >
           {STATS.map((s) => (
             <div key={s.label} style={{ display: "flex", alignItems: "center", gap: 14 }}>
-              <span style={{ fontSize: 28 }}>{s.icon}</span>
+              <span
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: 38,
+                  height: 38,
+                  borderRadius: 10,
+                  background: `${s.color}1a`,
+                  flexShrink: 0,
+                }}
+              >
+                <s.Icon size={19} strokeWidth={1.75} style={{ color: s.color }} />
+              </span>
               <div>
                 <div style={{ fontSize: 15, fontWeight: 700, color: "#fff" }}>{s.label}</div>
                 <div style={{ fontSize: 13, color: "rgba(255,255,255,0.45)" }}>{s.sub}</div>

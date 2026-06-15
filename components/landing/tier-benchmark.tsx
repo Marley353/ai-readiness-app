@@ -1,6 +1,7 @@
 "use client";
 
 import { useScrollReveal } from "@/lib/gsap-hooks";
+import { CtaButton } from "./cta-button";
 import React, { useEffect, useRef, useState } from "react";
 
 function useCounter(target: number, duration = 1600) {
@@ -117,25 +118,7 @@ export function TierBenchmark() {
 
         {/* CTA */}
         <div className="gsap-reveal" style={{ marginTop: 48, textAlign: "center" }}>
-          <button
-            onClick={() => window.location.href = "/app"}
-            className="hover:scale-105 transition-all duration-200 cta-glow"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "14px 22px",
-              borderRadius: "var(--r-sm)",
-              fontSize: 15,
-              fontWeight: 600,
-              background: "var(--warm-cream)",
-              color: "var(--charcoal-ink)",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            Start Free Assessment
-          </button>
+          <CtaButton>Start Free Assessment</CtaButton>
         </div>
       </div>
 

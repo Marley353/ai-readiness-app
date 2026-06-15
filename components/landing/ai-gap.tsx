@@ -1,6 +1,7 @@
 "use client";
 
 import { useScrollReveal } from "@/lib/gsap-hooks";
+import { CtaButton } from "./cta-button";
 
 const STATS = [
   { stat: "15%", title: "Infrastructure-ready", body: "Only a small minority of organisations have infrastructure ready for AI workloads.", source: "Cisco AI Readiness Index" },
@@ -97,24 +98,7 @@ export function AiGap() {
               Without a measurable baseline, organisations risk funding isolated pilots, unmanaged shadow AI, weak governance, and unclear returns — making AI a liability, not a capability.
             </p>
           </div>
-          <button
-            onClick={() => window.location.href = "/app"}
-            className="hover:scale-105 transition-all duration-200 cta-glow"
-            style={{
-              padding: "14px 28px",
-              background: "var(--lavender-glow)",
-              color: "#080D1A",
-              fontWeight: 600,
-              fontSize: 15,
-              borderRadius: "var(--r-sm)",
-              border: "none",
-              cursor: "pointer",
-              whiteSpace: "nowrap",
-              flexShrink: 0,
-            }}
-          >
-            Start Free Assessment
-          </button>
+          <CtaButton style={{ flexShrink: 0 }}>Start Free Assessment</CtaButton>
         </div>
       </div>
 

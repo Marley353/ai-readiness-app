@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useScrollReveal } from "@/lib/gsap-hooks";
 import { NeuralField } from "./neural-field";
+import { CtaButton } from "./cta-button";
 
 export function FinalCta() {
   const sectionRef = useScrollReveal<HTMLDivElement>({ y: 30, stagger: 0.12 });
@@ -118,39 +118,8 @@ export function FinalCta() {
             flexWrap: "wrap",
           }}
         >
-          <button
-            onClick={() => window.location.href = "/app"}
-            className="hover:scale-105 transition-all duration-200 cta-glow"
-            style={{
-              padding: "14px 22px",
-              fontSize: 15,
-              borderRadius: "var(--r-sm)",
-              background: "var(--lavender-glow)",
-              color: "#080D1A",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            <span>Start Free Assessment</span>
-          </button>
-          <Link
-            href="/pricing"
-            className="btn btn-secondary"
-            style={{
-              padding: "14px 22px",
-              fontSize: 15,
-              textDecoration: "none",
-              borderRadius: "var(--r-sm)",
-              background: "transparent",
-              color: "rgba(255,255,255,0.8)",
-              border: "1px solid rgba(255,255,255,0.2)",
-            }}
-          >
-            See pricing
-          </Link>
+          <CtaButton size="lg">Start Free Assessment</CtaButton>
+          <CtaButton href="/pricing" variant="ghost" size="lg">See pricing</CtaButton>
         </div>
       </div>
     </section>
