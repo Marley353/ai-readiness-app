@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { NeuralField } from "./neural-field";
 import { TiltCard } from "./tilt-card";
 
@@ -136,7 +137,7 @@ export function Hero() {
         <div className="hero-visual">
           <TiltCard max={9} scale={1.03} className="hero-tilt">
             <div className="hero-shot">
-              <img src="/hero-bg.jpg" alt="AI Readiness dashboard preview" />
+              <Image src="/hero-bg.jpg" alt="AI Readiness dashboard preview" width={1536} height={1024} priority style={{ width: "100%", height: "auto", display: "block" }} />
             </div>
           </TiltCard>
           {/* floating accent pills */}

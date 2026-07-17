@@ -61,5 +61,17 @@ components/
 lib/
   plans.ts              # Free/Pro feature definitions
   use-plan.ts           # Client-side plan hook
-  scoring.ts            # (planned) Extracted scoring functions
+  scoring.ts            # Data model + scoring engine (golden-tested)
+  pdf-export.ts         # jsPDF report generation + mailto composition
 ```
+
+## Design decisions
+
+- **Landing sections are client components by design.** Every section uses the
+  GSAP `useScrollReveal` hook (`lib/gsap-hooks.ts`) and styled-jsx, both of
+  which require the client. Converting to Server Components would drop the
+  scroll-animation system for a negligible first-load gain on a page that is
+  mostly below the fold.
+- **Scoring behaviour is frozen by golden-master tests** (`lib/scoring.test.ts`).
+  If a scoring change is intentional, update the expected values deliberately
+  and explain why in the commit message.
