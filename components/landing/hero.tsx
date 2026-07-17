@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import { NeuralField } from "./neural-field";
 import { TiltCard } from "./tilt-card";
 
 const INDUSTRIES = [
@@ -30,6 +29,15 @@ function getIndustryHook(industry: string): string {
 
 export function Hero() {
   const [industry, setIndustry] = useState("General");
+  // Ambient video only plays for users who haven't asked for reduced motion;
+  // everyone else (and the SSR pass) gets the static poster frame.
+  const [canAutoplay, setCanAutoplay] = useState(false);
+
+  useEffect(() => {
+    if (!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+      setCanAutoplay(true);
+    }
+  }, []);
 
   const handleStart = () => {
     if (industry !== "General") localStorage.setItem("ai_industry", industry);
@@ -55,8 +63,28 @@ export function Hero() {
         background: "radial-gradient(120% 100% at 70% 10%, #0a1530 0%, #050914 45%, #030610 100%)",
       }}
     >
-      {/* Animated neural mesh background — cool data accent + warm node highlights */}
-      <NeuralField colors={["110, 231, 255", "167, 139, 250", "255, 165, 82"]} style={{ opacity: 0.85 }} />
+      {/* Cinematic backdrop — static render upgraded to ambient video loop */}
+      <div aria-hidden style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
+        <img
+          src="/hero-bg.jpg"
+          alt=""
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.55 }}
+        />
+        {canAutoplay && (
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            poster="/hero-bg.jpg"
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.55 }}
+          >
+            <source src="/hero-loop.mp4" type="video/mp4" />
+          </video>
+        )}
+        {/* scrim keeps the left copy column readable over the moving backdrop */}
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(5,9,20,0.94) 0%, rgba(5,9,20,0.8) 40%, rgba(5,9,20,0.45) 75%, rgba(5,9,20,0.3) 100%)" }} />
+      </div>
 
       {/* Aurora gradient blobs */}
       <div className="aurora aurora-1" />
