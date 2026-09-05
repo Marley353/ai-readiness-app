@@ -1,0 +1,16 @@
+/* Semantic palette tokens (ASSET-REF §2) + UI shell. Mirror of src/design/palette.ts. */
+:root {
+  --xcom-helmet:#2d4a22; --xcom-visor:#48bb78; --xcom-armour:#3f6212; --xcom-armour-shadow:#1e3a1e; --xcom-boots:#1f2937;
+  --skin-light:#fbcfe8; --coat:#f8fafc; --coat-shadow:#e2e8f0; --trouser:#334155;
+  --metal-dark:#111827; --metal-mid:#374151; --hull-base:#1e293b; --hull-alien:#475569; --debris:#64748b;
+  --tech-accent:#38bdf8; --tech-accent-deep:#0284c7; --plasma:#06b6d4; --plasma-hot:#22d3ee; --plasma-core:#67e8f9;
+  --core-casing:#1e1b4b; --core-edge:#818cf8; --core-field:#6366f1; --core-centre:#a5f3fc; --alien-organic:#a855f7;
+  --scorch:#451a03;
+  --shell-0:#0b1020; --shell-1:#111827; --shell-2:#1e293b; --shell-3:#334155; --border:#475569;
+  --text:#f8fafc; --text-muted:#94a3b8; --text-dim:#64748b;
+  --accent:#38bdf8; --accent-deep:#0284c7; --warn:#f59e0b; --critical:#ef4444; --ok:#48bb78;
+  --space-1:8px; --space-2:16px; --space-3:24px; --space-4:32px; --radius:3px;
+  --font-ui:'IBM Plex Sans', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-num:'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  --fs-1:12px; --fs-2:14px; --fs-3:16px; --fs-4:20px; --fs-5:28px;
+}
