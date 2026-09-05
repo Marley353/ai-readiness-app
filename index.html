@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Enemy Unknown" />
+  <meta name="theme-color" content="#0b1020" />
+  <meta name="format-detection" content="telephone=no" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+  <link rel="icon" href="./icons/icon-192.png" />
+  <title>Enemy Unknown — an unaffiliated homage</title>
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; background: #0b1020; overflow: hidden; overscroll-behavior: none; }
+    body { position: fixed; inset: 0; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+           -webkit-tap-highlight-color: transparent; touch-action: none; font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+    canvas { display: block; touch-action: none; -webkit-user-select: none; user-select: none; }
+    #rotate { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; color: #f8fafc;
+              background: #0b1020; font-size: 20px; letter-spacing: 0.04em; text-transform: uppercase; z-index: 10; text-align: center; padding: 24px; }
+    @media (orientation: portrait) and (max-width: 1024px) { #rotate { display: flex; } }
+    #boot { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+  <div id="boot" aria-live="polite">Loading</div>
+  <div id="rotate">Rotate to landscape</div>
+  <script type="module" src="./src/main.ts"></script>
+</body>
+</html>
