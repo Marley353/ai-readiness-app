@@ -3,7 +3,7 @@
     {
       "iteration": 1,
       "at": "2026-09-06T13:08:15.275Z",
-      "note": "first full build",
+      "note": "Original iteration-1 results against the first full build (commit 46556f0). Screenshots were re-captured from that commit on 2026-09-06 with the final critics, because per-iteration archiving was only added at iteration 7.",
       "results": [
         {
           "name": "functional",
@@ -35,30 +35,30 @@
             "[ipad-97] intercept: failed to open: page.evaluate: TypeError: Cannot read properties of null (reading 'clear')\n    at t._callContextMethod (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:52:15585)\n    at t.clear (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:52:17824)\n    at ag.refresh (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:261:43)\n    at ag.build (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:259:36718)\n    at ag.resize (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:259:34896)\n    at Object.show (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:258:15180)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:261)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
           ],
           "screenshots": [
-            "screenshots/touch-ipad-mini-menu.png",
-            "screenshots/touch-ipad-mini-newgame.png",
-            "screenshots/touch-ipad-mini-options.png",
-            "screenshots/touch-ipad-mini-saveload.png",
-            "screenshots/touch-ipad-mini-geoscape.png",
-            "screenshots/touch-ipad-mini-base.png",
-            "screenshots/touch-ipad-mini-soldiers.png",
-            "screenshots/touch-ipad-mini-inventory.png",
-            "screenshots/touch-ipad-mini-research.png",
-            "screenshots/touch-ipad-mini-manufacture.png",
-            "screenshots/touch-ipad-mini-ufopaedia.png",
-            "screenshots/touch-ipad-mini-battle.png",
-            "screenshots/touch-ipad-10-menu.png",
-            "screenshots/touch-ipad-10-newgame.png",
-            "screenshots/touch-ipad-10-options.png",
-            "screenshots/touch-ipad-10-saveload.png",
-            "screenshots/touch-ipad-10-geoscape.png",
-            "screenshots/touch-ipad-10-base.png",
-            "screenshots/touch-ipad-10-soldiers.png",
-            "screenshots/touch-ipad-10-inventory.png",
-            "screenshots/touch-ipad-10-research.png",
-            "screenshots/touch-ipad-10-manufacture.png",
-            "screenshots/touch-ipad-10-ufopaedia.png",
-            "screenshots/touch-ipad-10-battle.png"
+            "screenshots/iter-1/touch-ipad-mini-menu.png",
+            "screenshots/iter-1/touch-ipad-mini-newgame.png",
+            "screenshots/iter-1/touch-ipad-mini-options.png",
+            "screenshots/iter-1/touch-ipad-mini-saveload.png",
+            "screenshots/iter-1/touch-ipad-mini-geoscape.png",
+            "screenshots/iter-1/touch-ipad-mini-base.png",
+            "screenshots/iter-1/touch-ipad-mini-soldiers.png",
+            "screenshots/iter-1/touch-ipad-mini-inventory.png",
+            "screenshots/iter-1/touch-ipad-mini-research.png",
+            "screenshots/iter-1/touch-ipad-mini-manufacture.png",
+            "screenshots/iter-1/touch-ipad-mini-ufopaedia.png",
+            "screenshots/iter-1/touch-ipad-mini-battle.png",
+            "screenshots/iter-1/touch-ipad-10-menu.png",
+            "screenshots/iter-1/touch-ipad-10-newgame.png",
+            "screenshots/iter-1/touch-ipad-10-options.png",
+            "screenshots/iter-1/touch-ipad-10-saveload.png",
+            "screenshots/iter-1/touch-ipad-10-geoscape.png",
+            "screenshots/iter-1/touch-ipad-10-base.png",
+            "screenshots/iter-1/touch-ipad-10-soldiers.png",
+            "screenshots/iter-1/touch-ipad-10-inventory.png",
+            "screenshots/iter-1/touch-ipad-10-research.png",
+            "screenshots/iter-1/touch-ipad-10-manufacture.png",
+            "screenshots/iter-1/touch-ipad-10-ufopaedia.png",
+            "screenshots/iter-1/touch-ipad-10-battle.png"
           ],
           "name": "touch",
           "seconds": 65
@@ -88,18 +88,18 @@
             "intercept: failed to open: page.evaluate: TypeError: Cannot read properties of null (reading 'clear')\n    at t._callContextMethod (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:52:15585)\n    at t.clear (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:52:17824)\n    at ag.refresh (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:261:43)\n    at ag.build (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:259:36718)\n    at ag.resize (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:259:34896)\n    at Object.show (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:258:15180)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:261)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
           ],
           "screenshots": [
-            "screenshots/craft-menu.png",
-            "screenshots/craft-newgame.png",
-            "screenshots/craft-options.png",
-            "screenshots/craft-saveload.png",
-            "screenshots/craft-geoscape.png",
-            "screenshots/craft-base.png",
-            "screenshots/craft-soldiers.png",
-            "screenshots/craft-inventory.png",
-            "screenshots/craft-research.png",
-            "screenshots/craft-manufacture.png",
-            "screenshots/craft-ufopaedia.png",
-            "screenshots/craft-battle.png"
+            "screenshots/iter-1/craft-menu.png",
+            "screenshots/iter-1/craft-newgame.png",
+            "screenshots/iter-1/craft-options.png",
+            "screenshots/iter-1/craft-saveload.png",
+            "screenshots/iter-1/craft-geoscape.png",
+            "screenshots/iter-1/craft-base.png",
+            "screenshots/iter-1/craft-soldiers.png",
+            "screenshots/iter-1/craft-inventory.png",
+            "screenshots/iter-1/craft-research.png",
+            "screenshots/iter-1/craft-manufacture.png",
+            "screenshots/iter-1/craft-ufopaedia.png",
+            "screenshots/iter-1/craft-battle.png"
           ],
           "name": "craft",
           "seconds": 18
@@ -193,7 +193,7 @@
             "shape/power-source: off-palette colour none"
           ],
           "screenshots": [
-            "screenshots/art-sample.png"
+            "screenshots/iter-1/art-sample.png"
           ],
           "name": "art",
           "seconds": 7
@@ -220,18 +220,18 @@
             "intercept: failed to open: page.evaluate: TypeError: Cannot read properties of null (reading 'clear')\n    at t._callContextMethod (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:52:15585)\n    at t.clear (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:52:17824)\n    at ag.refresh (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:261:43)\n    at ag.build (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:259:36718)\n    at ag.resize (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:259:34896)\n    at Object.show (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:258:15180)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:261)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
           ],
           "screenshots": [
-            "screenshots/a11y-menu.png",
-            "screenshots/a11y-newgame.png",
-            "screenshots/a11y-options.png",
-            "screenshots/a11y-saveload.png",
-            "screenshots/a11y-geoscape.png",
-            "screenshots/a11y-base.png",
-            "screenshots/a11y-soldiers.png",
-            "screenshots/a11y-inventory.png",
-            "screenshots/a11y-research.png",
-            "screenshots/a11y-manufacture.png",
-            "screenshots/a11y-ufopaedia.png",
-            "screenshots/a11y-battle.png"
+            "screenshots/iter-1/a11y-menu.png",
+            "screenshots/iter-1/a11y-newgame.png",
+            "screenshots/iter-1/a11y-options.png",
+            "screenshots/iter-1/a11y-saveload.png",
+            "screenshots/iter-1/a11y-geoscape.png",
+            "screenshots/iter-1/a11y-base.png",
+            "screenshots/iter-1/a11y-soldiers.png",
+            "screenshots/iter-1/a11y-inventory.png",
+            "screenshots/iter-1/a11y-research.png",
+            "screenshots/iter-1/a11y-manufacture.png",
+            "screenshots/iter-1/a11y-ufopaedia.png",
+            "screenshots/iter-1/a11y-battle.png"
           ],
           "name": "a11y",
           "seconds": 19
@@ -242,14 +242,16 @@
           "defects": [
             "critic crashed: window is not defined"
           ],
-          "screenshots": []
+          "screenshots": [
+            "screenshots/iter-1/perf-battle-large.png"
+          ]
         }
       ]
     },
     {
       "iteration": 2,
       "at": "2026-09-06T13:13:07.264Z",
-      "note": "iteration 2",
+      "note": "iteration 2 Captures from this run were not archived (per-iteration archiving was added at iteration 7); the defect lists are the record.",
       "results": [
         {
           "pass": false,
@@ -260,13 +262,7 @@
             "second mission: runtime errors: cleanup no battle",
             "no launchCydonia hook / path to start the final mission"
           ],
-          "screenshots": [
-            "screenshots/func-01-geoscape.png",
-            "screenshots/func-02-intercept.png",
-            "screenshots/func-03-battle.png",
-            "screenshots/func-04-debrief.png",
-            "screenshots/func-05-cydonia.png"
-          ],
+          "screenshots": [],
           "name": "functional",
           "seconds": 21
         },
@@ -285,34 +281,7 @@
         {
           "pass": true,
           "defects": [],
-          "screenshots": [
-            "screenshots/touch-ipad-mini-menu.png",
-            "screenshots/touch-ipad-mini-newgame.png",
-            "screenshots/touch-ipad-mini-options.png",
-            "screenshots/touch-ipad-mini-saveload.png",
-            "screenshots/touch-ipad-mini-geoscape.png",
-            "screenshots/touch-ipad-mini-base.png",
-            "screenshots/touch-ipad-mini-soldiers.png",
-            "screenshots/touch-ipad-mini-inventory.png",
-            "screenshots/touch-ipad-mini-research.png",
-            "screenshots/touch-ipad-mini-manufacture.png",
-            "screenshots/touch-ipad-mini-ufopaedia.png",
-            "screenshots/touch-ipad-mini-battle.png",
-            "screenshots/touch-ipad-mini-intercept.png",
-            "screenshots/touch-ipad-10-menu.png",
-            "screenshots/touch-ipad-10-newgame.png",
-            "screenshots/touch-ipad-10-options.png",
-            "screenshots/touch-ipad-10-saveload.png",
-            "screenshots/touch-ipad-10-geoscape.png",
-            "screenshots/touch-ipad-10-base.png",
-            "screenshots/touch-ipad-10-soldiers.png",
-            "screenshots/touch-ipad-10-inventory.png",
-            "screenshots/touch-ipad-10-research.png",
-            "screenshots/touch-ipad-10-manufacture.png",
-            "screenshots/touch-ipad-10-ufopaedia.png",
-            "screenshots/touch-ipad-10-battle.png",
-            "screenshots/touch-ipad-10-intercept.png"
-          ],
+          "screenshots": [],
           "name": "touch",
           "seconds": 71
         },
@@ -343,51 +312,21 @@
             "intercept: panels overlap (26×240 px)",
             "intercept: panels overlap (480×240 px)"
           ],
-          "screenshots": [
-            "screenshots/craft-menu.png",
-            "screenshots/craft-newgame.png",
-            "screenshots/craft-options.png",
-            "screenshots/craft-saveload.png",
-            "screenshots/craft-geoscape.png",
-            "screenshots/craft-base.png",
-            "screenshots/craft-soldiers.png",
-            "screenshots/craft-inventory.png",
-            "screenshots/craft-research.png",
-            "screenshots/craft-manufacture.png",
-            "screenshots/craft-ufopaedia.png",
-            "screenshots/craft-battle.png",
-            "screenshots/craft-intercept.png"
-          ],
+          "screenshots": [],
           "name": "craft",
           "seconds": 21
         },
         {
           "pass": true,
           "defects": [],
-          "screenshots": [
-            "screenshots/art-sample.png"
-          ],
+          "screenshots": [],
           "name": "art",
           "seconds": 8
         },
         {
           "pass": true,
           "defects": [],
-          "screenshots": [
-            "screenshots/a11y-menu.png",
-            "screenshots/a11y-newgame.png",
-            "screenshots/a11y-options.png",
-            "screenshots/a11y-saveload.png",
-            "screenshots/a11y-geoscape.png",
-            "screenshots/a11y-base.png",
-            "screenshots/a11y-soldiers.png",
-            "screenshots/a11y-inventory.png",
-            "screenshots/a11y-research.png",
-            "screenshots/a11y-manufacture.png",
-            "screenshots/a11y-ufopaedia.png",
-            "screenshots/a11y-battle.png",
-            "screenshots/a11y-intercept.png"
-          ],
+          "screenshots": [],
           "name": "a11y",
           "seconds": 21
         },
@@ -400,9 +339,7 @@
             "explosion frame JS time p95 121.1 ms > 12 ms (10 fps headless)",
             "idle 9 fps in headless software GL (< 50)"
           ],
-          "screenshots": [
-            "screenshots/perf-battle-large.png"
-          ],
+          "screenshots": [],
           "metrics": {
             "loadMs": 680,
             "idle": {
@@ -431,20 +368,14 @@
     {
       "iteration": 3,
       "at": "2026-09-06T13:17:32.520Z",
-      "note": "iteration 3",
+      "note": "iteration 3 Captures from this run were not archived (per-iteration archiving was added at iteration 7); the defect lists are the record.",
       "results": [
         {
           "pass": false,
           "defects": [
             "Cydonia: no battle after launch"
           ],
-          "screenshots": [
-            "screenshots/func-01-geoscape.png",
-            "screenshots/func-02-intercept.png",
-            "screenshots/func-03-battle.png",
-            "screenshots/func-04-debrief.png",
-            "screenshots/func-05-cydonia.png"
-          ],
+          "screenshots": [],
           "name": "functional",
           "seconds": 17
         },
@@ -463,34 +394,7 @@
         {
           "pass": true,
           "defects": [],
-          "screenshots": [
-            "screenshots/touch-ipad-mini-menu.png",
-            "screenshots/touch-ipad-mini-newgame.png",
-            "screenshots/touch-ipad-mini-options.png",
-            "screenshots/touch-ipad-mini-saveload.png",
-            "screenshots/touch-ipad-mini-geoscape.png",
-            "screenshots/touch-ipad-mini-base.png",
-            "screenshots/touch-ipad-mini-soldiers.png",
-            "screenshots/touch-ipad-mini-inventory.png",
-            "screenshots/touch-ipad-mini-research.png",
-            "screenshots/touch-ipad-mini-manufacture.png",
-            "screenshots/touch-ipad-mini-ufopaedia.png",
-            "screenshots/touch-ipad-mini-battle.png",
-            "screenshots/touch-ipad-mini-intercept.png",
-            "screenshots/touch-ipad-10-menu.png",
-            "screenshots/touch-ipad-10-newgame.png",
-            "screenshots/touch-ipad-10-options.png",
-            "screenshots/touch-ipad-10-saveload.png",
-            "screenshots/touch-ipad-10-geoscape.png",
-            "screenshots/touch-ipad-10-base.png",
-            "screenshots/touch-ipad-10-soldiers.png",
-            "screenshots/touch-ipad-10-inventory.png",
-            "screenshots/touch-ipad-10-research.png",
-            "screenshots/touch-ipad-10-manufacture.png",
-            "screenshots/touch-ipad-10-ufopaedia.png",
-            "screenshots/touch-ipad-10-battle.png",
-            "screenshots/touch-ipad-10-intercept.png"
-          ],
+          "screenshots": [],
           "name": "touch",
           "seconds": 68
         },
@@ -514,60 +418,28 @@
             "battle: button \"\" at 900,740 off the 8pt grid (left/right/centre anchors)",
             "battle: button \"\" at 718,466 off the 8pt grid (left/right/centre anchors)"
           ],
-          "screenshots": [
-            "screenshots/craft-menu.png",
-            "screenshots/craft-newgame.png",
-            "screenshots/craft-options.png",
-            "screenshots/craft-saveload.png",
-            "screenshots/craft-geoscape.png",
-            "screenshots/craft-base.png",
-            "screenshots/craft-soldiers.png",
-            "screenshots/craft-inventory.png",
-            "screenshots/craft-research.png",
-            "screenshots/craft-manufacture.png",
-            "screenshots/craft-ufopaedia.png",
-            "screenshots/craft-battle.png",
-            "screenshots/craft-intercept.png"
-          ],
+          "screenshots": [],
           "name": "craft",
           "seconds": 20
         },
         {
           "pass": true,
           "defects": [],
-          "screenshots": [
-            "screenshots/art-sample.png"
-          ],
+          "screenshots": [],
           "name": "art",
           "seconds": 8
         },
         {
           "pass": true,
           "defects": [],
-          "screenshots": [
-            "screenshots/a11y-menu.png",
-            "screenshots/a11y-newgame.png",
-            "screenshots/a11y-options.png",
-            "screenshots/a11y-saveload.png",
-            "screenshots/a11y-geoscape.png",
-            "screenshots/a11y-base.png",
-            "screenshots/a11y-soldiers.png",
-            "screenshots/a11y-inventory.png",
-            "screenshots/a11y-research.png",
-            "screenshots/a11y-manufacture.png",
-            "screenshots/a11y-ufopaedia.png",
-            "screenshots/a11y-battle.png",
-            "screenshots/a11y-intercept.png"
-          ],
+          "screenshots": [],
           "name": "a11y",
           "seconds": 21
         },
         {
           "pass": true,
           "defects": [],
-          "screenshots": [
-            "screenshots/perf-battle-large.png"
-          ],
+          "screenshots": [],
           "metrics": {
             "loadMs": 573,
             "idle": {
@@ -600,20 +472,14 @@
     {
       "iteration": 4,
       "at": "2026-09-06T13:20:22.263Z",
-      "note": "iteration 4",
+      "note": "iteration 4 Captures from this run were not archived (per-iteration archiving was added at iteration 7); the defect lists are the record.",
       "results": [
         {
           "pass": false,
           "defects": [
             "Cydonia: no battle after launch"
           ],
-          "screenshots": [
-            "screenshots/func-01-geoscape.png",
-            "screenshots/func-02-intercept.png",
-            "screenshots/func-03-battle.png",
-            "screenshots/func-04-debrief.png",
-            "screenshots/func-05-cydonia.png"
-          ],
+          "screenshots": [],
           "name": "functional",
           "seconds": 15
         },
@@ -634,94 +500,35 @@
           "defects": [
             "geoscape: button \"\" at 908,204 off the 8pt grid (left/right/centre anchors)"
           ],
-          "screenshots": [
-            "screenshots/craft-menu.png",
-            "screenshots/craft-newgame.png",
-            "screenshots/craft-options.png",
-            "screenshots/craft-saveload.png",
-            "screenshots/craft-geoscape.png",
-            "screenshots/craft-base.png",
-            "screenshots/craft-soldiers.png",
-            "screenshots/craft-inventory.png",
-            "screenshots/craft-research.png",
-            "screenshots/craft-manufacture.png",
-            "screenshots/craft-ufopaedia.png",
-            "screenshots/craft-battle.png",
-            "screenshots/craft-intercept.png"
-          ],
+          "screenshots": [],
           "name": "craft",
           "seconds": 32
         },
         {
           "pass": true,
           "defects": [],
-          "screenshots": [
-            "screenshots/touch-ipad-mini-menu.png",
-            "screenshots/touch-ipad-mini-newgame.png",
-            "screenshots/touch-ipad-mini-options.png",
-            "screenshots/touch-ipad-mini-saveload.png",
-            "screenshots/touch-ipad-mini-geoscape.png",
-            "screenshots/touch-ipad-mini-base.png",
-            "screenshots/touch-ipad-mini-soldiers.png",
-            "screenshots/touch-ipad-mini-inventory.png",
-            "screenshots/touch-ipad-mini-research.png",
-            "screenshots/touch-ipad-mini-manufacture.png",
-            "screenshots/touch-ipad-mini-ufopaedia.png",
-            "screenshots/touch-ipad-mini-battle.png",
-            "screenshots/touch-ipad-mini-intercept.png",
-            "screenshots/touch-ipad-10-menu.png",
-            "screenshots/touch-ipad-10-newgame.png",
-            "screenshots/touch-ipad-10-options.png",
-            "screenshots/touch-ipad-10-saveload.png",
-            "screenshots/touch-ipad-10-geoscape.png",
-            "screenshots/touch-ipad-10-base.png",
-            "screenshots/touch-ipad-10-soldiers.png",
-            "screenshots/touch-ipad-10-inventory.png",
-            "screenshots/touch-ipad-10-research.png",
-            "screenshots/touch-ipad-10-manufacture.png",
-            "screenshots/touch-ipad-10-ufopaedia.png",
-            "screenshots/touch-ipad-10-battle.png",
-            "screenshots/touch-ipad-10-intercept.png"
-          ],
+          "screenshots": [],
           "name": "touch",
           "seconds": 74
         },
         {
           "pass": true,
           "defects": [],
-          "screenshots": [
-            "screenshots/art-sample.png"
-          ],
+          "screenshots": [],
           "name": "art",
           "seconds": 8
         },
         {
           "pass": true,
           "defects": [],
-          "screenshots": [
-            "screenshots/a11y-menu.png",
-            "screenshots/a11y-newgame.png",
-            "screenshots/a11y-options.png",
-            "screenshots/a11y-saveload.png",
-            "screenshots/a11y-geoscape.png",
-            "screenshots/a11y-base.png",
-            "screenshots/a11y-soldiers.png",
-            "screenshots/a11y-inventory.png",
-            "screenshots/a11y-research.png",
-            "screenshots/a11y-manufacture.png",
-            "screenshots/a11y-ufopaedia.png",
-            "screenshots/a11y-battle.png",
-            "screenshots/a11y-intercept.png"
-          ],
+          "screenshots": [],
           "name": "a11y",
           "seconds": 19
         },
         {
           "pass": true,
           "defects": [],
-          "screenshots": [
-            "screenshots/perf-battle-large.png"
-          ],
+          "screenshots": [],
           "metrics": {
             "loadMs": 578,
             "idle": {
@@ -754,20 +561,14 @@
     {
       "iteration": 5,
       "at": "2026-09-06T13:22:54.054Z",
-      "note": "iteration 5",
+      "note": "iteration 5 Captures from this run were not archived (per-iteration archiving was added at iteration 7); the defect lists are the record.",
       "results": [
         {
           "pass": false,
           "defects": [
             "Cydonia: no battle after launch"
           ],
-          "screenshots": [
-            "screenshots/func-01-geoscape.png",
-            "screenshots/func-02-intercept.png",
-            "screenshots/func-03-battle.png",
-            "screenshots/func-04-debrief.png",
-            "screenshots/func-05-cydonia.png"
-          ],
+          "screenshots": [],
           "name": "functional",
           "seconds": 17
         },
@@ -786,94 +587,35 @@
         {
           "pass": true,
           "defects": [],
-          "screenshots": [
-            "screenshots/craft-menu.png",
-            "screenshots/craft-newgame.png",
-            "screenshots/craft-options.png",
-            "screenshots/craft-saveload.png",
-            "screenshots/craft-geoscape.png",
-            "screenshots/craft-base.png",
-            "screenshots/craft-soldiers.png",
-            "screenshots/craft-inventory.png",
-            "screenshots/craft-research.png",
-            "screenshots/craft-manufacture.png",
-            "screenshots/craft-ufopaedia.png",
-            "screenshots/craft-battle.png",
-            "screenshots/craft-intercept.png"
-          ],
+          "screenshots": [],
           "name": "craft",
           "seconds": 28
         },
         {
           "pass": true,
           "defects": [],
-          "screenshots": [
-            "screenshots/touch-ipad-mini-menu.png",
-            "screenshots/touch-ipad-mini-newgame.png",
-            "screenshots/touch-ipad-mini-options.png",
-            "screenshots/touch-ipad-mini-saveload.png",
-            "screenshots/touch-ipad-mini-geoscape.png",
-            "screenshots/touch-ipad-mini-base.png",
-            "screenshots/touch-ipad-mini-soldiers.png",
-            "screenshots/touch-ipad-mini-inventory.png",
-            "screenshots/touch-ipad-mini-research.png",
-            "screenshots/touch-ipad-mini-manufacture.png",
-            "screenshots/touch-ipad-mini-ufopaedia.png",
-            "screenshots/touch-ipad-mini-battle.png",
-            "screenshots/touch-ipad-mini-intercept.png",
-            "screenshots/touch-ipad-10-menu.png",
-            "screenshots/touch-ipad-10-newgame.png",
-            "screenshots/touch-ipad-10-options.png",
-            "screenshots/touch-ipad-10-saveload.png",
-            "screenshots/touch-ipad-10-geoscape.png",
-            "screenshots/touch-ipad-10-base.png",
-            "screenshots/touch-ipad-10-soldiers.png",
-            "screenshots/touch-ipad-10-inventory.png",
-            "screenshots/touch-ipad-10-research.png",
-            "screenshots/touch-ipad-10-manufacture.png",
-            "screenshots/touch-ipad-10-ufopaedia.png",
-            "screenshots/touch-ipad-10-battle.png",
-            "screenshots/touch-ipad-10-intercept.png"
-          ],
+          "screenshots": [],
           "name": "touch",
           "seconds": 74
         },
         {
           "pass": true,
           "defects": [],
-          "screenshots": [
-            "screenshots/art-sample.png"
-          ],
+          "screenshots": [],
           "name": "art",
           "seconds": 8
         },
         {
           "pass": true,
           "defects": [],
-          "screenshots": [
-            "screenshots/a11y-menu.png",
-            "screenshots/a11y-newgame.png",
-            "screenshots/a11y-options.png",
-            "screenshots/a11y-saveload.png",
-            "screenshots/a11y-geoscape.png",
-            "screenshots/a11y-base.png",
-            "screenshots/a11y-soldiers.png",
-            "screenshots/a11y-inventory.png",
-            "screenshots/a11y-research.png",
-            "screenshots/a11y-manufacture.png",
-            "screenshots/a11y-ufopaedia.png",
-            "screenshots/a11y-battle.png",
-            "screenshots/a11y-intercept.png"
-          ],
+          "screenshots": [],
           "name": "a11y",
           "seconds": 19
         },
         {
           "pass": true,
           "defects": [],
-          "screenshots": [
-            "screenshots/perf-battle-large.png"
-          ],
+          "screenshots": [],
           "metrics": {
             "loadMs": 561,
             "idle": {
@@ -906,18 +648,12 @@
     {
       "iteration": 6,
       "at": "2026-09-06T13:23:07.719Z",
-      "note": "iteration 6: functional flow waits for craft to land before the Cydonia launch",
+      "note": "iteration 6: functional flow waits for craft to land before the Cydonia launch Captures from this run were not archived (per-iteration archiving was added at iteration 7); the defect lists are the record.",
       "results": [
         {
           "pass": true,
           "defects": [],
-          "screenshots": [
-            "screenshots/func-01-geoscape.png",
-            "screenshots/func-02-intercept.png",
-            "screenshots/func-03-battle.png",
-            "screenshots/func-04-debrief.png",
-            "screenshots/func-05-cydonia.png"
-          ],
+          "screenshots": [],
           "name": "functional",
           "seconds": 11
         }
