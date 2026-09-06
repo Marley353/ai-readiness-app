@@ -11,7 +11,7 @@ import { InterceptScene } from '../intercept/InterceptScene';
 import { BattleScene } from '../battle/BattleScene';
 import { DebriefScene } from '../debrief/DebriefScene';
 import { MonthlyReportScene } from '../debrief/MonthlyReportScene';
-import { SoldiersScene } from '../soldiers/SoldiersScene';
+import { SoldiersScene, MemorialScene } from '../soldiers/SoldiersScene';
 import { InventoryScene } from '../inventory/InventoryScene';
 import { ResearchScene } from '../research/ResearchScene';
 import { ManufactureScene } from '../manufacture/ManufactureScene';
@@ -31,6 +31,7 @@ export function registerScenes() {
   scenes.register('debrief', () => new DebriefScene());
   scenes.register('monthly', () => new MonthlyReportScene());
   scenes.register('soldiers', () => new SoldiersScene());
+  scenes.register('memorial', () => new MemorialScene());
   scenes.register('inventory', () => new InventoryScene());
   scenes.register('research', () => new ResearchScene());
   scenes.register('manufacture', () => new ManufactureScene());
