@@ -1,0 +1,601 @@
+{
+  "iterations": [
+    {
+      "iteration": 1,
+      "at": "2026-09-06T13:08:15.275Z",
+      "note": "first full build",
+      "results": [
+        {
+          "name": "functional",
+          "pass": false,
+          "defects": [
+            "critic crashed: page.evaluate: TypeError: Cannot read properties of undefined (reading 'type')\n    at Object.start (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:261:136710)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:508)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+          ],
+          "screenshots": []
+        },
+        {
+          "pass": false,
+          "defects": [
+            "vitest produced no JSON report: JSON report written to /home/user/ufo-enemy-unknown/.vitest/json/output.json\n"
+          ],
+          "screenshots": [],
+          "metrics": {},
+          "name": "fidelity",
+          "seconds": 5
+        },
+        {
+          "pass": false,
+          "defects": [
+            "[ipad-mini] intercept: failed to open: page.evaluate: TypeError: Cannot read properties of null (reading 'clear')\n    at t._callContextMethod (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:52:15585)\n    at t.clear (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:52:17824)\n    at ag.refresh (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:261:43)\n    at ag.build (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:259:36718)\n    at ag.resize (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:259:34896)\n    at Object.show (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:258:15180)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:261)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+            "[ipad-10] intercept: failed to open: page.evaluate: TypeError: Cannot read properties of null (reading 'clear')\n    at t._callContextMethod (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:52:15585)\n    at t.clear (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:52:17824)\n    at ag.refresh (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:261:43)\n    at ag.build (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:259:36718)\n    at ag.resize (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:259:34896)\n    at Object.show (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:258:15180)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:261)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+            "backgrounding did not pause the campaign",
+            "backgrounding did not write the interrupt autosave to IndexedDB",
+            "[ipad-pro-11] intercept: failed to open: page.evaluate: TypeError: Cannot read properties of null (reading 'clear')\n    at t._callContextMethod (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:52:15585)\n    at t.clear (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:52:17824)\n    at ag.refresh (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:261:43)\n    at ag.build (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:259:36718)\n    at ag.resize (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:259:34896)\n    at Object.show (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:258:15180)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:261)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+            "[ipad-pro-13] intercept: failed to open: page.evaluate: TypeError: Cannot read properties of null (reading 'clear')\n    at t._callContextMethod (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:52:15585)\n    at t.clear (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:52:17824)\n    at ag.refresh (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:261:43)\n    at ag.build (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:259:36718)\n    at ag.resize (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:259:34896)\n    at Object.show (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:258:15180)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:261)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+            "[ipad-97] intercept: failed to open: page.evaluate: TypeError: Cannot read properties of null (reading 'clear')\n    at t._callContextMethod (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:52:15585)\n    at t.clear (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:52:17824)\n    at ag.refresh (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:261:43)\n    at ag.build (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:259:36718)\n    at ag.resize (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:259:34896)\n    at Object.show (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:258:15180)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:261)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+          ],
+          "screenshots": [
+            "screenshots/touch-ipad-mini-menu.png",
+            "screenshots/touch-ipad-mini-newgame.png",
+            "screenshots/touch-ipad-mini-options.png",
+            "screenshots/touch-ipad-mini-saveload.png",
+            "screenshots/touch-ipad-mini-geoscape.png",
+            "screenshots/touch-ipad-mini-base.png",
+            "screenshots/touch-ipad-mini-soldiers.png",
+            "screenshots/touch-ipad-mini-inventory.png",
+            "screenshots/touch-ipad-mini-research.png",
+            "screenshots/touch-ipad-mini-manufacture.png",
+            "screenshots/touch-ipad-mini-ufopaedia.png",
+            "screenshots/touch-ipad-mini-battle.png",
+            "screenshots/touch-ipad-10-menu.png",
+            "screenshots/touch-ipad-10-newgame.png",
+            "screenshots/touch-ipad-10-options.png",
+            "screenshots/touch-ipad-10-saveload.png",
+            "screenshots/touch-ipad-10-geoscape.png",
+            "screenshots/touch-ipad-10-base.png",
+            "screenshots/touch-ipad-10-soldiers.png",
+            "screenshots/touch-ipad-10-inventory.png",
+            "screenshots/touch-ipad-10-research.png",
+            "screenshots/touch-ipad-10-manufacture.png",
+            "screenshots/touch-ipad-10-ufopaedia.png",
+            "screenshots/touch-ipad-10-battle.png"
+          ],
+          "name": "touch",
+          "seconds": 65
+        },
+        {
+          "pass": false,
+          "defects": [
+            "menu: button \"\" at 450,451 off the 8pt grid",
+            "menu: button \"\" at 450,515 off the 8pt grid",
+            "menu: button \"\" at 450,579 off the 8pt grid",
+            "base: numeric readout \"$6,000,000\" not in the mono face",
+            "base: button \"\" at 1044,4 off the 8pt grid",
+            "soldiers: button \"\" at 1020,4 off the 8pt grid",
+            "inventory: button \"\" at 1060,4 off the 8pt grid",
+            "inventory: button \"\" at 940,4 off the 8pt grid",
+            "research: button \"\" at 996,4 off the 8pt grid",
+            "manufacture: button \"\" at 964,4 off the 8pt grid",
+            "battle: button \"\" at 380,740 off the 8pt grid",
+            "battle: button \"\" at 508,740 off the 8pt grid",
+            "battle: button \"\" at 612,740 off the 8pt grid",
+            "battle: button \"\" at 716,740 off the 8pt grid",
+            "battle: button \"\" at 820,740 off the 8pt grid",
+            "battle: button \"\" at 1052,740 off the 8pt grid",
+            "battle: button \"\" at 900,740 off the 8pt grid",
+            "battle: panel \"\" at 350,290 off the 8pt grid",
+            "battle: button \"\" at 718,466 off the 8pt grid",
+            "intercept: failed to open: page.evaluate: TypeError: Cannot read properties of null (reading 'clear')\n    at t._callContextMethod (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:52:15585)\n    at t.clear (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:52:17824)\n    at ag.refresh (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:261:43)\n    at ag.build (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:259:36718)\n    at ag.resize (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:259:34896)\n    at Object.show (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:258:15180)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:261)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+          ],
+          "screenshots": [
+            "screenshots/craft-menu.png",
+            "screenshots/craft-newgame.png",
+            "screenshots/craft-options.png",
+            "screenshots/craft-saveload.png",
+            "screenshots/craft-geoscape.png",
+            "screenshots/craft-base.png",
+            "screenshots/craft-soldiers.png",
+            "screenshots/craft-inventory.png",
+            "screenshots/craft-research.png",
+            "screenshots/craft-manufacture.png",
+            "screenshots/craft-ufopaedia.png",
+            "screenshots/craft-battle.png"
+          ],
+          "name": "craft",
+          "seconds": 18
+        },
+        {
+          "pass": false,
+          "defects": [
+            "ufo/small-scout: off-palette colour none",
+            "ufo/medium-scout: off-palette colour none",
+            "ufo/large-scout: off-palette colour none",
+            "ufo/abductor: off-palette colour none",
+            "ufo/harvester: off-palette colour none",
+            "ufo/supply-ship: off-palette colour none",
+            "ufo/terror-ship: off-palette colour none",
+            "ufo/battleship: off-palette colour none",
+            "fx/psi0: off-palette colour none",
+            "fx/psi1: off-palette colour none",
+            "fx/psi2: off-palette colour none",
+            "geo/waypoint: off-palette colour none",
+            "facility/small-radar: off-palette colour none",
+            "facility/large-radar: off-palette colour none",
+            "facility/grav-shield: off-palette colour none",
+            "facility/psionic-laboratory: off-palette colour none",
+            "facility/hyper-wave-decoder: off-palette colour none",
+            "facility/construction: off-palette colour none",
+            "facility/empty: off-palette colour none",
+            "icon/time-5s: off-palette colour none",
+            "icon/time-1m: off-palette colour none",
+            "icon/time-5m: off-palette colour none",
+            "icon/time-30m: off-palette colour none",
+            "icon/time-1h: off-palette colour none",
+            "icon/options: off-palette colour none",
+            "icon/funding: off-palette colour none",
+            "icon/manufacture: off-palette colour none",
+            "icon/fire-snap: off-palette colour none",
+            "icon/fire-aimed: off-palette colour none",
+            "icon/scanner: off-palette colour none",
+            "icon/psi: off-palette colour none",
+            "icon/centre: off-palette colour none",
+            "icon/reserve-none: off-palette colour none",
+            "icon/reserve-snap: off-palette colour none",
+            "icon/reserve-aimed: off-palette colour none",
+            "icon/reserve-auto: off-palette colour none",
+            "icon/info: off-palette colour none",
+            "icon/sound: off-palette colour none",
+            "icon/zoom-in: off-palette colour none",
+            "icon/zoom-out: off-palette colour none",
+            "icon/target: off-palette colour none",
+            "icon/clock: off-palette colour none",
+            "icon/wrench: off-palette colour none",
+            "icon/radar: off-palette colour none",
+            "icon/lock: off-palette colour none",
+            "icon/patrol: off-palette colour none",
+            "icon/ignore: off-palette colour none",
+            "icon/turn: off-palette colour none",
+            "icon/waypoint: off-palette colour none",
+            "icon/stance-cautious: off-palette colour none",
+            "icon/stance-standard: off-palette colour none",
+            "item/plasma-pistol-clip: off-palette colour none",
+            "item/plasma-rifle-clip: off-palette colour none",
+            "item/heavy-plasma-clip: off-palette colour none",
+            "item/motion-scanner: off-palette colour none",
+            "item/psi-amp: off-palette colour none",
+            "item/alien-entertainment: off-palette colour none",
+            "item/hovertank-plasma: off-palette colour none",
+            "item/hovertank-launcher: off-palette colour none",
+            "item/corpse: off-palette colour none",
+            "item/sectoid-corpse: off-palette colour none",
+            "item/floater-corpse: off-palette colour none",
+            "item/snakeman-corpse: off-palette colour none",
+            "item/muton-corpse: off-palette colour none",
+            "item/ethereal-corpse: off-palette colour none",
+            "item/chryssalid-live: off-palette colour none",
+            "item/chryssalid-corpse: off-palette colour none",
+            "item/silacoid-corpse: off-palette colour none",
+            "item/celatid-live: off-palette colour none",
+            "item/celatid-corpse: off-palette colour none",
+            "item/reaper-corpse: off-palette colour none",
+            "item/cyberdisc-live: off-palette colour none",
+            "item/cyberdisc-corpse: off-palette colour none",
+            "item/sectopod-live: off-palette colour none",
+            "item/sectopod-corpse: off-palette colour none",
+            "item/zombie-corpse: off-palette colour none",
+            "shape/ufo-floor: off-palette colour none",
+            "shape/lift: off-palette colour none",
+            "shape/wall-n-window: off-palette colour none",
+            "shape/alien-wall-n: off-palette colour none",
+            "shape/wall-w-window: off-palette colour none",
+            "shape/alien-wall-w: off-palette colour none",
+            "shape/nav-console: off-palette colour none",
+            "shape/power-source: off-palette colour none"
+          ],
+          "screenshots": [
+            "screenshots/art-sample.png"
+          ],
+          "name": "art",
+          "seconds": 7
+        },
+        {
+          "pass": false,
+          "defects": [
+            "menu: text \"NEW GAME\" #f8fafc on #0284c7 contrast 3.91 < 4.5",
+            "menu: text \"Version 0.1 · Touch: tap to select, long-press for actions, \" #64748b on #0b1020 contrast 3.98 < 4.5",
+            "newgame: text \"SELECTED\" #f8fafc on #0284c7 contrast 3.91 < 4.5",
+            "newgame: text \"Permadeath is permanent. Time only moves when you let it.\" #64748b on #0b1020 contrast 3.98 < 4.5",
+            "options: text \"Reduced motion ON\" #f8fafc on #0284c7 contrast 3.91 < 4.5",
+            "saveload: text \"Slot 1 — empty\" #64748b on #111827 contrast 3.73 < 4.5",
+            "saveload: text \"SAVE\" #f8fafc on #0284c7 contrast 3.91 < 4.5",
+            "geoscape: text \"PAUSED\" #f8fafc on #0284c7 contrast 3.91 < 4.5",
+            "base: text \"FACILITIES\" #f8fafc on #0284c7 contrast 3.91 < 4.5",
+            "base: text \"BUILD FACILITY\" #f8fafc on #0284c7 contrast 3.91 < 4.5",
+            "soldiers: text \"Sofia Abara\" #f8fafc on #0284c7 contrast 3.91 < 4.5",
+            "soldiers: text \"Rookie · Skyranger-1 · 0 kills · 0 missions\" #94a3b8 on #0284c7 contrast 1.60 < 4.5",
+            "research: text \"NEW PROJECT\" #f8fafc on #0284c7 contrast 3.91 < 4.5",
+            "manufacture: text \"NEW PRODUCTION\" #f8fafc on #0284c7 contrast 3.91 < 4.5",
+            "ufopaedia: text \"Craft\" #f8fafc on #0284c7 contrast 3.91 < 4.5",
+            "battle: text \"END TURN\" #f8fafc on #0284c7 contrast 3.91 < 4.5",
+            "intercept: failed to open: page.evaluate: TypeError: Cannot read properties of null (reading 'clear')\n    at t._callContextMethod (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:52:15585)\n    at t.clear (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:52:17824)\n    at ag.refresh (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:261:43)\n    at ag.build (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:259:36718)\n    at ag.resize (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:259:34896)\n    at Object.show (http://127.0.0.1:4173/assets/index-DAaBqWeZ.js:258:15180)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:261)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+          ],
+          "screenshots": [
+            "screenshots/a11y-menu.png",
+            "screenshots/a11y-newgame.png",
+            "screenshots/a11y-options.png",
+            "screenshots/a11y-saveload.png",
+            "screenshots/a11y-geoscape.png",
+            "screenshots/a11y-base.png",
+            "screenshots/a11y-soldiers.png",
+            "screenshots/a11y-inventory.png",
+            "screenshots/a11y-research.png",
+            "screenshots/a11y-manufacture.png",
+            "screenshots/a11y-ufopaedia.png",
+            "screenshots/a11y-battle.png"
+          ],
+          "name": "a11y",
+          "seconds": 19
+        },
+        {
+          "name": "perf",
+          "pass": false,
+          "defects": [
+            "critic crashed: window is not defined"
+          ],
+          "screenshots": []
+        }
+      ]
+    },
+    {
+      "iteration": 2,
+      "at": "2026-09-06T13:13:07.264Z",
+      "note": "iteration 2",
+      "results": [
+        {
+          "pass": false,
+          "defects": [
+            "UFO not detected by base radar within 24 h (events: )",
+            "interception did not resolve within 600 s",
+            "next mission does not carry the equipped laser pistol (unit items: )",
+            "second mission: runtime errors: cleanup no battle",
+            "no launchCydonia hook / path to start the final mission"
+          ],
+          "screenshots": [
+            "screenshots/func-01-geoscape.png",
+            "screenshots/func-02-intercept.png",
+            "screenshots/func-03-battle.png",
+            "screenshots/func-04-debrief.png",
+            "screenshots/func-05-cydonia.png"
+          ],
+          "name": "functional",
+          "seconds": 21
+        },
+        {
+          "pass": true,
+          "defects": [],
+          "screenshots": [],
+          "metrics": {
+            "tests": 26,
+            "passed": 26,
+            "failed": 0
+          },
+          "name": "fidelity",
+          "seconds": 3
+        },
+        {
+          "pass": true,
+          "defects": [],
+          "screenshots": [
+            "screenshots/touch-ipad-mini-menu.png",
+            "screenshots/touch-ipad-mini-newgame.png",
+            "screenshots/touch-ipad-mini-options.png",
+            "screenshots/touch-ipad-mini-saveload.png",
+            "screenshots/touch-ipad-mini-geoscape.png",
+            "screenshots/touch-ipad-mini-base.png",
+            "screenshots/touch-ipad-mini-soldiers.png",
+            "screenshots/touch-ipad-mini-inventory.png",
+            "screenshots/touch-ipad-mini-research.png",
+            "screenshots/touch-ipad-mini-manufacture.png",
+            "screenshots/touch-ipad-mini-ufopaedia.png",
+            "screenshots/touch-ipad-mini-battle.png",
+            "screenshots/touch-ipad-mini-intercept.png",
+            "screenshots/touch-ipad-10-menu.png",
+            "screenshots/touch-ipad-10-newgame.png",
+            "screenshots/touch-ipad-10-options.png",
+            "screenshots/touch-ipad-10-saveload.png",
+            "screenshots/touch-ipad-10-geoscape.png",
+            "screenshots/touch-ipad-10-base.png",
+            "screenshots/touch-ipad-10-soldiers.png",
+            "screenshots/touch-ipad-10-inventory.png",
+            "screenshots/touch-ipad-10-research.png",
+            "screenshots/touch-ipad-10-manufacture.png",
+            "screenshots/touch-ipad-10-ufopaedia.png",
+            "screenshots/touch-ipad-10-battle.png",
+            "screenshots/touch-ipad-10-intercept.png"
+          ],
+          "name": "touch",
+          "seconds": 71
+        },
+        {
+          "pass": false,
+          "defects": [
+            "menu: button \"\" at 450,451 off the 8pt grid",
+            "menu: button \"\" at 450,515 off the 8pt grid",
+            "menu: button \"\" at 450,579 off the 8pt grid",
+            "base: button \"\" at 1044,4 off the 8pt grid",
+            "soldiers: button \"\" at 1020,4 off the 8pt grid",
+            "inventory: button \"\" at 1060,4 off the 8pt grid",
+            "inventory: button \"\" at 940,4 off the 8pt grid",
+            "research: button \"\" at 996,4 off the 8pt grid",
+            "manufacture: button \"\" at 964,4 off the 8pt grid",
+            "battle: button \"\" at 380,740 off the 8pt grid",
+            "battle: button \"\" at 508,740 off the 8pt grid",
+            "battle: button \"\" at 612,740 off the 8pt grid",
+            "battle: button \"\" at 716,740 off the 8pt grid",
+            "battle: button \"\" at 820,740 off the 8pt grid",
+            "battle: button \"\" at 1052,740 off the 8pt grid",
+            "battle: button \"\" at 900,740 off the 8pt grid",
+            "battle: panel \"\" at 350,290 off the 8pt grid",
+            "battle: button \"\" at 718,466 off the 8pt grid",
+            "intercept: panel \"\" at 350,290 off the 8pt grid",
+            "intercept: button \"\" at 718,466 off the 8pt grid",
+            "intercept: panels overlap (235×732 px)",
+            "intercept: panels overlap (26×240 px)",
+            "intercept: panels overlap (480×240 px)"
+          ],
+          "screenshots": [
+            "screenshots/craft-menu.png",
+            "screenshots/craft-newgame.png",
+            "screenshots/craft-options.png",
+            "screenshots/craft-saveload.png",
+            "screenshots/craft-geoscape.png",
+            "screenshots/craft-base.png",
+            "screenshots/craft-soldiers.png",
+            "screenshots/craft-inventory.png",
+            "screenshots/craft-research.png",
+            "screenshots/craft-manufacture.png",
+            "screenshots/craft-ufopaedia.png",
+            "screenshots/craft-battle.png",
+            "screenshots/craft-intercept.png"
+          ],
+          "name": "craft",
+          "seconds": 21
+        },
+        {
+          "pass": true,
+          "defects": [],
+          "screenshots": [
+            "screenshots/art-sample.png"
+          ],
+          "name": "art",
+          "seconds": 8
+        },
+        {
+          "pass": true,
+          "defects": [],
+          "screenshots": [
+            "screenshots/a11y-menu.png",
+            "screenshots/a11y-newgame.png",
+            "screenshots/a11y-options.png",
+            "screenshots/a11y-saveload.png",
+            "screenshots/a11y-geoscape.png",
+            "screenshots/a11y-base.png",
+            "screenshots/a11y-soldiers.png",
+            "screenshots/a11y-inventory.png",
+            "screenshots/a11y-research.png",
+            "screenshots/a11y-manufacture.png",
+            "screenshots/a11y-ufopaedia.png",
+            "screenshots/a11y-battle.png",
+            "screenshots/a11y-intercept.png"
+          ],
+          "name": "a11y",
+          "seconds": 21
+        },
+        {
+          "pass": false,
+          "defects": [
+            "heap grew 12.9 → 21.7 MB across three missions (> 25 %)",
+            "idle frame JS time p95 202.2 ms > 8 ms (9 fps headless)",
+            "alien-turn frame JS time p95 122.9 ms > 12 ms (11 fps headless)",
+            "explosion frame JS time p95 121.1 ms > 12 ms (10 fps headless)",
+            "idle 9 fps in headless software GL (< 50)"
+          ],
+          "screenshots": [
+            "screenshots/perf-battle-large.png"
+          ],
+          "metrics": {
+            "loadMs": 680,
+            "idle": {
+              "fps": 9,
+              "p95": 202.2
+            },
+            "aiTurn": {
+              "fps": 11,
+              "p95": 122.9
+            },
+            "explosion": {
+              "fps": 10,
+              "p95": 121.1
+            },
+            "heapMB": [
+              12.9,
+              18.3,
+              21.7
+            ]
+          },
+          "name": "perf",
+          "seconds": 13
+        }
+      ]
+    },
+    {
+      "iteration": 3,
+      "at": "2026-09-06T13:17:32.520Z",
+      "note": "iteration 3",
+      "results": [
+        {
+          "pass": false,
+          "defects": [
+            "Cydonia: no battle after launch"
+          ],
+          "screenshots": [
+            "screenshots/func-01-geoscape.png",
+            "screenshots/func-02-intercept.png",
+            "screenshots/func-03-battle.png",
+            "screenshots/func-04-debrief.png",
+            "screenshots/func-05-cydonia.png"
+          ],
+          "name": "functional",
+          "seconds": 17
+        },
+        {
+          "pass": true,
+          "defects": [],
+          "screenshots": [],
+          "metrics": {
+            "tests": 26,
+            "passed": 26,
+            "failed": 0
+          },
+          "name": "fidelity",
+          "seconds": 3
+        },
+        {
+          "pass": true,
+          "defects": [],
+          "screenshots": [
+            "screenshots/touch-ipad-mini-menu.png",
+            "screenshots/touch-ipad-mini-newgame.png",
+            "screenshots/touch-ipad-mini-options.png",
+            "screenshots/touch-ipad-mini-saveload.png",
+            "screenshots/touch-ipad-mini-geoscape.png",
+            "screenshots/touch-ipad-mini-base.png",
+            "screenshots/touch-ipad-mini-soldiers.png",
+            "screenshots/touch-ipad-mini-inventory.png",
+            "screenshots/touch-ipad-mini-research.png",
+            "screenshots/touch-ipad-mini-manufacture.png",
+            "screenshots/touch-ipad-mini-ufopaedia.png",
+            "screenshots/touch-ipad-mini-battle.png",
+            "screenshots/touch-ipad-mini-intercept.png",
+            "screenshots/touch-ipad-10-menu.png",
+            "screenshots/touch-ipad-10-newgame.png",
+            "screenshots/touch-ipad-10-options.png",
+            "screenshots/touch-ipad-10-saveload.png",
+            "screenshots/touch-ipad-10-geoscape.png",
+            "screenshots/touch-ipad-10-base.png",
+            "screenshots/touch-ipad-10-soldiers.png",
+            "screenshots/touch-ipad-10-inventory.png",
+            "screenshots/touch-ipad-10-research.png",
+            "screenshots/touch-ipad-10-manufacture.png",
+            "screenshots/touch-ipad-10-ufopaedia.png",
+            "screenshots/touch-ipad-10-battle.png",
+            "screenshots/touch-ipad-10-intercept.png"
+          ],
+          "name": "touch",
+          "seconds": 68
+        },
+        {
+          "pass": false,
+          "defects": [
+            "geoscape: button \"\" at 995,104 off the 8pt grid (left/right/centre anchors)",
+            "geoscape: button \"\" at 995,152 off the 8pt grid (left/right/centre anchors)",
+            "geoscape: button \"\" at 905,204 off the 8pt grid (left/right/centre anchors)",
+            "battle: button \"\" at 380,740 off the 8pt grid (left/right/centre anchors)",
+            "battle: button \"\" at 423,740 off the 8pt grid (left/right/centre anchors)",
+            "battle: button \"\" at 508,740 off the 8pt grid (left/right/centre anchors)",
+            "battle: button \"\" at 560,740 off the 8pt grid (left/right/centre anchors)",
+            "battle: button \"\" at 612,740 off the 8pt grid (left/right/centre anchors)",
+            "battle: button \"\" at 664,740 off the 8pt grid (left/right/centre anchors)",
+            "battle: button \"\" at 716,740 off the 8pt grid (left/right/centre anchors)",
+            "battle: button \"\" at 768,740 off the 8pt grid (left/right/centre anchors)",
+            "battle: button \"\" at 820,740 off the 8pt grid (left/right/centre anchors)",
+            "battle: button \"\" at 1052,740 off the 8pt grid (left/right/centre anchors)",
+            "battle: button \"\" at 952,740 off the 8pt grid (left/right/centre anchors)",
+            "battle: button \"\" at 900,740 off the 8pt grid (left/right/centre anchors)",
+            "battle: button \"\" at 718,466 off the 8pt grid (left/right/centre anchors)"
+          ],
+          "screenshots": [
+            "screenshots/craft-menu.png",
+            "screenshots/craft-newgame.png",
+            "screenshots/craft-options.png",
+            "screenshots/craft-saveload.png",
+            "screenshots/craft-geoscape.png",
+            "screenshots/craft-base.png",
+            "screenshots/craft-soldiers.png",
+            "screenshots/craft-inventory.png",
+            "screenshots/craft-research.png",
+            "screenshots/craft-manufacture.png",
+            "screenshots/craft-ufopaedia.png",
+            "screenshots/craft-battle.png",
+            "screenshots/craft-intercept.png"
+          ],
+          "name": "craft",
+          "seconds": 20
+        },
+        {
+          "pass": true,
+          "defects": [],
+          "screenshots": [
+            "screenshots/art-sample.png"
+          ],
+          "name": "art",
+          "seconds": 8
+        },
+        {
+          "pass": true,
+          "defects": [],
+          "screenshots": [
+            "screenshots/a11y-menu.png",
+            "screenshots/a11y-newgame.png",
+            "screenshots/a11y-options.png",
+            "screenshots/a11y-saveload.png",
+            "screenshots/a11y-geoscape.png",
+            "screenshots/a11y-base.png",
+            "screenshots/a11y-soldiers.png",
+            "screenshots/a11y-inventory.png",
+            "screenshots/a11y-research.png",
+            "screenshots/a11y-manufacture.png",
+            "screenshots/a11y-ufopaedia.png",
+            "screenshots/a11y-battle.png",
+            "screenshots/a11y-intercept.png"
+          ],
+          "name": "a11y",
+          "seconds": 21
+        },
+        {
+          "pass": true,
+          "defects": [],
+          "screenshots": [
+            "screenshots/perf-battle-large.png"
+          ],
+          "metrics": {
+            "loadMs": 573,
+            "idle": {
+              "fps": 12,
+              "p95": 102.3,
+              "updateP95": 0.3
+            },
+            "aiTurn": {
+              "fps": 12,
+              "p95": 158.1,
+              "updateP95": 0.3
+            },
+            "explosion": {
+              "fps": 12,
+              "p95": 160.9,
+              "updateP95": 0.2
+            },
+            "heapMB": [
+              10.8,
+              11.7,
+              12.1
+            ],
+            "note": "raster fps in headless software GL: idle 12, alien turn 12, explosion 12 — not an iPad measurement"
+          },
+          "name": "perf",
+          "seconds": 13
+        }
+      ]
+    }
+  ]
+}

@@ -6,7 +6,7 @@ import { label, readout, button, Panel, Gauge, header, HEADER_H } from '../ui/ki
 import { P } from '../design/palette';
 import { S } from '../design/spacing';
 import { getState } from '../core/state';
-import { startEngagement, setStance, step, snapshot, setResolveHandler, engagementForCraft, removeEngagement, STANCES, type Engagement, type Stance } from './sim';
+import { startEngagement, setStance, step, snapshot, setResolveHandler, engagementForCraft, removeEngagement, STANCES, DOGFIGHT, type Engagement, type Stance } from './sim';
 import { resolveInterception, advanceTime } from '../geoscape/sim';
 import { CRAFT, CRAFT_WEAPONS } from '../data/craft';
 import { UFOS } from '../data/ufos';
@@ -34,21 +34,22 @@ export class InterceptScene implements Scene {
     this.stanceBtns = []; const labels: Record<Stance, string> = { cautious: 'CAUTIOUS', standard: 'STANDARD', aggressive: 'AGGRESSIVE', disengage: 'DISENGAGE', standoff: 'STANDOFF' };
     for (const st of STANCES) { const b = button({ label: labels[st], icon: st === 'disengage' ? 'disengage' : `stance-${st}`, w: pw - S.x2 * 2, h: 44, selected: e.stance === st, variant: st === 'disengage' ? 'warn' : 'default', onTap: () => { setStance(e, st); this.stanceBtns.forEach((x, i) => x.setSelected(STANCES[i] === st)); } }); b.position.set(0, y); p.content.addChild(b); this.stanceBtns.push(b); y += 48; }
     this.logT = label('', { size: 'caption', color: P.textMuted, wrap: pw - S.x2 * 2 }); this.logT.position.set(0, y + S.x1); p.content.addChild(this.logT);
-    const rp = new Panel(w - x0 - pw - S.x2 - app.safe.right - S.x2, ph, { title: 'Radar' }); rp.position.set(x0 + pw + S.x2, y0); this.root.addChild(rp); rp.content.addChild(this.radar); (this as any).rw = rp.w - S.x2 * 2; (this as any).rh = ph - S.x6 - S.x2;
+    const rp = new Panel(w - x0 - pw - S.x2 - app.safe.right - S.x2, ph, { title: 'Radar' }); rp.position.set(x0 + pw + S.x2, y0); this.root.addChild(rp); this.radar = new Graphics(); rp.content.addChild(this.radar); (this as any).rw = rp.w - S.x2 * 2; (this as any).rh = ph - S.x6 - S.x2;
     this.refresh();
   }
   private refresh() {
     const e = this.e!; const snap = snapshot(e); const s = getState(); const craft = s.craft.find((c) => c.id === e.craftId); const ufo = s.ufos.find((u) => u.id === e.ufoId);
-    this.dist.text = `RANGE ${Math.round(snap.distance)} km`;
+    this.dist.text = `RANGE ${Math.round(snap.distance / DOGFIGHT.rangeScale)} km`;
     this.craftG.set(e.craft.damageMax - (craft?.damage ?? 0), e.craft.damageMax, (craft?.damage ?? 0) > e.craft.damageMax / 2 ? P.critical : P.accent);
     this.ufoG.set(e.ufo.damageMax - (ufo?.damage ?? 0), e.ufo.damageMax);
-    this.weaponsT.text = snap.weapons.map((w) => (w ? `${CRAFT_WEAPONS[w.id].name}: ${w.shots} fired / ${w.hits} hits · range ${w.range} km` : 'Empty hardpoint')).join('\n');
+    this.weaponsT.text = snap.weapons.map((w) => (w ? `${CRAFT_WEAPONS[w.id].name} ${w.shots}/${w.hits} · ${CRAFT_WEAPONS[w.id].range} km` : 'Empty hardpoint')).join('\n');
     this.logT.text = snap.log.slice(-4).join('\n');
-    const rw = (this as any).rw as number, rh = (this as any).rh as number; const g = this.radar; g.clear(); const cx = rw / 2, cy = rh - S.x3; const maxKm = 80;
-    for (const r of [20, 40, 60, 80]) g.circle(cx, cy, (r / maxKm) * (rh - S.x4)).stroke({ width: 1, color: P.shell3 });
+    const rw = (this as any).rw as number, rh = (this as any).rh as number; const g = this.radar; g.clear(); const cx = rw / 2, cy = rh - S.x3; const maxKm = 80; const R = Math.min(rw / 2 - S.x1, rh - S.x5);
+    for (const r of [20, 40, 60, 80]) g.circle(cx, cy, (r / maxKm) * R).stroke({ width: 1, color: P.shell3 });
     g.poly([cx, cy - 10, cx + 8, cy + 8, cx - 8, cy + 8]).fill(P.accent);
-    const d = Math.min(maxKm, snap.distance); g.circle(cx, cy - (d / maxKm) * (rh - S.x4), 8).fill(P.alienOrganic);
-    for (const w of snap.weapons) if (w) g.circle(cx, cy, (Math.min(maxKm, w.range) / maxKm) * (rh - S.x4)).stroke({ width: 1, color: P.accent, alpha: 0.3 });
+    const d = Math.min(maxKm, snap.distance / DOGFIGHT.rangeScale); g.circle(cx, cy - (d / maxKm) * R, 8).fill(P.alienOrganic);
+    for (const w of snap.weapons) if (w) g.circle(cx, cy, (Math.min(maxKm, CRAFT_WEAPONS[w.id].range) / maxKm) * R).stroke({ width: 1, color: P.accent, alpha: 0.3 });
+    const km = readout(`${Math.round(snap.distance / DOGFIGHT.rangeScale)} km`, { size: 'caption', color: P.textMuted }); km.position.set(cx + 12, cy - (d / maxKm) * R - 8); (this as any).kmLabel?.destroy(); (this as any).kmLabel = km; this.radar.parent?.addChild(km);
   }
   update(dt: number) {
     const e = this.e; if (!e) return; const s = getState();

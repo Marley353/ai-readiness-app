@@ -169,9 +169,10 @@ export class ListView extends Container {
 /** A list row: fixed height, optional selected state, columns laid out by caller. */
 export function row(w: number, h = TOUCH_MIN + 4, opts: { selected?: boolean; fill?: number; stripe?: number } = {}): Container & { bg: Graphics; rowH: number } {
   const c = new Container() as Container & { bg: Graphics; rowH: number };
-  c.bg = new Graphics(); c.rowH = h; c.addChild(c.bg); (c as any).kitType = 'row'; (c as any).bgColor = opts.selected ? P.accentDeep : opts.fill ?? P.shell1;
-  c.bg.rect(0, 0, w, h).fill({ color: opts.selected ? P.accentDeep : opts.fill ?? P.shell1, alpha: opts.selected ? 0.5 : 1 }).rect(0, h - 1, w, 1).fill({ color: P.shell3 });
-  if (opts.stripe !== undefined) c.bg.rect(0, 0, 4, h).fill(opts.stripe);
+  c.bg = new Graphics(); c.rowH = h; c.addChild(c.bg); (c as any).kitType = 'row'; (c as any).bgColor = opts.selected ? P.shell2 : opts.fill ?? P.shell1;
+  c.bg.rect(0, 0, w, h).fill({ color: opts.selected ? P.shell2 : opts.fill ?? P.shell1 }).rect(0, h - 1, w, 1).fill({ color: P.shell3 });
+  if (opts.selected) c.bg.rect(0, 0, 4, h).fill(P.accent).rect(0, 0, w, 1).fill(P.accent).rect(0, h - 1, w, 1).fill(P.accent);
+  else if (opts.stripe !== undefined) c.bg.rect(0, 0, 4, h).fill(opts.stripe);
   return c;
 }
 
@@ -231,7 +232,7 @@ export function header(w: number, title: string, opts: { onBack?: () => void; ba
   let x = S.x1;
   if (opts.onBack) { const b = button({ icon: 'back', label: opts.backLabel, onTap: opts.onBack, variant: 'ghost' }); b.position.set(x, S.half); c.addChild(b); x += b.w + S.x2; }
   const t = label(title, { size: 'title', weight: '600' }); t.position.set(x, Math.round((H - LINE.title) / 2)); c.addChild(t);
-  if (opts.subtitle) { const s = label(opts.subtitle, { size: 'caption', color: P.textMuted, upper: true }); s.position.set(x + t.width + S.x2, Math.round((H - LINE.caption) / 2) + 1); c.addChild(s); }
+  if (opts.subtitle) { const numeric = /^[\d.,%$+\-:/ ]+$/.test(opts.subtitle); const s = numeric ? readout(opts.subtitle, { size: 'caption', color: P.textMuted }) : label(opts.subtitle, { size: 'caption', color: P.textMuted, upper: true }); s.position.set(x + t.width + S.x2, Math.round((H - LINE.caption) / 2) + 1); c.addChild(s); }
   let rx = w - S.x1;
   for (const a of (opts.actions ?? []).slice().reverse()) { rx -= a.w; a.position.set(rx, S.half); c.addChild(a); rx -= S.x1; }
   (c as any).height_ = H;

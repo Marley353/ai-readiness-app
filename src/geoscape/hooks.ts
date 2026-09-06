@@ -1,7 +1,7 @@
 import { hooks } from '../app/testHooks';
 import { getState, setState } from '../core/state';
 import { newCampaign, placeFirstBase } from '../core/campaign';
-import { advanceTime, spawnUfo, spawnTerror, spawnRetaliation, sendCraft, returnToBase, resolveInterception, rollMonth, scheduleInitialMissions } from './sim';
+import { advanceTime, spawnUfo, spawnTerror, spawnRetaliation, sendCraft, returnToBase, resolveInterception, rollMonth, scheduleInitialMissions, launchCydonia } from './sim';
 import type { Difficulty } from '../data/types';
 export function installGeoHooks() {
   hooks.add('newCampaign', (d: Difficulty, seed: number) => { const s = newCampaign(d, seed); setState(s); return s; });
@@ -14,4 +14,5 @@ export function installGeoHooks() {
   hooks.add('returnToBase', (craftId: number) => returnToBase(getState(), craftId));
   hooks.add('resolveInterception', (r: any) => resolveInterception(getState(), r));
   hooks.add('forceMonthEnd', () => rollMonth(getState()));
+  hooks.add('launchCydonia', (craftId: number) => launchCydonia(getState(), craftId));
 }

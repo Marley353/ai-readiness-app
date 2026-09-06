@@ -8,7 +8,7 @@ import { P } from '../design/palette';
 import { S } from '../design/spacing';
 import { getState, hasState, COMPRESSION_SECONDS } from '../core/state';
 import { fmtDate, fmtTime, fmtMoney, monthIndex } from '../core/clock';
-import { tick, sendCraft, returnToBase, kmBetween, scheduleInitialMissions, type GeoEventRecord } from './sim';
+import { tick, sendCraft, returnToBase, kmBetween, scheduleInitialMissions, launchCydonia, type GeoEventRecord } from './sim';
 import { placeFirstBase, addBase } from '../core/campaign';
 import { Globe } from './globe';
 import { sprite, has } from '../render/atlas';
@@ -106,7 +106,7 @@ export class GeoscapeScene implements Scene {
   private pendingPopup() {
     const s = getState(); const pm = s.pendingMission; if (!pm) return; this.popupOpen = true;
     const site = s.sites.find((x) => x.id === pm.siteId); const craft = s.craft.find((c) => c.id === pm.craftId);
-    const title = pm.kind === 'base-defence' ? 'Base under attack' : pm.kind === 'terror' ? 'Terror site' : pm.kind === 'alien-base' ? 'Alien base' : pm.kind === 'crash' ? 'Crash site' : 'Landing site';
+    const title = pm.kind === 'base-defence' ? 'Base under attack' : pm.kind === 'terror' ? 'Terror site' : pm.kind === 'alien-base' ? 'Alien base' : pm.kind === 'crash' ? 'Crash site' : pm.kind.startsWith('cydonia') ? 'Cydonia' : 'Landing site';
     const body = pm.kind === 'base-defence' ? `${s.bases.find((b) => b.id === pm.baseId)?.name} — aliens are landing. Defend the base with every soldier present.` : `${craft?.name ?? 'Craft'} on station with ${craft?.soldiers.length ?? 0} soldiers${site?.ufoType ? ` — ${UFOS[site.ufoType].name}, ${site.race}` : ''}. Deploy?`;
     const buttons: any[] = [{ label: pm.kind === 'base-defence' ? 'DEFEND' : 'DEPLOY', variant: 'primary', onTap: () => { this.popupOpen = false; void startMission({ pending: true }); } }];
     if (pm.kind !== 'base-defence') buttons.unshift({ label: 'RETURN TO BASE', onTap: () => { this.popupOpen = false; s.pendingMission = null; if (craft) returnToBase(s, craft.id); } });
@@ -132,7 +132,8 @@ export class GeoscapeScene implements Scene {
     const s = getState(); const targets: { text: string; dest: any }[] = [];
     for (const u of s.ufos) if (u.detected || u.status !== 'flying') targets.push({ text: `${u.hyperDetected ? UFOS[u.type].name : 'UFO'} (${u.status})`, dest: { kind: 'ufo', id: u.id, lon: u.lon, lat: u.lat } });
     for (const st of s.sites) if (st.detected) targets.push({ text: `${st.kind === 'terror' ? 'Terror site ' + st.city : st.kind === 'alien-base' ? 'Alien base' : st.kind + ' site'}`, dest: { kind: 'site', id: st.id, lon: st.lon, lat: st.lat } });
-    const w = Math.min(560, app.w - S.x4); const list = new ListView(w - S.x2 * 2, Math.min(320, app.h - 240), { onTap: (i) => { close(); this.popupOpen = false; if (sendCraft(s, craftId, targets[i].dest)) { toast('Craft launched'); sfx.play('craft-launch'); s.paused = false; } } });
+    const craft = s.craft.find((c) => c.id === craftId); if (craft?.type === 'avenger' && s.researched.includes('cydonia-or-bust')) targets.push({ text: 'CYDONIA — MARS (final assault)', dest: { kind: 'cydonia' } });
+    const w = Math.min(560, app.w - S.x4); const list = new ListView(w - S.x2 * 2, Math.min(320, app.h - 240), { onTap: (i) => { close(); this.popupOpen = false; if (targets[i].dest.kind === 'cydonia') { const r = launchCydonia(s, craftId); if (!r.ok) toast(r.reason!, 'warn'); else this.pendingPopup(); return; } if (sendCraft(s, craftId, targets[i].dest)) { toast('Craft launched'); sfx.play('craft-launch'); s.paused = false; } } });
     list.setRows(targets.length ? targets.map((t) => { const r = row(w - S.x2 * 2, 48); const n = label(t.text, { size: 'control' }); n.position.set(S.x1, 12); r.addChild(n); return r; }) : [(() => { const r = row(w - S.x2 * 2, 48); const t = label('No targets known', { size: 'body', color: P.textMuted }); t.position.set(S.x1, 14); r.addChild(t); return r; })()]);
     this.popupOpen = true; const close = modal({ title: 'Select target', body: list, w, buttons: [{ label: 'CANCEL', variant: 'ghost', onTap: () => { this.popupOpen = false; } }] });
   }

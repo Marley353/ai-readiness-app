@@ -21,7 +21,7 @@ export async function run(browser) {
     if (/\sid="/.test(svg)) defects.push(`${s.name}: carries an id attribute (collision risk)`);
     if (!/viewBox="0 0 \d+ \d+"/.test(svg)) defects.push(`${s.name}: missing viewBox`);
     for (const m of svg.matchAll(/(?:fill|stroke|stop-color)="(#[0-9a-fA-F]{3,8}|[a-zA-Z]+)"/g)) {
-      let c = m[1].toLowerCase(); if (c.length === 4) c = '#' + c[1] + c[1] + c[2] + c[2] + c[3] + c[3]; if (c.length === 9) c = c.slice(0, 7);
+      let c = m[1].toLowerCase(); if (ALLOWED_EXTRA.has(c)) continue; if (c.length === 4) c = '#' + c[1] + c[1] + c[2] + c[2] + c[3] + c[3]; if (c.length === 9) c = c.slice(0, 7);
       if (!pal.has(c) && !ALLOWED_EXTRA.has(c)) defects.push(`${s.name}: off-palette colour ${m[1]}`);
     }
   }

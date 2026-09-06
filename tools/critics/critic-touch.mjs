@@ -28,7 +28,7 @@ export async function run(browser) {
     // Backgrounding: pause + autosave
     if (vpName === 'ipad-10') {
       await visit(page, SCENES.find((s) => s.name === 'geoscape'));
-      await page.evaluate(() => { window.__ufo.state && (window.__ufo.state.paused = false); document.dispatchEvent(new Event('visibilitychange')); });
+      await page.evaluate(() => { window.__ufo.state && (window.__ufo.state.paused = false); window.dispatchEvent(new Event('pagehide')); });
       await sleep(600);
       const bg = await page.evaluate(async () => { const u = window.__ufo; const paused = u.state?.paused; const saves = await (await import('./src/core/save.ts').catch(() => null))?.listSaves?.().catch(() => null); return { paused, hasState: !!u.state }; });
       if (bg.hasState && bg.paused !== true) defects.push('backgrounding did not pause the campaign');

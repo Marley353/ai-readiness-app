@@ -2,6 +2,8 @@ import { hooks } from '../app/testHooks';
 import { getState } from '../core/state';
 import * as B from './index';
 import type { ShotKind, Vec3 } from './types';
+import { computeDebrief, applyDebrief } from '../debrief/score';
+import { setupFromPending } from '../scenes/flow';
 export const battleHooks: Record<string, any> = {};
 const st = () => { const b = getState().battle; if (!b) throw new Error('no battle'); return b; };
 const unit = (uid: number) => { const u = B.unitByUid(st(), uid); if (!u) throw new Error('no unit ' + uid); return u; };
@@ -31,5 +33,6 @@ Object.assign(battleHooks, {
   abort: () => B.abortMission(st()),
   moveTo: (x: number, y: number, z: number, uid?: number) => { const b = st(); const u = uid ? unit(uid) : B.unitByUid(b, b.selectedUid ?? -1)!; const p = B.pathTo(b, u, { x, y, z }); if (!p) return { ok: false, reason: 'NO PATH' }; for (const step of p.path) { const r = B.stepUnit(b, u, step); if (!r.ok) return r; if (r.spotted.length || r.reactions.length) return { ...r, interrupted: true }; } return { ok: true, tu: u.tu }; },
   select: (uid: number) => { st().selectedUid = uid; },
+  nextStage: () => { const s = getState(); if (!s.battle) return null; const d = computeDebrief(s, s.battle); applyDebrief(s, d); if (s.pendingMission?.kind === 'cydonia-brain') { const setup = setupFromPending(s.pendingMission); if (setup) { s.battle = B.createBattle(setup, s.soldiers, s.bases[0]); return s.battle.setup.missionType; } } return null; },
 });
 export function installBattleHooks() { hooks.add('battle', battleHooks); }

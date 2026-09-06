@@ -328,8 +328,8 @@ export function scheduleInitialMissions(state: GameState) {
 /** Test helper: force a UFO near a point. */
 export function spawnUfo(state: GameState, type: string, race: string, lon: number, lat: number, status: 'flying' | 'landed' | 'crashed' = 'flying'): Ufo {
   const rng = campaignRng(state); const m = startMission(state, 'research', regionAt(lon, lat).id, race); m.done = true;
-  const traj: Ufo['trajectory'] = [{ lon: lon + 3, lat: lat + 2, altitude: 'high' }, { lon: lon + 6, lat, altitude: 'high' }, { lon: lon + 40, lat: lat + 5, altitude: 'very-high' }];
-  const ufo: Ufo = { id: nextId(state), type, race, missionId: m.id, lon, lat, altitude: status === 'flying' ? 'high' : 'ground', speed: Math.round(UFOS[type].speedMax * 0.4), heading: 0, dest: status === 'flying' ? { lon: traj[0].lon, lat: traj[0].lat } : null, waypoint: 0, status, damage: status === 'crashed' ? Math.floor(UFOS[type].damageMax * 0.6) : 0, detected: status !== 'flying', hyperDetected: false, trajectory: traj };
+  const traj: Ufo['trajectory'] = []; for (let i = 0; i < 32; i++) { const a = (i / 8) * Math.PI * 2; traj.push({ lon: wrapLon(lon + Math.cos(a) * 3), lat: Math.max(-80, Math.min(80, lat + Math.sin(a) * 2)), altitude: 'high' }); } traj.push({ lon: wrapLon(lon + 40), lat: Math.max(-80, Math.min(80, lat + 5)), altitude: 'very-high' });
+  const ufo: Ufo = { id: nextId(state), type, race, missionId: m.id, lon, lat, altitude: status === 'flying' ? 'high' : 'ground', speed: Math.round(UFOS[type].speedMax * 0.12), heading: 0, dest: status === 'flying' ? { lon: traj[0].lon, lat: traj[0].lat } : null, waypoint: 0, status, damage: status === 'crashed' ? Math.floor(UFOS[type].damageMax * 0.6) : 0, detected: status !== 'flying', hyperDetected: false, trajectory: traj };
   if (status === 'landed') ufo.landedUntil = state.time + 12 * HOUR; if (status === 'crashed') ufo.crashedUntil = state.time + 72 * HOUR;
   state.ufos.push(ufo);
   if (status !== 'flying') state.sites.push({ id: nextId(state), kind: status === 'crashed' ? 'crash' : 'landed', lon, lat, race, ufoType: type, ufoId: ufo.id, expiresAt: status === 'crashed' ? ufo.crashedUntil! : ufo.landedUntil!, detected: true, terrainSet: terrainFor(lon, lat, ufo.id), region: regionAt(lon, lat).id, createdAt: state.time });
@@ -338,6 +338,13 @@ export function spawnUfo(state: GameState, type: string, race: string, lon: numb
 export function spawnTerror(state: GameState, lon: number, lat: number, race = 'sectoid'): Site {
   const region = regionAt(lon, lat); const site: Site = { id: nextId(state), kind: 'terror', lon, lat, race, expiresAt: state.time + 48 * HOUR, detected: true, terrainSet: 'urban', city: region.cities[0]?.name ?? 'the city', region: region.id, createdAt: state.time };
   state.sites.push(site); toastEvent(state, 'terror-site', `Terror site: ${site.city}`, { siteId: site.id }); return site;
+}
+/** Launch the Cydonia assault: an Avenger with troops aboard, once Cydonia or Bust is researched. */
+export function launchCydonia(state: GameState, craftId: number): { ok: boolean; reason?: string } {
+  if (!state.researched.includes('cydonia-or-bust')) return { ok: false, reason: 'CYDONIA OR BUST NOT RESEARCHED' };
+  const c = craftById(state, craftId); if (!c) return { ok: false, reason: 'NO CRAFT' }; if (c.type !== 'avenger') return { ok: false, reason: 'ONLY THE AVENGER CAN REACH MARS' }; if (!c.soldiers.length) return { ok: false, reason: 'NO SOLDIERS ABOARD' }; if (c.status !== 'ready') return { ok: false, reason: 'CRAFT NOT READY' };
+  state.cydoniaUnlocked = true; c.status = 'out'; c.dest = null; state.pendingMission = { kind: 'cydonia-surface', craftId: c.id, baseId: c.baseId };
+  toastEvent(state, 'craft-arrived', `${c.name} has reached Cydonia`, { craftId: c.id }); return { ok: true };
 }
 export function spawnRetaliation(state: GameState, baseId: number) { const b = baseById(state, baseId); if (!b) return null; const u = spawnUfo(state, 'battleship', 'sectoid', b.lon + 1, b.lat, 'flying'); u.status = 'flying'; baseAttack(state, b, u); return u; }
 export { storesOver, capacities };

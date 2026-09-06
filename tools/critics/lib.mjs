@@ -10,7 +10,7 @@ export const VIEWPORTS = {
   'ipad-pro-13': { width: 1376, height: 1024, dpr: 2 },
   'ipad-97': { width: 1024, height: 768, dpr: 2 },
 };
-export async function launch() { return chromium.launch({ executablePath: EXEC, args: ['--no-sandbox', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] }); }
+export async function launch() { return chromium.launch({ executablePath: EXEC, args: ['--no-sandbox', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--js-flags=--expose-gc'] }); }
 export async function openPage(browser, vp = VIEWPORTS['ipad-10'], query = '?test=1') {
   const ctx = await browser.newContext({ viewport: { width: vp.width, height: vp.height }, deviceScaleFactor: vp.dpr, isMobile: true, hasTouch: true, userAgent: devices['iPad Pro 11'].userAgent, reducedMotion: 'reduce' });
   const page = await ctx.newPage();

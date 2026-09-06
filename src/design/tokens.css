@@ -7,8 +7,8 @@
   --core-casing:#1e1b4b; --core-edge:#818cf8; --core-field:#6366f1; --core-centre:#a5f3fc; --alien-organic:#a855f7;
   --scorch:#451a03;
   --shell-0:#0b1020; --shell-1:#111827; --shell-2:#1e293b; --shell-3:#334155; --border:#475569;
-  --text:#f8fafc; --text-muted:#94a3b8; --text-dim:#64748b;
-  --accent:#38bdf8; --accent-deep:#0284c7; --warn:#f59e0b; --critical:#ef4444; --ok:#48bb78;
+  --text:#f8fafc; --text-muted:#94a3b8; --text-dim:#8593a5;
+  --accent:#38bdf8; --accent-deep:#0369a1; --warn:#f59e0b; --critical:#ef4444; --ok:#48bb78;
   --space-1:8px; --space-2:16px; --space-3:24px; --space-4:32px; --radius:3px;
   --font-ui:'IBM Plex Sans', 'Inter', system-ui, -apple-system, sans-serif;
   --font-num:'IBM Plex Mono', ui-monospace, Menlo, monospace;

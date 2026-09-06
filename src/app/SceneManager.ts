@@ -26,6 +26,7 @@ class SceneManager {
     const f = this.factories.get(name);
     if (!f) throw new Error(`Unknown scene: ${name}`);
     this.unmountCurrent();
+    app.overlay.removeChildren().forEach((c) => c.destroy({ children: true })); // no modal outlives its scene
     if (push) this.stack.push({ name, params });
     const c = new Container(); c.label = `scene:${name}`;
     app.root.addChild(c);

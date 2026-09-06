@@ -15,8 +15,8 @@ export const P = {
   scorch: 0x451a03,
   // UI shell (dark slate / indigo), derived from the same family
   shell0: 0x0b1020, shell1: 0x111827, shell2: 0x1e293b, shell3: 0x334155, border: 0x475569,
-  text: 0xf8fafc, textMuted: 0x94a3b8, textDim: 0x64748b,
-  accent: 0x38bdf8, accentDeep: 0x0284c7, warn: 0xf59e0b, warnDeep: 0xb45309, critical: 0xef4444, criticalDeep: 0x991b1b, ok: 0x48bb78,
+  text: 0xf8fafc, textMuted: 0x94a3b8, textDim: 0x8593a5,
+  accent: 0x38bdf8, accentDeep: 0x0369a1, warn: 0xf59e0b, warnDeep: 0xb45309, critical: 0xef4444, criticalDeep: 0x991b1b, ok: 0x48bb78,
   // Terrain family (flat vector ground / vegetation / structure)
   grass: 0x4d7c0f, grassShade: 0x3f6212, soil: 0x78350f, soilShade: 0x451a03, sand: 0xd6b26a, sandShade: 0xb8933f,
   snow: 0xe2e8f0, snowShade: 0xcbd5e1, forest: 0x166534, forestShade: 0x14532d, jungle: 0x15803d, jungleShade: 0x166534,

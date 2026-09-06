@@ -6,7 +6,7 @@ export async function record(iteration, results, note = '') {
   const log = await load();
   const entry = { iteration, at: new Date().toISOString(), note, results };
   const i = log.iterations.findIndex((e) => e.iteration === iteration);
-  if (i >= 0) log.iterations[i] = entry; else log.iterations.push(entry);
+  if (i >= 0) { const prev = log.iterations[i]; const merged = [...prev.results.filter((r) => !results.some((n) => n.name === r.name)), ...results]; log.iterations[i] = { ...entry, results: merged, note: note || prev.note }; } else log.iterations.push(entry);
   await writeFile(FILE, JSON.stringify(log, null, 2));
   await render(log);
 }

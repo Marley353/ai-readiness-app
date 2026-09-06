@@ -11,6 +11,7 @@ import { getState } from '../core/state';
 import { sprite, tex, has } from '../render/atlas';
 import { toScreen, fromScreen, depth as depthOf, spriteFacing, TILE_W, TILE_H, LEVEL_H, VOXELS_PER_TILE as VT, VOXELS_PER_LEVEL as VL } from '../render/iso';
 import * as B from './index';
+import { battleHooks } from './hooks';
 import type { BattleState, BattleUnit, Vec3, ShotKind, ReserveMode, Facing } from './types';
 import { ITEMS } from '../data/items';
 import { TERRAIN_SETS } from '../data/terrain';
@@ -26,6 +27,7 @@ export class BattleScene implements Scene {
   mount(root: Container, params: any) {
     this.root = root; const s = getState();
     if (params?.setup) { const setup = params.setup; const base = s.bases.find((x) => x.id === setup.baseId) ?? s.bases[0]; s.battle = B.createBattle(setup, s.soldiers, base); void autosave('mission'); }
+    else if (params?.siteId !== undefined || params?.kind) { const site = s.sites.find((x) => x.id === params.siteId); const pm = { siteId: params.siteId, craftId: params.craftId, baseId: params.baseId, kind: params.kind ?? site?.kind ?? 'crash' }; const setup = setupFromPending(pm); if (!setup) { toast('Mission could not be prepared', 'warn'); scenes.show('geoscape'); return; } s.pendingMission = s.pendingMission ?? pm; const base = s.bases.find((x) => x.id === setup.baseId) ?? s.bases[0]; s.battle = B.createBattle(setup, s.soldiers, base); void autosave('mission'); }
     else if (params?.pending && s.pendingMission) { const setup = setupFromPending(s.pendingMission); if (!setup) { toast('Mission could not be prepared', 'warn'); scenes.show('geoscape'); return; } const base = s.bases.find((x) => x.id === setup.baseId) ?? s.bases[0]; s.battle = B.createBattle(setup, s.soldiers, base); void autosave('mission'); }
     else if (!s.battle) { if (s.pendingMission) { const setup = setupFromPending(s.pendingMission); if (setup) { s.battle = B.createBattle(setup, s.soldiers, s.bases[0]); void autosave('mission'); } } if (!s.battle) { scenes.show('geoscape'); return; } }
     this.b = s.battle!; this.tutorial = !!params?.tutorial || this.b.setup.missionType === 'tutorial';
@@ -35,6 +37,7 @@ export class BattleScene implements Scene {
     const hit = new Container(); hit.eventMode = 'static'; hit.hitArea = new Rectangle(-100000, -100000, 200000, 200000); this.world.addChildAt(hit, 0);
     attachGestures(this.world, { tap: (x, y) => this.tap(x, y), longPress: (x, y) => this.longPress(x, y), twoFingerTap: (x, y) => this.twoFinger(x, y), pan: (dx, dy) => { this.world.x += dx; this.world.y += dy; this.dirty = true; }, pinch: (k) => { const z = k > 1 ? 2 : k < 1 ? 1 : this.zoom; if (z !== this.zoom) { this.zoom = z; this.world.scale.set(z); this.dirty = true; } } });
     const sel = B.unitByUid(this.b, this.b.selectedUid ?? -1) ?? B.unitsOf(this.b, 'xcom')[0]; if (sel) { this.b.selectedUid = sel.uid; this.level = sel.pos.z; this.centreOn(sel.pos); }
+    battleHooks.perf = () => this.perf(); battleHooks.perfReset = () => this.perfReset(); battleHooks.fps = () => Math.round(app.pixi.ticker.FPS); battleHooks.setLevel = (z: number) => { this.level = z; this.dirty = true; }; battleHooks.runAiTurnAnimated = () => { if (this.b.side === 'xcom') this.endTurn(); };
     this.buildHud(); this.brief(); sfx.music(this.b.map.night ? 'ambient-battle-night' : 'ambient-battle-day'); sfx.play('mission-start');
   }
   unmount() {}
@@ -43,7 +46,13 @@ export class BattleScene implements Scene {
   private tileFromGlobal(gx: number, gy: number, z = this.level): Vec3 | null { const l = this.world.toLocal({ x: gx, y: gy }); const t = fromScreen(l.x, l.y, z); const p = { x: Math.floor(t.x), y: Math.floor(t.y), z }; return B.inMap(this.b.map, p.x, p.y, p.z) ? p : null; }
   private selected(): BattleUnit | null { return B.unitByUid(this.b, this.b.selectedUid ?? -1) ?? null; }
   // ---------- rendering ----------
+  private perfSamples: number[] = [];
+  perf() { const a = [...this.perfSamples].sort((x, y) => x - y); return { updateP95: a.length ? +a[Math.floor(a.length * 0.95)].toFixed(2) : 0, samples: a.length }; }
+  perfReset() { this.perfSamples.length = 0; }
   update(dt: number) {
+    const t0 = performance.now(); try { this.updateInner(dt); } finally { const ms = performance.now() - t0; if (this.perfSamples.length < 2000) this.perfSamples.push(ms); }
+  }
+  private updateInner(dt: number) {
     const b = this.b; if (!b) return;
     if (b.side !== 'xcom' && !b.ended) { this.aiTimer -= dt; if (this.aiTimer <= 0 || app.reducedMotion) this.aiTick(); }
     if (this.fxTimer > 0) { this.fxTimer -= dt; if (this.fxTimer <= 0) this.fxLayer.clear(); }
