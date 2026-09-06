@@ -1,4 +1,5 @@
 import { hooks } from '../app/testHooks';
+import { scenes } from '../app/SceneManager';
 import { getState, setState } from '../core/state';
 import { newCampaign, placeFirstBase } from '../core/campaign';
 import { advanceTime, spawnUfo, spawnTerror, spawnRetaliation, sendCraft, returnToBase, resolveInterception, rollMonth, scheduleInitialMissions, launchCydonia } from './sim';
@@ -14,5 +15,5 @@ export function installGeoHooks() {
   hooks.add('returnToBase', (craftId: number) => returnToBase(getState(), craftId));
   hooks.add('resolveInterception', (r: any) => resolveInterception(getState(), r));
   hooks.add('forceMonthEnd', () => rollMonth(getState()));
-  hooks.add('launchCydonia', (craftId: number) => launchCydonia(getState(), craftId));
+  hooks.add('launchCydonia', (craftId: number) => { const r = launchCydonia(getState(), craftId); if (r.ok) scenes.show('battle', { pending: true }); return r; });
 }

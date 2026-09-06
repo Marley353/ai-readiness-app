@@ -42,21 +42,22 @@ export async function visit(page, scene) {
 export async function walkStage(page) {
   return page.evaluate(() => {
     const out = []; const stage = window.__ufo.app.pixi.stage;
-    const visit = (o, depth, parentBg) => {
+    const visit = (o, depth, parentBg, panel) => {
       if (!o.visible || o.alpha === 0) return;
       let bg = parentBg;
       if (o.bgColor !== undefined) bg = o.bgColor;
-      const rec = { type: o.constructor.name, label: o.label ?? '', kitType: o.kitType ?? '', eventMode: o.eventMode ?? '', depth, bg };
+      const rec = { type: o.constructor.name, label: o.label ?? '', kitType: o.kitType ?? '', eventMode: o.eventMode ?? '', depth, bg, panel };
       try { const b = o.getBounds(); rec.x = b.x; rec.y = b.y; rec.w = b.width; rec.h = b.height; } catch { rec.x = rec.y = rec.w = rec.h = 0; }
+      if (o.kitType === 'panel' || o.kitType === 'header') panel = { x: rec.x, y: rec.y, w: rec.w, h: rec.h };
       if (o.hitArea) { try { const g = o.toGlobal({ x: o.hitArea.x, y: o.hitArea.y }); const g2 = o.toGlobal({ x: o.hitArea.x + o.hitArea.width, y: o.hitArea.y + o.hitArea.height }); rec.hit = { x: g.x, y: g.y, w: g2.x - g.x, h: g2.y - g.y }; } catch {} }
       if (o.style && o.text !== undefined) { rec.text = String(o.text).slice(0, 60); rec.fontSize = o.style.fontSize; rec.fontFamily = String(o.style.fontFamily); const f = o.style.fill; rec.fill = typeof f === 'number' ? f : (f && typeof f === 'object' && 'color' in f) ? f.color : f; }
       if (o.context && o.context.instructions) { rec.fills = o.context.instructions.filter((i) => i.action === 'fill' || i.action === 'stroke').map((i) => ({ a: i.action, c: i.data?.style?.color, alpha: i.data?.style?.alpha })); }
       if (o.texture && o.texture.label) rec.sprite = o.texture.label;
       if (o.tint !== undefined && o.tint !== 0xffffff) rec.tint = o.tint;
       out.push(rec);
-      if (o.children) for (const c of o.children) visit(c, depth + 1, bg);
+      if (o.children) for (const c of o.children) visit(c, depth + 1, bg, panel);
     };
-    visit(stage, 0, 0x0b1020);
+    visit(stage, 0, 0x0b1020, null);
     return out;
   });
 }

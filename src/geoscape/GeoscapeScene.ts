@@ -40,7 +40,7 @@ export class GeoscapeScene implements Scene {
   unmount() { for (const u of this.unsub) u(); }
   resize(w: number, h: number) { this.layout(w, h); }
   private layout(w: number, h: number) {
-    const panelW = Math.max(248, Math.round(w * 0.24)); const gx = app.safe.left + Math.round((w - panelW - app.safe.left - app.safe.right) / 2); this.world.position.set(gx, app.safe.top + Math.round((h - app.safe.top - app.safe.bottom) / 2));
+    const panelW = Math.max(248, Math.round((w * 0.24) / 8) * 8); const gx = app.safe.left + Math.round((w - panelW - app.safe.left - app.safe.right) / 2); this.world.position.set(gx, app.safe.top + Math.round((h - app.safe.top - app.safe.bottom) / 2));
     this.ui.position.set(w - app.safe.right - panelW, app.safe.top); (this.ui as any).panelW = panelW; this.buildPanel(panelW, h - app.safe.top - app.safe.bottom);
   }
   private buildUi() { this.status = label('', { size: 'caption', color: P.textMuted, wrap: 200 }); }
