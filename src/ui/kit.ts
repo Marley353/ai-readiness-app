@@ -41,6 +41,7 @@ export class Panel extends Container {
   titleText: Text | null = null;
   constructor(public w: number, public h: number, opts: { title?: string; fill?: number; border?: number; pad?: number; alpha?: number } = {}) {
     super();
+    (this as any).kitType = 'panel'; (this as any).bgColor = opts.fill ?? P.shell1;
     this.addChild(this.bg, this.content);
     const pad = opts.pad ?? S.x2;
     this.content.position.set(pad, opts.title ? pad + LINE.caption + S.x1 : pad);
@@ -66,6 +67,7 @@ export class Button extends Container {
   disabled: boolean; selected: boolean; variant: Variant;
   constructor(public opts: ButtonOpts) {
     super();
+    (this as any).kitType = 'button';
     this.variant = opts.variant ?? 'default';
     this.disabled = !!opts.disabled; this.selected = !!opts.selected;
     this.h = opts.h ?? S.x6;
@@ -109,6 +111,7 @@ export class Button extends Container {
     if (this.selected) { fill = P.accentDeep; border = P.accent; textCol = P.text; }
     if (this.pressed) { fill = P.accent; border = P.accent; textCol = P.shell0; }
     if (this.disabled) { alpha = 0.45; }
+    (this as any).bgColor = fill;
     this.bg.clear().roundRect(0, 0, this.w, this.h, RADIUS).fill({ color: fill, alpha }).stroke({ width: 1, color: border, alpha, alignment: 1 });
     if (this.badge) { const bw = this.badge.width + 8; this.bg.roundRect(this.w - bw - 4, 2, bw, LINE.caption, RADIUS).fill(P.warn); }
     if (this.text) { this.text.style.fill = textCol; this.text.alpha = alpha; }
@@ -126,6 +129,7 @@ export class ListView extends Container {
   private scrollY = 0; private contentH = 0; private dragging = false; private dragMoved = false; private lastY = 0;
   constructor(public w: number, public h: number, private opts: { gap?: number; onTap?: (index: number, row: Container) => void; bg?: boolean } = {}) {
     super();
+    (this as any).kitType = 'list';
     this.addChild(this.maskG, this.inner, this.bar);
     this.mask = this.maskG;
     this.redrawMask();
@@ -165,7 +169,7 @@ export class ListView extends Container {
 /** A list row: fixed height, optional selected state, columns laid out by caller. */
 export function row(w: number, h = TOUCH_MIN + 4, opts: { selected?: boolean; fill?: number; stripe?: number } = {}): Container & { bg: Graphics; rowH: number } {
   const c = new Container() as Container & { bg: Graphics; rowH: number };
-  c.bg = new Graphics(); c.rowH = h; c.addChild(c.bg);
+  c.bg = new Graphics(); c.rowH = h; c.addChild(c.bg); (c as any).kitType = 'row'; (c as any).bgColor = opts.selected ? P.accentDeep : opts.fill ?? P.shell1;
   c.bg.rect(0, 0, w, h).fill({ color: opts.selected ? P.accentDeep : opts.fill ?? P.shell1, alpha: opts.selected ? 0.5 : 1 }).rect(0, h - 1, w, 1).fill({ color: P.shell3 });
   if (opts.stripe !== undefined) c.bg.rect(0, 0, 4, h).fill(opts.stripe);
   return c;
@@ -175,6 +179,7 @@ export class Gauge extends Container {
   private bg = new Graphics(); private fg = new Graphics(); private txt: Text; private cap: Text | null = null;
   constructor(public w: number, public h: number, private opts: { color?: number; caption?: string; showValue?: boolean; mono?: boolean } = {}) {
     super();
+    (this as any).kitType = 'gauge';
     this.addChild(this.bg, this.fg);
     this.txt = readout('', { size: 'caption', weight: '600' }); this.txt.anchor.set(1, 0.5); this.txt.position.set(w - S.half, h / 2); this.addChild(this.txt);
     if (opts.caption) { this.cap = label(opts.caption, { size: 'caption', color: P.text, weight: '600', upper: true }); this.cap.anchor.set(0, 0.5); this.cap.position.set(S.half, h / 2); this.addChild(this.cap); }
@@ -194,6 +199,7 @@ export class Stepper extends Container {
   private val: Text; minus: Button; plus: Button;
   constructor(public value: number, private opts: { min?: number; max?: number; step?: number; onChange?: (v: number) => void; w?: number }) {
     super();
+    (this as any).kitType = 'stepper';
     const w = opts.w ?? 176;
     this.minus = button({ icon: 'minus', w: S.x6, onTap: () => this.change(-(opts.step ?? 1)) });
     this.plus = button({ icon: 'plus', w: S.x6, onTap: () => this.change(opts.step ?? 1) }); this.plus.x = w - S.x6;
@@ -220,7 +226,7 @@ export class TabBar extends Container {
 
 /** Scene header: back button, title, right-side actions. Height 56 (48 + grid). */
 export function header(w: number, title: string, opts: { onBack?: () => void; backLabel?: string; actions?: Button[]; subtitle?: string } = {}): Container {
-  const c = new Container(); const H = S.x6 + S.x1;
+  const c = new Container(); const H = S.x6 + S.x1; (c as any).kitType = 'header'; (c as any).bgColor = P.shell1;
   const g = new Graphics().rect(0, 0, w, H).fill(P.shell1).rect(0, H - 1, w, 1).fill(P.border); c.addChild(g);
   let x = S.x1;
   if (opts.onBack) { const b = button({ icon: 'back', label: opts.backLabel, onTap: opts.onBack, variant: 'ghost' }); b.position.set(x, S.half); c.addChild(b); x += b.w + S.x2; }

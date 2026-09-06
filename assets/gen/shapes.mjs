@@ -4,7 +4,10 @@
 //
 // Geometry. Floors: 32×16, diamond 16,0 32,8 16,16 0,8. Walls: 32×40, the floor diamond occupies y 24..40; a wall is a
 // slab 3 units thick standing on the diamond's north edge (16,24)-(32,32) (`*-n`) or west edge (0,32)-(16,24) (`*-w`),
-// 24 units high (one level). Objects: 32×32 with the diamond at y 16..32. Straight-edged terrain polygons use
+// 24 units high (one level). Objects: 32×32 with the diamond at y 16..32. Lighting (DESIGN-SYSTEM "west faces darker"):
+// light arrives from screen-left, so faces whose normal points screen down-left (+v) are lit and faces pointing screen
+// down-right (+u) take the shading step — the west wall's face is shaded, the north wall's face is lit, and objects
+// carry their highlight on the upper-left. Straight-edged terrain polygons use
 // shape-rendering="crispEdges" so adjacent tiles rasterise without anti-aliasing seams.
 import { svg, poly, path, circle, ellipse, line, pts, W, SH, ED, F, isoAt } from './_lib.mjs';
 
@@ -37,9 +40,9 @@ function slab(fr, h, faceBody = null) {
   const top = [pt(0, 0, h), pt(1, 0, h), pt(1, T, h), pt(0, T, h)];
   const face = [pt(0, T, 0), pt(1, T, 0), pt(1, T, h), pt(0, T, h)];
   const end = [pt(1, 0, 0), pt(1, T, 0), pt(1, T, h), pt(1, 0, h)];
-  let s = poly(end, SH, CRISP) + (faceBody ?? poly(face, main, CRISP)) + poly(top, W, CRISP);
+  let s = poly(end, side === 'n' ? SH : W, CRISP) + (faceBody ?? poly(face, main, CRISP)) + poly(top, W, CRISP);
   if (side === 'n') s += line(pt(0, T, h), pt(1, T, h), ED);   // lit top meets lit face
-  else s += line(pt(1, T, 0), pt(1, T, h), ED);                // shaded face meets shaded end
+  else s += line(pt(1, 0, h), pt(1, T, h), ED);                // lit top meets lit end
   return s;
 }
 
@@ -73,10 +76,9 @@ function doorWall(side) {
 
 function fence(side) {
   const fr = wallFrame(side);
-  const { pt, main } = fr;
-  const railTone = side === 'n' ? SH : W;
-  const rail = (z) => poly([pt(0, T / 2, z), pt(1, T / 2, z), pt(1, T / 2, z + 1.5), pt(0, T / 2, z + 1.5)], railTone, CRISP);
-  const post = (a) => poly([pt(a - 0.035, T / 2, 0), pt(a + 0.035, T / 2, 0), pt(a + 0.035, T / 2, 12), pt(a - 0.035, T / 2, 12)], main, CRISP);
+  const { pt, main, dark } = fr;
+  const rail = (z) => poly([pt(0, T / 2, z), pt(1, T / 2, z), pt(1, T / 2, z + 1.5), pt(0, T / 2, z + 1.5)], main, CRISP);
+  const post = (a) => poly([pt(a - 0.035, T / 2, 0), pt(a + 0.035, T / 2, 0), pt(a + 0.035, T / 2, 12), pt(a - 0.035, T / 2, 12)], dark, CRISP);
   return wall(rail(4) + rail(8.5) + post(0.08) + post(0.5) + post(0.92));
 }
 
@@ -86,7 +88,7 @@ function hedge(side) {
   let s = poly([pt(0.05, T / 2, 0), pt(0.95, T / 2, 0), pt(0.95, T / 2, 6), pt(0.05, T / 2, 6)], SH, CRISP);
   for (const a of [0.2, 0.5, 0.8]) {
     const [cx, cy] = pt(a, T / 2, 5);
-    s += ellipse(cx, cy, 4.6, 4.5, SH) + ellipse(cx + 1, cy - 1, 4, 3.9, W);
+    s += ellipse(cx, cy, 4.6, 4.5, SH) + ellipse(cx - 1, cy - 1, 4, 3.9, W);
   }
   return wall(s);
 }
@@ -98,7 +100,7 @@ function ufoWallBody(fr, extra = '') {
   const face = [pt(0, T, 0), pt(1, T, 0), pt(1, T, H - c), pt(0, T, H - c)];
   const chamfer = [pt(0, T, H - c), pt(1, T, H - c), pt(1, 0, H), pt(0, 0, H)];
   const end = [pt(1, 0, 0), pt(1, T, 0), pt(1, T, H - c), pt(1, 0, H)];
-  let s = poly(end, SH, CRISP) + poly(face, main, CRISP) + poly(chamfer, W, CRISP);
+  let s = poly(end, side === 'n' ? SH : W, CRISP) + poly(face, main, CRISP) + poly(chamfer, W, CRISP);
   s += line(pt(0, T, H - c), pt(1, T, H - c), ED);
   s += line(pt(0, T, 10), pt(1, T, 10), ED);
   if (side === 'w') s += line(pt(1, T, 0), pt(1, T, H - c), ED);
@@ -146,12 +148,12 @@ function box(u0, v0, u1, v1, z0, z1, o = {}) {
   const top = [P(u0, v0, z1), P(u1, v0, z1), P(u1, v1, z1), P(u0, v1, z1)];
   const left = [P(u0, v1, z0), P(u1, v1, z0), P(u1, v1, z1), P(u0, v1, z1)];
   const right = [P(u1, v0, z0), P(u1, v1, z0), P(u1, v1, z1), P(u1, v0, z1)];
-  let s = poly(left, o.left ?? SH, CRISP) + poly(right, o.right ?? W, CRISP) + poly(top, o.top ?? W, CRISP);
-  if (o.edge !== false) s += line(P(u1, v0, z1), P(u1, v1, z1), ED);
+  let s = poly(left, o.left ?? W, CRISP) + poly(right, o.right ?? SH, CRISP) + poly(top, o.top ?? W, CRISP);
+  if (o.edge !== false) s += line(P(u0, v1, z1), P(u1, v1, z1), ED);
   return s;
 }
-/** Soft blob: shaded ellipse with a lit ellipse offset to the upper right (flat two-tone). */
-const blob = (cx, cy, rx, ry, k = 1) => ellipse(cx, cy, rx, ry, SH) + ellipse(cx + k, cy - k, rx - k * 0.6, ry - k * 0.6, W);
+/** Soft blob: shaded ellipse with a lit ellipse offset to the upper left (flat two-tone). */
+const blob = (cx, cy, rx, ry, k = 1) => ellipse(cx, cy, rx, ry, SH) + ellipse(cx - k, cy - k, rx - k * 0.6, ry - k * 0.6, W);
 
 const objects = {
   pillar: () => box(0.35, 0.35, 0.65, 0.65, 0, 20),
@@ -162,27 +164,27 @@ const objects = {
       + line(P(0.35, 0.35, 9), P(0.65, 0.65, 9), ED);
   },
   rock: () => {
-    const lit = [[16, 10], [24, 12], [28, 20], [24, 26], [16, 27], [15, 19]];
-    const shade = [[16, 10], [15, 19], [16, 27], [9, 27], [4, 22], [7, 14]];
+    const shade = [[16, 10], [24, 12], [28, 20], [24, 26], [16, 27], [17, 19]];
+    const lit = [[16, 10], [17, 19], [16, 27], [9, 27], [4, 22], [7, 14]];
     return poly(shade, SH) + poly(lit, W) + ellipse(16, 27, 12, 3, SH);
   },
   bush: () => blob(11, 24, 6, 5, 1.2) + blob(21, 25, 6.5, 5.5, 1.2) + blob(16, 19, 6.5, 6, 1.4),
   'tree-trunk': () => {
     const P = ob;
     return box(0.42, 0.42, 0.58, 0.58, 0, 15, { edge: false })
-      + poly([P(0.42, 0.58, 0), P(0.35, 0.66, 0), P(0.42, 0.58, 2)], SH, CRISP)
-      + poly([P(0.58, 0.42, 0), P(0.66, 0.35, 0), P(0.58, 0.42, 2)], W, CRISP);
+      + poly([P(0.42, 0.58, 0), P(0.35, 0.66, 0), P(0.42, 0.58, 2)], W, CRISP)
+      + poly([P(0.58, 0.42, 0), P(0.66, 0.35, 0), P(0.58, 0.42, 2)], SH, CRISP);
   },
   'tree-canopy': () => blob(10, 12, 6, 5.5, 1.3) + blob(22, 12, 6, 5.5, 1.3) + blob(16, 7, 6.5, 6, 1.4) + blob(16, 13, 7.5, 6.5, 1.5),
   cactus: () => {
     const arm = (x, y, h, dir) => `<rect x="${F(dir < 0 ? x - 6 : x)}" y="${F(y)}" width="6.5" height="2.6" rx="1.3" fill="${W}"/>`
       + `<rect x="${F(dir < 0 ? x - 6 : x + 4)}" y="${F(y - h)}" width="2.6" height="${F(h + 2.6)}" rx="1.3" fill="${W}"/>`
-      + `<rect x="${F(dir < 0 ? x - 6 : x + 4)}" y="${F(y - h)}" width="1" height="${F(h + 2)}" fill="${SH}"/>`;
+      + `<rect x="${F(dir < 0 ? x - 4.4 : x + 5.6)}" y="${F(y - h)}" width="1" height="${F(h + 2)}" fill="${SH}"/>`;
     return ellipse(16, 25, 5, 2.2, SH)
-      + `<rect x="14" y="3" width="4.4" height="23" rx="2.2" fill="${W}"/>` + `<rect x="14" y="4" width="1.4" height="21" fill="${SH}"/>`
+      + `<rect x="14" y="3" width="4.4" height="23" rx="2.2" fill="${W}"/>` + `<rect x="17" y="4" width="1.4" height="21" fill="${SH}"/>`
       + arm(14, 12, 6, -1) + arm(18, 15, 5, 1);
   },
-  snowbank: () => ellipse(16, 24, 14, 6, SH) + ellipse(17, 23, 12.5, 5.2, W) + ellipse(20, 21.5, 6, 2.5, W),
+  snowbank: () => ellipse(16, 24, 14, 6, SH) + ellipse(15, 23, 12.5, 5.2, W) + ellipse(12, 21.5, 6, 2.5, W),
   table: () => {
     const leg = (u, v) => box(u - 0.04, v - 0.04, u + 0.04, v + 0.04, 0, 7, { edge: false });
     return leg(0.22, 0.22) + leg(0.78, 0.22) + leg(0.22, 0.78) + leg(0.78, 0.78) + box(0.15, 0.15, 0.85, 0.85, 7, 9);
@@ -203,7 +205,7 @@ const objects = {
     const P = ob;
     const [dx, dy] = P(0.5, 0.5, 14);
     return box(0.3, 0.3, 0.7, 0.7, 0, 14) + ellipse(dx, dy, 5.5, 2.6, SH)
-      + circle(dx, dy - 3, 4.2, SH) + circle(dx + 1, dy - 4, 3.2, W) + circle(dx, dy - 3, 4.2, 'none', { stroke: ED, 'stroke-width': 1 });
+      + circle(dx, dy - 3, 4.2, SH) + circle(dx - 1, dy - 4, 3.2, W) + circle(dx, dy - 3, 4.2, 'none', { stroke: ED, 'stroke-width': 1 });
   },
   'power-source': () => {
     const cx = 16, cy = 12, k = 0.62;
@@ -229,10 +231,10 @@ const objects = {
       + poly([P(0.34, 0.66, 8), P(0.64, 0.66, 8), P(0.64, 0.66, 11), P(0.34, 0.66, 11)], ED, CRISP)
       + wheel(0.2, 0.3) + wheel(0.7, 0.3);
   },
-  lamp: () => ellipse(16, 24, 3.2, 1.6, SH) + `<rect x="15.2" y="5" width="1.6" height="19" fill="${W}"/>` + `<rect x="15.2" y="5" width="0.6" height="19" fill="${SH}"/>`
+  lamp: () => ellipse(16, 24, 3.2, 1.6, SH) + `<rect x="15.2" y="5" width="1.6" height="19" fill="${W}"/>` + `<rect x="16.2" y="5" width="0.6" height="19" fill="${SH}"/>`
     + `<rect x="11.5" y="2" width="9" height="4.5" rx="1.5" fill="${W}"/>` + `<rect x="11.5" y="4.5" width="9" height="2" rx="1" fill="${SH}"/>`,
   'alien-pod': () => ellipse(16, 25, 8, 3.5, SH)
-    + path('M16 4c-5 0-8 6-8 12s3 10 8 10Z', SH) + path('M16 4c5 0 8 6 8 12s-3 10-8 10Z', W)
+    + path('M16 4c-5 0-8 6-8 12s3 10 8 10Z', W) + path('M16 4c5 0 8 6 8 12s-3 10-8 10Z', SH)
     + line([16, 4], [16, 26], ED) + ellipse(16, 5.5, 3, 1.6, SH),
 };
 

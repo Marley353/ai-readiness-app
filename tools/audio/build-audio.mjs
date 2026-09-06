@@ -3,7 +3,8 @@
  * build-audio.mjs — procedural sound synthesiser for the UFO: Enemy Unknown homage.
  *
  * Renders public/audio/<key>.wav (16-bit PCM, mono, 22050 Hz, peaks at -3 dBFS) for every key
- * listed in docs/AUDIO.md, plus public/audio/manifest.json (read by src/audio/sfx.ts).
+ * listed in docs/AUDIO.md, plus public/audio/manifest.json — a flat { "<key>": "<key>.wav" } map read by
+ * src/audio/sfx.ts.
  *
  * Everything is synthesised from first principles — oscillators, noise, biquad filters, FM,
  * envelopes — driven by a per-sound seeded PRNG, so a rebuild is byte-for-byte identical.
@@ -264,14 +265,14 @@ const LOOP_EXT = (LOOP_N + LOOP_OV) / SR;
 const pk = (k) => k / LOOP_SECONDS; // k whole cycles per loop -> periodic, seamless by construction
 
 // ------------------------------------------------------------------ recipes
-// Each returns a Float32Array, or { samples, loop?, gain?, seamless?, fadeIn?, fadeOut? }.
-// `gain` is a playback hint written to the manifest (files themselves all peak at -3 dBFS).
+// Each returns a Float32Array, or { samples, loop?, seamless?, fadeIn?, fadeOut? }. `loop` marks a 12 s ambience
+// (must be exactly LOOP_N samples); `seamless` marks a shorter bed built to repeat without edge fades.
 const SOUNDS = {
   // ---- UI / Geoscape -------------------------------------------------------
-  'ui-tap': () => ({ samples: click({ dur: 0.03, f: 2600, q: 3, tau: 0.0028, tick: 1900 }), fadeIn: 0.0003, gain: 0.7 }),
-  'ui-back': () => ({ samples: click({ dur: 0.035, f: 1200, q: 2.5, tau: 0.004, tick: 900 }), fadeIn: 0.0003, gain: 0.7 }),
+  'ui-tap': () => ({ samples: click({ dur: 0.03, f: 2600, q: 3, tau: 0.0028, tick: 1900 }), fadeIn: 0.0003 }),
+  'ui-back': () => ({ samples: click({ dur: 0.035, f: 1200, q: 2.5, tau: 0.004, tick: 900 }), fadeIn: 0.0003 }),
   'ui-alert': () => twoTone(880, 1175, 0.06, 0.1, 0.02, { harm: 0.2 }),
-  'geo-tick': () => ({ samples: click({ dur: 0.025, f: 3200, q: 4, tau: 0.002, tick: 2400, tickGain: 0.3 }), fadeIn: 0.0003, gain: 0.5 }),
+  'geo-tick': () => ({ samples: click({ dur: 0.025, f: 3200, q: 4, tau: 0.002, tick: 2400, tickGain: 0.3 }), fadeIn: 0.0003 }),
   'geo-ufo-detected': () => {
     const pair = twoTone(1046, 1318, 0.07, 0.11, 0.015, { harm: 0.25 });
     return layer(0.52, [pair, 0, 1], [pair, 0.26, 1]);
@@ -352,14 +353,14 @@ const SOUNDS = {
     const dur = 0.9;
     const h = env(lp(noise(dur), 2200, 0.6), (t) => clamp01(t / 0.12) * Math.exp(-t / 0.28));
     const low = env(onepole(noise(dur), 300), (t) => clamp01(t / 0.1) * Math.exp(-t / 0.3));
-    return { samples: layer(dur, [n1(h), 0, 1], [n1(low), 0, 0.4]), gain: 0.6 };
+    return { samples: layer(dur, [n1(h), 0, 1], [n1(low), 0, 0.4]) };
   },
   'fire-burn': () => {
     // 1 s bed, built seamless so it can be looped without a click
     const N = secs(1.0), ov = secs(0.25), len = (N + ov) / SR;
     const roar = env(onepole(noise(len), 350), (t) => 0.7 + 0.3 * Math.sin(TAU * 3.1 * t) + 0.15 * Math.sin(TAU * 7.3 * t));
     const cr = crackle(len, 55, { minLp: 1200, maxLp: 7000, minLen: 0.001, maxLen: 0.006 });
-    return { samples: loopify(layer(len, [n1(roar), 0, 0.9], [n1(cr), 0, 1]), N, ov), seamless: true, gain: 0.6 };
+    return { samples: loopify(layer(len, [n1(roar), 0, 0.9], [n1(cr), 0, 1]), N, ov), seamless: true };
   },
   'door-open': () => {
     const dur = 0.48;
@@ -384,21 +385,21 @@ const SOUNDS = {
     const dur = 0.1;
     const n = env(lp(noise(dur), 900, 0.8), (t) => attack(0.003)(t) * Math.exp(-t / 0.016));
     const th = env(tone(dur, sweepExp(110, 60, 0.02)), expDecay(0.014));
-    return { samples: layer(dur, [n1(n), 0, 1], [n1(th), 0, 0.6]), gain: 0.6 };
+    return { samples: layer(dur, [n1(n), 0, 1], [n1(th), 0, 0.6]) };
   },
   'step-hard': () => {
     const dur = 0.1;
     const n = env(bp(noise(dur), 1900, 1.4), expDecay(0.009));
     const th = env(tone(dur, sweepExp(160, 90, 0.015)), expDecay(0.012));
     const k = env(hp(noise(dur), 4000, 0.7), expDecay(0.002));
-    return { samples: layer(dur, [n1(n), 0, 1], [n1(th), 0, 0.7], [n1(k), 0, 0.5]), gain: 0.6 };
+    return { samples: layer(dur, [n1(n), 0, 1], [n1(th), 0, 0.7], [n1(k), 0, 0.5]) };
   },
   'step-metal': () => {
     const dur = 0.18;
     const k = env(bp(noise(dur), 2400, 1.2), expDecay(0.006));
     const ring = metal(dur, [[1900, 0.05, 1], [2900, 0.04, 0.6], [4300, 0.03, 0.4]]);
     const th = env(tone(dur, sweepExp(150, 80, 0.015)), expDecay(0.012));
-    return { samples: layer(dur, [n1(k), 0, 1], [n1(ring), 0, 0.55], [n1(th), 0, 0.5]), gain: 0.6 };
+    return { samples: layer(dur, [n1(k), 0, 1], [n1(ring), 0, 0.55], [n1(th), 0, 0.5]) };
   },
   'kneel': () => {
     const dur = 0.28;
@@ -535,13 +536,13 @@ const SOUNDS = {
 
   // ---- Ambience: 12 s seamless loops --------------------------------------
   // Tonal layers use frequencies of k/12 Hz (whole cycles per loop); noise layers are crossfaded
-  // tail-over-head; events are mixed with wrap-around. Manifest `gain` keeps them under the SFX.
+  // tail-over-head; events are mixed with wrap-around. The wrapper's music volume sits them under the SFX.
   'ambient-geo': () => {
     const dur = LOOP_SECONDS, pad = buf(dur);
     for (const [k, g] of [[660, 1], [663, 0.9], [990, 0.35], [1320, 0.2], [1326, 0.15]]) mix(pad, tone(dur, pk(k)), 0, g); // 55 / 55.25 / 82.5 / 110 / 110.5 Hz
     env(pad, (t) => 0.85 + 0.15 * Math.sin(TAU * pk(1) * t));
     const nz = loopify(env(lp(noise(LOOP_EXT), (t) => 300 + 200 * Math.sin(TAU * pk(2) * t), 0.8), (t) => 0.7 + 0.3 * Math.sin(TAU * pk(3) * t + 1)), LOOP_N, LOOP_OV);
-    return { samples: layer(dur, [n1(pad), 0, 1], [n1(nz), 0, 0.22]), loop: true, gain: 0.35 };
+    return { samples: layer(dur, [n1(pad), 0, 1], [n1(nz), 0, 0.22]), loop: true };
   },
   'ambient-battle-day': () => {
     const dur = LOOP_SECONDS;
@@ -557,7 +558,7 @@ const SOUNDS = {
         off += cd + rnd(0.03, 0.12);
       }
     }
-    return { samples: layer(dur, [n1(wind), 0, 1], [n1(birds), 0, 0.28]), loop: true, gain: 0.4 };
+    return { samples: layer(dur, [n1(wind), 0, 1], [n1(birds), 0, 0.28]), loop: true };
   },
   'ambient-battle-night': () => {
     const dur = LOOP_SECONDS;
@@ -568,7 +569,7 @@ const SOUNDS = {
       for (let t0 = c.start; t0 < dur; t0 += c.burst + c.gap * rnd(0.8, 1.2))
         mixWrap(crickets, env(tone(c.burst, c.f), (t) => pw(Math.sin((Math.PI * t) / c.burst), 0.5) * pw(0.5 + 0.5 * Math.sin(TAU * c.rate * t), 3)), t0, 0.8);
     }
-    return { samples: layer(dur, [n1(wind), 0, 1], [n1(crickets), 0, 0.22]), loop: true, gain: 0.4 };
+    return { samples: layer(dur, [n1(wind), 0, 1], [n1(crickets), 0, 0.22]), loop: true };
   },
   'ambient-ufo': () => {
     const dur = LOOP_SECONDS, hum = buf(dur);
@@ -580,7 +581,7 @@ const SOUNDS = {
       const d = rnd(1.0, 1.8);
       mixWrap(tones, env(tone(d, (t) => f * (1 + 0.004 * Math.sin(TAU * 5 * t)), { fm: { ratio: 2, index: 0.3 } }), (t) => pw(Math.sin((Math.PI * t) / d), 2)), rnd(0, dur), rnd(0.5, 0.9));
     }
-    return { samples: layer(dur, [n1(hum), 0, 1], [n1(bed), 0, 0.25], [n1(tones), 0, 0.3]), loop: true, gain: 0.35 };
+    return { samples: layer(dur, [n1(hum), 0, 1], [n1(bed), 0, 0.25], [n1(tones), 0, 0.3]), loop: true };
   },
 };
 
@@ -605,7 +606,7 @@ function render(key) {
   if (seamless) removeMean(s);                                                  // no edge fades: continuity comes from construction
   else { s = dcBlock(s); fades(s, spec.fadeIn ?? 0.0005, spec.fadeOut ?? 0.008); } // DC block first so the tail decays to exactly zero
   normalise(s, PEAK_DBFS);                                                      // last, so the peak is exactly -3 dBFS
-  return { samples: s, loop, seamless, gain: spec.gain ?? 1 };
+  return { samples: s, loop, seamless };
 }
 
 /** 16-bit PCM mono WAV. */
@@ -642,27 +643,25 @@ function main() {
   const extra = Object.keys(SOUNDS).filter((k) => !keys.includes(k));
   if (extra.length) console.warn(`build-audio: recipes not listed in docs/AUDIO.md: ${extra.join(', ')}`);
 
-  const manifest = { version: 1, sampleRate: SR, format: 'wav', peakDbfs: PEAK_DBFS, sounds: {} };
+  const manifest = {}; // { "<key>": "<key>.wav" } — the shape src/audio/sfx.ts reads
   const rows = [];
   let total = 0;
   const t0 = performance.now();
   for (const key of keys) {
-    const { samples, loop, seamless, gain: g } = render(key);
+    const { samples, loop, seamless } = render(key);
     const data = wav(samples);
     writeFileSync(join(outDir, `${key}.wav`), data);
     let peak = 0, sq = 0; // measured from the quantised data, i.e. what the file really holds
     for (let i = 0; i < samples.length; i++) { const v = data.readInt16LE(44 + i * 2); if (Math.abs(v) > peak) peak = Math.abs(v); sq += v * v; }
-    const entry = { file: `${key}.wav`, duration: +(samples.length / SR).toFixed(4), samples: samples.length, loop, gain: g };
-    if (seamless && !loop) entry.seamless = true;
-    manifest.sounds[key] = entry;
+    manifest[key] = `${key}.wav`;
     total += data.length;
-    rows.push([key, (samples.length / SR).toFixed(3), dB(peak / 32767).toFixed(2), dB(Math.sqrt(sq / samples.length) / 32767).toFixed(1), loop ? 'loop' : seamless ? 'seam' : '', g, data.length]);
+    rows.push([key, (samples.length / SR).toFixed(3), dB(peak / 32767).toFixed(2), dB(Math.sqrt(sq / samples.length) / 32767).toFixed(1), loop ? 'loop' : seamless ? 'seam' : '', data.length]);
   }
   writeFileSync(join(outDir, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
 
   if (!quiet) {
-    console.log(pad('key', 22) + pad('dur s', 8) + pad('peak dB', 9) + pad('rms dB', 8) + pad('loop', 6) + pad('gain', 6) + 'bytes');
-    for (const r of rows) console.log(pad(r[0], 22) + pad(r[1], 8) + pad(r[2], 9) + pad(r[3], 8) + pad(r[4], 6) + pad(r[5], 6) + r[6]);
+    console.log(pad('key', 22) + pad('dur s', 8) + pad('peak dB', 9) + pad('rms dB', 8) + pad('loop', 6) + 'bytes');
+    for (const r of rows) console.log(pad(r[0], 22) + pad(r[1], 8) + pad(r[2], 9) + pad(r[3], 8) + pad(r[4], 6) + r[5]);
   }
   console.log(`build-audio: ${keys.length} files -> ${outDir}  total ${(total / 1024).toFixed(0)} KiB of ${(SIZE_BUDGET / 1024 / 1024).toFixed(0)} MiB budget  (${((performance.now() - t0) / 1000).toFixed(1)} s)`);
   if (total > SIZE_BUDGET) { console.error('build-audio: output exceeds the size budget'); process.exit(1); }
