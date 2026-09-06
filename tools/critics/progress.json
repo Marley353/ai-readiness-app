@@ -922,6 +922,306 @@
           "seconds": 11
         }
       ]
+    },
+    {
+      "iteration": 7,
+      "at": "2026-09-06T13:25:51.204Z",
+      "note": "final consolidated pass on the shipped build",
+      "results": [
+        {
+          "pass": true,
+          "defects": [],
+          "screenshots": [
+            "screenshots/iter-7/func-01-geoscape.png",
+            "screenshots/iter-7/func-02-intercept.png",
+            "screenshots/iter-7/func-03-battle.png",
+            "screenshots/iter-7/func-04-debrief.png",
+            "screenshots/iter-7/func-05-cydonia.png"
+          ],
+          "name": "functional",
+          "seconds": 12
+        },
+        {
+          "pass": true,
+          "defects": [],
+          "screenshots": [],
+          "metrics": {
+            "tests": 26,
+            "passed": 26,
+            "failed": 0
+          },
+          "name": "fidelity",
+          "seconds": 2
+        },
+        {
+          "pass": true,
+          "defects": [],
+          "screenshots": [
+            "screenshots/iter-7/touch-ipad-mini-menu.png",
+            "screenshots/iter-7/touch-ipad-mini-newgame.png",
+            "screenshots/iter-7/touch-ipad-mini-options.png",
+            "screenshots/iter-7/touch-ipad-mini-saveload.png",
+            "screenshots/iter-7/touch-ipad-mini-geoscape.png",
+            "screenshots/iter-7/touch-ipad-mini-base.png",
+            "screenshots/iter-7/touch-ipad-mini-soldiers.png",
+            "screenshots/iter-7/touch-ipad-mini-inventory.png",
+            "screenshots/iter-7/touch-ipad-mini-research.png",
+            "screenshots/iter-7/touch-ipad-mini-manufacture.png",
+            "screenshots/iter-7/touch-ipad-mini-ufopaedia.png",
+            "screenshots/iter-7/touch-ipad-mini-battle.png",
+            "screenshots/iter-7/touch-ipad-mini-intercept.png",
+            "screenshots/iter-7/touch-ipad-10-menu.png",
+            "screenshots/iter-7/touch-ipad-10-newgame.png",
+            "screenshots/iter-7/touch-ipad-10-options.png",
+            "screenshots/iter-7/touch-ipad-10-saveload.png",
+            "screenshots/iter-7/touch-ipad-10-geoscape.png",
+            "screenshots/iter-7/touch-ipad-10-base.png",
+            "screenshots/iter-7/touch-ipad-10-soldiers.png",
+            "screenshots/iter-7/touch-ipad-10-inventory.png",
+            "screenshots/iter-7/touch-ipad-10-research.png",
+            "screenshots/iter-7/touch-ipad-10-manufacture.png",
+            "screenshots/iter-7/touch-ipad-10-ufopaedia.png",
+            "screenshots/iter-7/touch-ipad-10-battle.png",
+            "screenshots/iter-7/touch-ipad-10-intercept.png"
+          ],
+          "name": "touch",
+          "seconds": 58
+        },
+        {
+          "pass": true,
+          "defects": [],
+          "screenshots": [
+            "screenshots/iter-7/craft-menu.png",
+            "screenshots/iter-7/craft-newgame.png",
+            "screenshots/iter-7/craft-options.png",
+            "screenshots/iter-7/craft-saveload.png",
+            "screenshots/iter-7/craft-geoscape.png",
+            "screenshots/iter-7/craft-base.png",
+            "screenshots/iter-7/craft-soldiers.png",
+            "screenshots/iter-7/craft-inventory.png",
+            "screenshots/iter-7/craft-research.png",
+            "screenshots/iter-7/craft-manufacture.png",
+            "screenshots/iter-7/craft-ufopaedia.png",
+            "screenshots/iter-7/craft-battle.png",
+            "screenshots/iter-7/craft-intercept.png"
+          ],
+          "name": "craft",
+          "seconds": 18
+        },
+        {
+          "pass": true,
+          "defects": [],
+          "screenshots": [
+            "screenshots/iter-7/art-sample.png"
+          ],
+          "name": "art",
+          "seconds": 8
+        },
+        {
+          "pass": true,
+          "defects": [],
+          "screenshots": [
+            "screenshots/iter-7/a11y-menu.png",
+            "screenshots/iter-7/a11y-newgame.png",
+            "screenshots/iter-7/a11y-options.png",
+            "screenshots/iter-7/a11y-saveload.png",
+            "screenshots/iter-7/a11y-geoscape.png",
+            "screenshots/iter-7/a11y-base.png",
+            "screenshots/iter-7/a11y-soldiers.png",
+            "screenshots/iter-7/a11y-inventory.png",
+            "screenshots/iter-7/a11y-research.png",
+            "screenshots/iter-7/a11y-manufacture.png",
+            "screenshots/iter-7/a11y-ufopaedia.png",
+            "screenshots/iter-7/a11y-battle.png",
+            "screenshots/iter-7/a11y-intercept.png"
+          ],
+          "name": "a11y",
+          "seconds": 19
+        },
+        {
+          "pass": true,
+          "defects": [],
+          "screenshots": [
+            "screenshots/iter-7/perf-battle-large.png"
+          ],
+          "metrics": {
+            "loadMs": 453,
+            "idle": {
+              "fps": 11,
+              "p95": 189.9,
+              "updateP95": 0.3
+            },
+            "aiTurn": {
+              "fps": 11,
+              "p95": 100.3,
+              "updateP95": 0.5
+            },
+            "explosion": {
+              "fps": 11,
+              "p95": 100.7,
+              "updateP95": 0.4
+            },
+            "heapMB": [
+              10.8,
+              11.6,
+              12.1
+            ],
+            "note": "raster fps in headless software GL: idle 11, alien turn 11, explosion 11 — not an iPad measurement"
+          },
+          "name": "perf",
+          "seconds": 13
+        }
+      ]
+    },
+    {
+      "iteration": 8,
+      "at": "2026-09-06T13:30:04.285Z",
+      "note": "Final consolidated pass on the release build",
+      "results": [
+        {
+          "pass": true,
+          "defects": [],
+          "screenshots": [
+            "screenshots/iter-8/func-01-geoscape.png",
+            "screenshots/iter-8/func-02-intercept.png",
+            "screenshots/iter-8/func-03-battle.png",
+            "screenshots/iter-8/func-04-debrief.png",
+            "screenshots/iter-8/func-05-cydonia.png"
+          ],
+          "name": "functional",
+          "seconds": 11
+        },
+        {
+          "pass": true,
+          "defects": [],
+          "screenshots": [],
+          "metrics": {
+            "tests": 26,
+            "passed": 26,
+            "failed": 0
+          },
+          "name": "fidelity",
+          "seconds": 2
+        },
+        {
+          "pass": true,
+          "defects": [],
+          "screenshots": [
+            "screenshots/iter-8/touch-ipad-mini-menu.png",
+            "screenshots/iter-8/touch-ipad-mini-newgame.png",
+            "screenshots/iter-8/touch-ipad-mini-options.png",
+            "screenshots/iter-8/touch-ipad-mini-saveload.png",
+            "screenshots/iter-8/touch-ipad-mini-geoscape.png",
+            "screenshots/iter-8/touch-ipad-mini-base.png",
+            "screenshots/iter-8/touch-ipad-mini-soldiers.png",
+            "screenshots/iter-8/touch-ipad-mini-inventory.png",
+            "screenshots/iter-8/touch-ipad-mini-research.png",
+            "screenshots/iter-8/touch-ipad-mini-manufacture.png",
+            "screenshots/iter-8/touch-ipad-mini-ufopaedia.png",
+            "screenshots/iter-8/touch-ipad-mini-battle.png",
+            "screenshots/iter-8/touch-ipad-mini-intercept.png",
+            "screenshots/iter-8/touch-ipad-10-menu.png",
+            "screenshots/iter-8/touch-ipad-10-newgame.png",
+            "screenshots/iter-8/touch-ipad-10-options.png",
+            "screenshots/iter-8/touch-ipad-10-saveload.png",
+            "screenshots/iter-8/touch-ipad-10-geoscape.png",
+            "screenshots/iter-8/touch-ipad-10-base.png",
+            "screenshots/iter-8/touch-ipad-10-soldiers.png",
+            "screenshots/iter-8/touch-ipad-10-inventory.png",
+            "screenshots/iter-8/touch-ipad-10-research.png",
+            "screenshots/iter-8/touch-ipad-10-manufacture.png",
+            "screenshots/iter-8/touch-ipad-10-ufopaedia.png",
+            "screenshots/iter-8/touch-ipad-10-battle.png",
+            "screenshots/iter-8/touch-ipad-10-intercept.png"
+          ],
+          "name": "touch",
+          "seconds": 57
+        },
+        {
+          "pass": true,
+          "defects": [],
+          "screenshots": [
+            "screenshots/iter-8/craft-menu.png",
+            "screenshots/iter-8/craft-newgame.png",
+            "screenshots/iter-8/craft-options.png",
+            "screenshots/iter-8/craft-saveload.png",
+            "screenshots/iter-8/craft-geoscape.png",
+            "screenshots/iter-8/craft-base.png",
+            "screenshots/iter-8/craft-soldiers.png",
+            "screenshots/iter-8/craft-inventory.png",
+            "screenshots/iter-8/craft-research.png",
+            "screenshots/iter-8/craft-manufacture.png",
+            "screenshots/iter-8/craft-ufopaedia.png",
+            "screenshots/iter-8/craft-battle.png",
+            "screenshots/iter-8/craft-intercept.png"
+          ],
+          "name": "craft",
+          "seconds": 18
+        },
+        {
+          "pass": true,
+          "defects": [],
+          "screenshots": [
+            "screenshots/iter-8/art-sample.png"
+          ],
+          "name": "art",
+          "seconds": 8
+        },
+        {
+          "pass": true,
+          "defects": [],
+          "screenshots": [
+            "screenshots/iter-8/a11y-menu.png",
+            "screenshots/iter-8/a11y-newgame.png",
+            "screenshots/iter-8/a11y-options.png",
+            "screenshots/iter-8/a11y-saveload.png",
+            "screenshots/iter-8/a11y-geoscape.png",
+            "screenshots/iter-8/a11y-base.png",
+            "screenshots/iter-8/a11y-soldiers.png",
+            "screenshots/iter-8/a11y-inventory.png",
+            "screenshots/iter-8/a11y-research.png",
+            "screenshots/iter-8/a11y-manufacture.png",
+            "screenshots/iter-8/a11y-ufopaedia.png",
+            "screenshots/iter-8/a11y-battle.png",
+            "screenshots/iter-8/a11y-intercept.png"
+          ],
+          "name": "a11y",
+          "seconds": 18
+        },
+        {
+          "pass": true,
+          "defects": [],
+          "screenshots": [
+            "screenshots/iter-8/perf-battle-large.png"
+          ],
+          "metrics": {
+            "loadMs": 554,
+            "idle": {
+              "fps": 11,
+              "p95": 119.3,
+              "updateP95": 0.4
+            },
+            "aiTurn": {
+              "fps": 11,
+              "p95": 172.7,
+              "updateP95": 1
+            },
+            "explosion": {
+              "fps": 11,
+              "p95": 174.9,
+              "updateP95": 0.3
+            },
+            "heapMB": [
+              10.8,
+              11.7,
+              12.1
+            ],
+            "note": "raster fps in headless software GL: idle 11, alien turn 11, explosion 11 — not an iPad measurement"
+          },
+          "name": "perf",
+          "seconds": 13
+        }
+      ]
     }
   ]
 }
