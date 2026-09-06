@@ -50,14 +50,14 @@ export class GeoscapeScene implements Scene {
     this.date = readout('', { size: 'control', weight: '600' }); this.date.position.set(0, y); c.addChild(this.date); y += 24;
     this.time = readout('', { size: 'display', weight: '600' }); this.time.position.set(0, y); c.addChild(this.time); y += 40;
     this.funds = readout('', { size: 'control', color: P.ok }); this.funds.position.set(0, y); c.addChild(this.funds); y += 32;
-    const s = getState(); this.compButtons = []; const bw = Math.floor((iw - S.half * 2) / 3);
-    COMP.forEach(([lab, ic], i) => { const b = button({ label: lab, icon: ic, w: bw, h: 44, size: 'caption', mono: true, selected: s.compression === i && !s.paused, onTap: () => { s.compression = i as any; s.paused = false; this.refreshComp(); } }); b.position.set((i % 3) * (bw + S.half), y + Math.floor(i / 3) * 48); c.addChild(b); this.compButtons.push(b); });
-    y += 96 + S.half;
-    this.pauseBtn = button({ label: s.paused ? 'PAUSED' : 'PAUSE', icon: 'time-pause', w: iw, h: 44, selected: s.paused, onTap: () => { s.paused = !s.paused; this.refreshComp(); } }); this.pauseBtn.position.set(0, y); c.addChild(this.pauseBtn); y += 44 + S.x1;
+    const s = getState(); this.compButtons = []; const bw = Math.floor((iw - S.x1 * 2) / 3 / 8) * 8;
+    COMP.forEach(([lab, ic], i) => { const b = button({ label: lab, icon: ic, w: bw, h: 48, size: 'caption', mono: true, selected: s.compression === i && !s.paused, onTap: () => { s.compression = i as any; s.paused = false; this.refreshComp(); } }); b.position.set((i % 3) * (bw + S.x1), y + Math.floor(i / 3) * 56); c.addChild(b); this.compButtons.push(b); });
+    y += 112;
+    this.pauseBtn = button({ label: s.paused ? 'PAUSED' : 'PAUSE', icon: 'time-pause', w: Math.floor(iw / 8) * 8, h: 48, selected: s.paused, onTap: () => { s.paused = !s.paused; this.refreshComp(); } }); this.pauseBtn.position.set(0, y); c.addChild(this.pauseBtn); y += 48 + S.x1;
     const acts: [string, string, () => void][] = [['INTERCEPT', 'intercept', () => this.interceptMenu()], ['BASES', 'base', () => scenes.show('base', { baseId: s.bases[0]?.id })], ['GRAPHS', 'graphs', () => this.graphs()], ['UFOPAEDIA', 'ufopaedia', () => scenes.show('ufopaedia')], ['OPTIONS', 'options', () => scenes.show('options')], ['FUNDING', 'funding', () => this.funding()]];
-    const aw = Math.floor((iw - S.half) / 2);
-    acts.forEach(([lab, ic, fn], i) => { const b = button({ label: lab, icon: ic, w: aw, h: 48, size: 'caption', onTap: fn }); b.position.set((i % 2) * (aw + S.half), y + Math.floor(i / 2) * 52); c.addChild(b); });
-    y += 3 * 52 + S.x1;
+    const aw = Math.floor((iw - S.x1) / 2 / 8) * 8;
+    acts.forEach(([lab, ic, fn], i) => { const b = button({ label: lab, icon: ic, w: aw, h: 48, size: 'caption', onTap: fn }); b.position.set((i % 2) * (aw + S.x1), y + Math.floor(i / 2) * 56); c.addChild(b); });
+    y += 3 * 56 + S.x1;
     this.status = label('', { size: 'caption', color: P.textMuted, wrap: iw }); this.status.position.set(0, y); c.addChild(this.status);
     this.refreshReadouts();
   }

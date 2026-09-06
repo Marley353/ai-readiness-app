@@ -3,3 +3,4 @@ dist
 .DS_Store
 screenshots/*.png
 !screenshots/.keep
+!screenshots/iter-*/

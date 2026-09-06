@@ -1,7 +1,7 @@
 import { hooks } from '../app/testHooks';
 import { getState } from '../core/state';
-import { build, buyItem, sell, hire, equipCraftWeapon, assignSoldier, loadCraftItem, storesOver, makeCraft } from './sim';
-import { addBase } from '../core/campaign';
+import { build, buyItem, sell, hire, equipCraftWeapon, assignSoldier, loadCraftItem, storesOver } from './sim';
+import { addBase, addCraft } from '../core/campaign';
 export function installBaseHooks() {
   hooks.add('base', {
     build: (baseId: number, facilityId: string, x: number, y: number) => build(getState(), baseId, facilityId, x, y),
@@ -13,6 +13,6 @@ export function installBaseHooks() {
     loadCraftItem: (craftId: number, itemId: string, qty: number) => loadCraftItem(getState(), craftId, itemId, qty),
     storesOver: (baseId: number) => { const b = getState().bases.find((x) => x.id === baseId); return b ? storesOver(getState(), b) : false; },
     newBase: (lon: number, lat: number, name: string) => addBase(getState(), lon, lat, name),
-    addCraft: (type: string, baseId: number) => makeCraft(getState(), type, baseId),
+    addCraft: (type: string, baseId: number) => addCraft(getState(), type, baseId),
   });
 }

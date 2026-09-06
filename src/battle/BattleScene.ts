@@ -158,7 +158,7 @@ export class BattleScene implements Scene {
     E.preview = readout('', { size: 'caption', color: P.accent }); E.preview.position.set(app.safe.left + 376, 0); c.addChild(E.preview);
     let x = app.safe.left + 376; const bw = 48; const mk = (ic: string, lab: string, fn: () => void, wdt = bw) => { const bt = button({ icon: ic, label: lab || undefined, w: wdt, h: 48, size: 'caption', onTap: fn }); bt.position.set(x, 24); c.addChild(bt); x += wdt + S.x1; return bt; };
     mk('kneel', '', () => { const sel = this.selected(); if (!sel) return; const r = B.kneel(this.b, sel); if (!r.ok) toast(r.reason!, 'warn'); else sfx.play('kneel'); this.dirty = true; });
-    E.reserve = mk('reserve-none', 'RES', () => { const sel = this.selected(); if (!sel) return; const i = RESERVES.indexOf(sel.reserve ?? 'none'); sel.reserve = RESERVES[(i + 1) % 4]; this.b.reserve = sel.reserve; toast(`Reserve TU: ${sel.reserve}`); }, 72);
+    E.reserve = mk('reserve-none', 'RES', () => { const sel = this.selected(); if (!sel) return; const i = RESERVES.indexOf(sel.reserve ?? 'none'); sel.reserve = RESERVES[(i + 1) % 4]; this.b.reserve = sel.reserve; toast(`Reserve TU: ${sel.reserve}`); }, 104);
     mk('prev-unit', '', () => this.cycle(-1)); mk('next-unit', '', () => this.cycle(1));
     mk('inventory', '', () => { const sel = this.selected(); if (sel) scenes.show('inventory', { battle: true, uid: sel.uid }); });
     mk('level-down', '', () => { this.level = Math.max(0, this.level - 1); this.dirty = true; }); mk('level-up', '', () => { this.level = Math.min(this.b.map.levels - 1, this.level + 1); this.dirty = true; });

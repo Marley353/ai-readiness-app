@@ -2,6 +2,7 @@
 // Usage: UFO_URL=http://127.0.0.1:4173/ node tools/critics/run-all.mjs <iteration> [note] [critic,critic]
 import { launch } from './lib.mjs';
 import { record } from './progress.mjs';
+import { mkdir, copyFile } from 'node:fs/promises';
 const iteration = Number(process.argv[2] ?? 0);
 const note = process.argv[3] ?? '';
 const only = (process.argv[4] ?? '').split(',').filter(Boolean);
@@ -24,5 +25,8 @@ for (const name of CRITICS) {
   }
 }
 await browser.close();
+// keep this iteration's captures so before/after comparisons survive later runs
+const dir = `screenshots/iter-${iteration}`; await mkdir(dir, { recursive: true });
+for (const r of results) { const kept = []; for (const p of r.screenshots ?? []) { const dest = `${dir}/${p.split('/').pop()}`; try { await copyFile(p, dest); kept.push(dest); } catch { kept.push(p); } } r.screenshots = kept; }
 await record(iteration, results, note);
 console.log(JSON.stringify(results.map((r) => ({ name: r.name, pass: r.pass, defects: r.defects.length }))));
