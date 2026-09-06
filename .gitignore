@@ -4,3 +4,4 @@ dist
 screenshots/*.png
 !screenshots/.keep
 !screenshots/iter-*/
+dist-single/

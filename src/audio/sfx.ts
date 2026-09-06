@@ -1,5 +1,6 @@
 // Howler wrapper. All files are procedurally synthesised by tools/audio/build-audio.mjs (public/audio/*.wav).
 import { Howl, Howler } from 'howler';
+import { bundle } from '../app/bundle';
 
 class Sfx {
   private manifest: Record<string, string> = {};
@@ -10,6 +11,8 @@ class Sfx {
   private ready = false;
 
   async init() {
+    const b = bundle();
+    if (b) { this.manifest = b.audioManifest; this.ready = true; return; }
     try { const r = await fetch('./audio/manifest.json'); if (r.ok) this.manifest = await r.json(); } catch { this.manifest = {}; }
     this.ready = true;
   }
@@ -19,7 +22,7 @@ class Sfx {
     if (h) return h;
     const file = this.manifest[key];
     if (!file) { if (!this.warned.has(key)) { this.warned.add(key); console.warn(`sfx: unknown key ${key}`); } return null; }
-    h = new Howl({ src: [`./audio/${file}`], preload: true, html5: false });
+    h = new Howl({ src: [bundle()?.audio[file] ?? `./audio/${file}`], format: ['wav'], preload: true, html5: false });
     this.howls.set(key, h);
     return h;
   }

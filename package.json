@@ -11,7 +11,8 @@
     "audio": "node tools/audio/build-audio.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "critics": "node tools/critics/run-all.mjs"
+    "critics": "node tools/critics/run-all.mjs",
+    "build:single": "node tools/bundle-single.mjs"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.3.0",
