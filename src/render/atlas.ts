@@ -9,9 +9,11 @@ export async function loadAtlases() {
   let pages: string[] = [];
   try { const idx = await fetch('./atlas/index.json').then((r) => (r.ok ? r.json() : { pages: [] })); pages = idx.pages ?? []; } catch { pages = []; }
   for (const page of pages) {
-    const sheet = (await Assets.load(`./atlas/${page}.json`)) as Spritesheet;
-    sheet.textureSource.scaleMode = 'nearest';
-    for (const [k, t] of Object.entries(sheet.textures)) textures.set(k, t);
+    try {
+      const sheet = (await Assets.load(`./atlas/${page}.json`)) as Spritesheet;
+      sheet.textureSource.scaleMode = 'nearest';
+      for (const [k, t] of Object.entries(sheet.textures)) textures.set(k, t);
+    } catch (e) { console.warn(`atlas: failed to load page ${page}`, e); }
   }
   loaded = true;
 }

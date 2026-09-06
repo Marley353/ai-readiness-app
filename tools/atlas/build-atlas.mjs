@@ -79,7 +79,7 @@ async function main() {
   }
   const pageNames = [];
   for (let p = 0; p < pages.length; p++) {
-    const pg = pages[p]; const usedH = Math.min(PAGE, pg.y + pg.shelfH);
+    const pg = pages[p]; if (!pg.items.length) continue; const usedH = Math.min(PAGE, pg.y + pg.shelfH);
     const name = `page${p}`; pageNames.push(name);
     const dataUrl = await page.evaluate(({ items, W, H }) => {
       const c = document.createElement('canvas'); c.width = W; c.height = H; const ctx = c.getContext('2d');

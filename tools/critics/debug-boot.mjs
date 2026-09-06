@@ -1,0 +1,13 @@
+import { chromium, devices } from 'playwright-core';
+const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium', args: ['--no-sandbox', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+const ctx = await browser.newContext({ viewport: { width: 1180, height: 820 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
+const page = await ctx.newPage();
+page.on('console', (m) => console.log('console:', m.type(), m.text().slice(0, 300)));
+page.on('pageerror', (e) => console.log('pageerror:', String(e).slice(0, 300)));
+page.on('requestfailed', (r) => console.log('reqfail:', r.url(), r.failure()?.errorText));
+await page.goto('http://127.0.0.1:4173/?test=1', { waitUntil: 'load' });
+await new Promise((r) => setTimeout(r, 8000));
+console.log('boot text:', await page.evaluate(() => document.getElementById('boot')?.textContent));
+console.log('has __ufo:', await page.evaluate(() => !!window.__ufo));
+console.log('webgl:', await page.evaluate(() => { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); }));
+await browser.close();
