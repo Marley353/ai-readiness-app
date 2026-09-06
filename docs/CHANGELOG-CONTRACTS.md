@@ -1,0 +1,1 @@
+- battle/types.ts: optional Tile.stunGas, BattleUnit.movedThisTurn, BattleUnit.aiDone added (combat/AI bookkeeping).

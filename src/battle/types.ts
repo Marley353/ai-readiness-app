@@ -65,6 +65,8 @@ export interface BattleUnit {
   dontReselect?: boolean;
   fatalWoundsTotal?: number;
   reserve?: ReserveMode;
+  movedThisTurn?: number;        // tiles moved this turn (motion scanner) (added: optional)
+  aiDone?: boolean;              // acted this turn (added: optional)
 }
 
 export interface Tile {
@@ -80,6 +82,7 @@ export interface Tile {
   doorOpen?: boolean;
   ufoDoorOpen?: boolean;
   explosive?: number;        // remaining HE stored in a power source etc.
+  stunGas?: number;          // turns of stun cloud remaining (added: optional)
 }
 
 export interface BattleMap {
